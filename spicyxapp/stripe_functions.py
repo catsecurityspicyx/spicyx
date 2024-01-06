@@ -1,5 +1,4 @@
 from datetime import datetime
-from datetime import timedelta
 import time
 from django.utils import timezone
 import stripe

@@ -25,7 +25,6 @@ from .views import searchUsers
 from .views import terms
 from .views import privacity
 from .views import followView
-# from .views import activeSignatureFan
 from .views import desactiveSignatureFan
 from .views import loadMorePosts
 from .views import myfollowers
@@ -67,8 +66,6 @@ urlpatterns = [
 
     path('i6z7Q2iNki8/painel/docs/', adminDocumentation, name='docs'),
     path('i6z7Q2iNki8/painel/payouts/', adminPayouts, name='payouts'),
-
-    # path('m/active/signature/', activeSignatureFan, name='activesignature'),#delet
 
     path('m/desactive/signature/', desactiveSignatureFan, name='desactivesignature'),
     path('m/sendreqcreator/', creatorRequestStart, name='creatorrequeststart'),

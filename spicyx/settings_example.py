@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-#import os
 from decouple import config
 
 
@@ -26,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    '127.0.0.1'
+    '127.0.0.1',
 ]
 
 
@@ -88,19 +87,6 @@ DATABASES = {
     }
 }
 
-# DB MYSQL - PRODUÇÃO
-# if 'RDS_HOSTNAME' in os.environ:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.mysql',
-#             'NAME': os.environ['RDS_DB_NAME'],
-#             'USER': os.environ['RDS_USERNAME'],
-#             'PASSWORD': os.environ['RDS_PASSWORD'],
-#             'HOST': os.environ['RDS_HOSTNAME'],
-#             'PORT': os.environ['RDS_PORT'],
-#         }
-#     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -144,15 +130,15 @@ if USE_S3:
     AWS_STORAGE_BUCKET_NAME = ''
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
-    DEFAULT_FILE_STORAGE = '.STORAGE_S3.PrivateBucket'
+    DEFAULT_FILE_STORAGE = 'spicyxapp.STORAGE_S3.PrivateBucket'
     BUCKET_NAME = AWS_STORAGE_BUCKET_NAME
 
 # AWS PUBLIC FOR STATIC FILES
-USE_PUBLIC_BUCKET = True
+USE_PUBLIC_BUCKET = False
 if USE_PUBLIC_BUCKET:
     # S3 PUBLIC STATIC SETTINGS
     STATIC_URL = 'https://.s3.amazonaws.com/static/'
-    STATICFILES_STORAGE = '.STORAGE_S3.StaticBucket'
+    STATICFILES_STORAGE = 'spicyxapp.STORAGE_S3.StaticBucket'
 else:
     STATIC_URL = 'spicyxapp/static/'
     STATIC_ROOT = 'spicyxapp/static/'
@@ -194,6 +180,14 @@ PANDA_VIDEO_API_KEY = config('PANDA_VIDEO_API_KEY')
 ALLOWED_EXTENSIONS_IMAGES = ['jpg', 'jpeg', 'png', 'gif']
 IMAGE_SIZE_LIMIT_POST = 100 * 1024 * 1024
 IMAGE_SIZE_LIMIT_AVATAR = 10 * 1024 * 1024
+ALLOWED_DOCS_CREATORS_EXTENSIONS = ['jpg', 'png', 'pdf']
+DOCS_CREATORS_SIZE_LIMIT = 10 * 1024 * 1024
 IMAGE_SIZE_LIMIT_COVER = IMAGE_SIZE_LIMIT_AVATAR
 ALLOWED_EXTENSIONS_VIDEOS = ['avi', '3gp', 'mp4']
 VIDEO_SIZE_LIMITE = 1000 * 1024 * 1024
+
+
+# STRIPE SETTINGS
+STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOKS_SECRET')
+STRIPE_SECRET_API_KEY = config('STRIPE_SECRET_API_KEY')
+

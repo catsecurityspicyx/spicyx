@@ -1,4 +1,3 @@
-# Rename this file for STORAGE_S3.py
 from storages.backends.s3boto3 import S3Boto3Storage
 
 

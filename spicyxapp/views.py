@@ -11,7 +11,6 @@ from .functions import checkUploadVideoLimite
 from .functions import checkUploadImageLimite
 from .functions import CheckVerifyUser
 from .functions import ApproveDocumentation
-from .functions import addFanSignature
 import base64
 import requests
 import random
@@ -32,13 +31,8 @@ from .stripe_functions import createProduct
 from .stripe_functions import createRecurringSignature
 from .stripe_functions import webhookReceived
 from .stripe_functions import cancelSubscription
-from .stripe_functions import uploadFileToStripe
 from .stripe_functions import docs_generateNewsPresignedUrls
 from .stripe_functions import saveWebhookBD
-# from .stripe_functions import createPayout
-from flask import jsonify
-import hashlib
-import hmac
 import time
 stripe.api_key = settings.STRIPE_SECRET_API_KEY
 
@@ -1217,57 +1211,6 @@ def followView(request):
             return HttpResponseRedirect("/m/explorer/")
     else:
         return HttpResponseRedirect("/")
-
-
-# @ratelimit(key='ip', rate='100/5m', block=True)
-# @csrf_protect
-# def activeSignatureFan(request):
-#     if request.user.is_authenticated:
-#         if request.POST:
-#             me = request.user.profile
-#             creator_id = escape(request.POST['creator'])
-#             creator_nick = escape(request.POST['creator_nick'])
-#             err_msg = ''
-#
-#             try:
-#                 search_exist_subscribe = models.Subscriber.objects.filter(creator=creator_id, subscriber=me).exists()
-#             except Exception as error:
-#                 print(error)
-#                 err_msg = '?status=error&info=Algo deu errado, tente novamente mais tarde.'
-#                 return HttpResponseRedirect("/m/@" + creator_nick + err_msg)
-#
-#             if not search_exist_subscribe:
-#                 try:
-#                     models.Subscriber.objects.create(creator=creator_id, subscriber=me)
-#                 except Exception as err:
-#                     print(err)
-#                     err_msg = '?status=error&info=Algo deu errado, tente novamente mais tarde.'
-#                     return HttpResponseRedirect("/m/@" + creator_nick + err_msg)
-#
-#                 return HttpResponseRedirect(
-#                     "/m/@" + creator_nick + '?status=success&info=Assinatura criada com sucesso.')
-#             else:
-#                 try:
-#                     is_suspended = models.Subscriber.objects.filter(creator=creator_id, subscriber=me,
-#                                                                     suspended=True).exists()
-#                 except Exception as error:
-#                     print(error)
-#                     err_msg = '?status=error&info=Algo deu errado, tente novamente mais tarde.'
-#                     return HttpResponseRedirect("/m/@" + creator_nick + err_msg)
-#                 if is_suspended:
-#                     try:
-#                         models.Subscriber.objects.create(creator=creator_id, subscriber=me)
-#                     except Exception as err:
-#                         print(err)
-#                         err_msg = '?status=error&info=Algo deu errado, tente novamente mais tarde.'
-#                         return HttpResponseRedirect("/m/@" + creator_nick + err_msg)
-#                     return HttpResponseRedirect(
-#                         "/m/@" + creator_nick + '?status=success&info=Assinatura criada com sucesso.')
-#
-#         return HttpResponseRedirect("/m/me/?status=error")
-#
-#     else:
-#         return HttpResponseRedirect("/")
 
 
 @ratelimit(key='ip', rate='100/5m', block=True)

@@ -1,0 +1,83 @@
+@media only screen and (max-width: 450px) {
+    /* Users profile - mobile styles */
+
+
+main > .sign-user {
+    margin-top: 2em;
+    align-self: center;
+    width: 99vw;
+}
+main .my-cover > div.user-statics {
+    position: absolute;
+    top: 1.5em;
+    left: 1em;
+    align-self: flex-start;
+    width: fit-content;
+    height: fit-content;
+    color: #FFFFFF;
+    font-weight: 900;
+    text-shadow: var(--shadows-medium) 1px 1px 5px;
+    font-size: 1.2em;
+}
+
+.post-ops .follow_sign_container,
+main > .follow_sign_container,
+.post-ops .follow_sign_container_only,
+main > .follow_sign_container_only {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-self: center;
+}
+.post .post-ops .follow_sign_container .sign-user > form > button,
+.post .post-ops .follow_sign_container_only .sign-user > form > button,
+.post .post-ops .follow_sign_container .follow-form > form > button,
+.post .post-ops .follow_sign_container_only .follow-form > form > button,
+main > .follow_sign_container .sign-user > form > button,
+main > .follow_sign_container_only .follow-form > form > button,
+main > .follow_sign_container .follow-form > form > button {
+    display: grid;
+    grid-template-columns: 1fr 8.5em;
+    width: 99vw;
+    background-color: var(--light-buttom);
+    color: #FFFFFF;
+    font-weight: 900;
+    border-radius: 5px;
+    padding: 1em;
+    border: var(--light-border) 1px solid;
+    transition: .75s;
+    cursor: pointer;
+}
+
+main > .follow_sign_container_only .follow-form,
+main > .follow_sign_container .follow-form {
+    margin-top: 2em;
+    align-self: center;
+}
+main > .follow_sign_container .sign-user {
+    margin-top: 1em;
+    align-self: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

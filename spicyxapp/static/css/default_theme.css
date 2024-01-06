@@ -1,0 +1,30 @@
+:root {
+    --default-color-text: #000000;
+    --light-text: #FFFFFF;
+    --medium-text: #8d8d8d;
+    --dark-text: #000000;
+    --light-pink: #e59cc4;
+    --light-buttom: #e59cc4;
+    --hover-buttom: #da75a8;
+    --dark-pink: #da75a8;
+    --navbar: #da75a8;
+    --light-background: #ffffff;
+    --light-border: #ffffff;
+    --light-background-pink: #fce0ef;
+    --dark-border: #8a8a8a;
+    --shadows-medium: #8a8a8a;
+    --cancel-buttom: #8a8a8a;
+    --cancel-buttom-hover: #FF0000FF;
+    --verified-background-icon: #da75a8; /*0c3ad5*/
+    --edit-background-icon: #da75a8;
+    --draft-icon: #FFFFFF;
+    --navbar-icons: #FFFFFF;
+    --controls-player: #FFFFFF;
+    --trash-icon: #FF0000FF;
+    --heart-icon: #da75a8;
+    --notification-active-icon: #FFFFFF;
+    --heart-liked-icon: #e59cc4;
+    --draft-active-icon: #da75a8;
+    --fullscreen-background: #000000;
+    --darkmode-active-toggle: #000000;
+}

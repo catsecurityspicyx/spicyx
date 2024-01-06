@@ -1,0 +1,257 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+html, body, * {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    text-decoration: none;
+    font-family: 'Playfair Display', serif;
+    color: var(--default-color-text);
+}
+
+
+body {
+    background-color: var(--light-background-pink);
+}
+
+.container-index {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+#cookie-banner {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: fit-content;
+    background-color: #fcfcfc;
+    font-size: .9em;
+    text-align: left;
+    display: none;
+    justify-content: center;
+    z-index: 10;
+    border-bottom: var(--light-background-pink) 1px solid;
+}
+#cookie-banner > span {
+    padding: .5em;
+    margin: 1em;
+    display: flex;
+    align-self: center;
+    justify-self: center;
+    flex-direction: column;
+    width: 700px;
+    max-width: 700px;
+    font-family: sans-serif, arial;
+}
+#cookie-banner #accept-cookies {
+    align-self: end;
+    font-size: 1.5em;
+    margin-top: 1em;
+    background: none;
+    font-weight: bold;
+    color: var(--hover-buttom);
+    cursor: pointer;
+    padding: .5em;
+    border-radius: 50px;
+    transition: .75s;
+}
+#cookie-banner #accept-cookies:hover {
+    background-color: var(--light-buttom);
+    color: #FFFFFF;
+    transition: .75s;
+}
+.form-index {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    width: 450px;
+    height: fit-content;
+    border: 1px solid var(--dark-border);
+    border-radius: 4px;
+    background-color: var(--light-background);
+    text-align: center;
+}
+.form-index > span {
+    margin-top: 1.5em;
+    text-align: left;
+    padding-left: 1em;
+    font-weight: bold;
+    font-family: sans-serif, arial;
+}
+.site-container {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1em;
+}
+.site-container .logo_and_titulo {
+    display: flex;
+    margin-top: 1em;
+}
+.site-container .logo_and_titulo > b {
+    display: flex;
+    align-items: center;
+    color: var(--hover-buttom);
+    font-size: 3.5em;
+    font-weight: 900;
+    font-style: italic;
+}
+.site-container .index_subtitles {
+    margin-top: 1em;
+    text-align: left;
+
+}
+.site-container .index_subtitles > b {
+    font-size: 2em;
+    font-family: sans-serif, arial;
+}
+img.logo {
+    width: 4em;
+    height: 4em;
+}
+
+.form-index form {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1em 1em 1em;
+}
+.form-index form > label {
+    text-align: left;
+    font-size: .75em;
+    font-weight: bold;
+    color: #a4a4a4;
+}
+.form-index form input {
+    margin-bottom: 1em;
+    padding: 1em;
+    border-radius: 5px;
+    border: var(--dark-border) 1px solid;
+}
+.form-index .divisor_sex_target {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1em;
+}
+.form-index .divisor_sex_target select {
+    padding: 1em;
+    border-radius: 5px;
+    border: var(--dark-border) 1px solid;
+}
+.form-index form button[type="submit"] {
+    align-self: center;
+    width: fit-content;
+    margin-top: 2em;
+    padding: 1em;
+    color: #FFFFFF;
+    font-size: 1em;
+    font-weight: 900;
+    background-color: var(--light-buttom);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .75s;
+}
+.form-index form button[type="submit"]:hover {
+    background-color: var(--hover-buttom);
+    transition: .75s;
+}
+.form-index .notice_terms,
+.form-index .login_links_form {
+    width: 80%;
+    justify-self: center;
+    text-align: left;
+    font-size: .9em;
+    color: #8a8a8a;
+    font-family: sans-serif, arial;
+}
+.form-index .login_links_form {
+    text-align: center;
+}
+.form-index .login_links_form > a,
+.form-index .send_to_login > a,
+.form-index .send_to_cad > a {
+    font-family: sans-serif, arial;
+}
+.form-index .send_to_login,
+.form-index .send_to_cad {
+    font-weight: bold;
+    font-size: 1.25em;
+    margin-top: .5em;
+    margin-bottom: 1em;
+    font-family: sans-serif, arial;
+}
+footer {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 1em;
+    width: 100vw;
+    height: fit-content;
+    padding: 1em;
+    background-color: var(--light-background);
+}
+footer .collumn_one,
+footer .collumn_two {
+    font-family: sans-serif, arial;
+    display: flex;
+    flex-direction: column;
+}
+.last_posts_container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    background-color: var(--light-background);
+    align-self: center;
+    align-items: center;
+    padding: 1em 0 4em 0;
+}
+.last_posts_container .feed-content > span {
+    width: 25em;
+    text-align: left;
+    font-size: 2em;
+    font-family: sans-serif, arial;
+    margin: .5em 0 1em 0;
+}
+.last_posts_container > .feed-content {
+    display: flex;
+    flex-direction: column;
+    width: 50em;
+    height: fit-content;
+    align-self: center;
+    align-items: center;
+    border-radius: 5px;
+}
+.last_posts_container > .feed-content .post {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background-color: var(--light-background);
+    box-shadow: rgba(0,0,0,.1) 5px 5px 10px;
+    border-radius: 5px;
+}
+.last_posts_container .feed-content .post div.home-preview-container > span.post-image {
+    width: 50em;
+    height: 30em;
+    background-color: var(--light-background-pink);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat no-repeat;
+    border-radius: 5px;
+    margin: .5em 0 .5em 0;
+    border: var(--dark-border);
+    box-shadow: var(--shadows-medium) 5px 5px 10px;
+    cursor: pointer;
+}
+.last_posts_container .feed-content .post .video-container {
+    position: relative;
+    width: 50em;
+    height: 30em;
+    background-color: var(--light-background-pink);
+    border-radius: 5px;
+}
+.last_posts_container .feed-content .post .pandavideo-iframe {
+    width: 50em;
+    height: 30em;
+    border-radius: 5px;
+    cursor: pointer;
+}

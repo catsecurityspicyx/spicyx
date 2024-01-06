@@ -1,0 +1,1613 @@
+/*m- home*/
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: fit-content;
+    background-color: var(--light-background-pink);
+    padding-top: 3.6em; /* aqui 3em */
+}
+nav {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    background-color: var(--navbar);
+    padding: .7em 0 .7em 0;
+    font-size: 1.5em;
+    z-index: 1;
+}
+nav i.size-icons-nav {
+    font-size: 1.5em;
+}
+nav a span > i,
+nav span > i,
+nav span i,
+nav div > i.icon.bell.outline {
+    color: var(--navbar-icons);
+    font-weight: 900;
+}
+nav span,
+nav > .open-notifications {
+    margin-left: 1em;
+    cursor: pointer;
+}
+nav a:nth-child(1) span {
+    margin-left: 0;
+}
+nav .open-notifications > #notifications_number {
+    position: absolute;
+    right: 1em;
+    bottom: 1em;
+    border-radius: 5px;
+    padding: 0 .2em 0 .2em;
+    background-color: var(--light-buttom);
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: .5em;
+}
+nav div > i.icon.bell {
+    color: var(--notification-active-icon);
+}
+nav div.open-notifications {
+    position: relative;
+}
+nav div.open-notifications .notifications-container {
+    position: absolute;
+    grid-template-rows: 1fr 1.25em;
+    top: 2em;
+    width: 11.5em;
+    height: 13em;
+    border-radius: 5px;
+    box-shadow: var(--shadows-medium) 5px 5px 10px;
+    background-color: var(--light-background);
+    overflow-y: auto;
+    border: var(--light-border) 1px solid;
+}
+.notifications-container .scroll-notifications {
+    height: 11.5em;
+    overflow-y: auto;
+}
+.notifications-container .notification-clear {
+    width: 100%;
+    background-color: var(--navbar);
+    font-size: .7em;
+    font-weight: 700;
+    text-align: center;
+    padding: .25em 0 .25em 0;
+}
+.notifications-container .notification-clear form > span {
+    color: var(--light-text);
+}
+.notifications-container .notification {
+    display: grid;
+    grid-template-columns: 1fr 1em;
+    margin: .5em 0 .5em 0;
+    box-shadow: rgba(0, 0, 0, 0.10) 5px 5px 10px;
+    transition: .75s;
+}
+.notifications-container .notification:hover {
+    background-color: var(--light-background-pink);
+    transition: .75s;
+}
+.notifications-container .notifi-container {
+    display: flex;
+    flex-direction: column;
+}
+.notifications-container .notifi-container > .notification-message {
+    font-size: .7em;
+}
+.notifications-container .notifi-container > a {
+    color: #000000;
+    font-weight: 700;
+    font-size: .7em;
+}
+.notifications-container .notification .notifi-viewed {
+}
+.notification .notifi-viewed form {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.notification .notifi-viewed form i.icon {
+    text-align: center;
+    align-self: center;
+    justify-self: center;
+    color: var(--trash-icon);
+    margin: 0;
+}
+.menu > .item span > i,
+.menu > a > .item span > i {
+    color: var(--hover-buttom);
+}
+.menu > .item:hover span > i,
+.menu > a > .item:hover span > i {
+    color: var(--light-text);
+}
+.menu > a {
+    width: 100%;
+    color: #000000;
+    font-family: sans-serif, arial;
+}
+.menu > a > .item {
+    padding: .5em 1em .5em 1em;
+}
+.menu > a > .item:hover > span {
+    color: var(--light-text);
+}
+.menu a .item > span {
+    margin: initial;
+    font-family: sans-serif, arial;
+    color: var(--dark-text);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+main .post-form,
+.post-form .post-image-form form,
+.post-form .post-video-form form {
+    margin-top: 2em;
+    flex-direction: column;
+    background-color: var(--light-background);
+    width: 50em;
+    height: fit-content;
+    align-self: center;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid var(--dark-border);
+}
+.show-home-post-form,
+.post-form .post-image-form form,
+.post-form .post-video-form form {
+    display: flex;
+}
+
+.post-form > #containerImage,
+.post-form > #containerVideo {
+    width: 100%;
+    padding: .5em;
+}
+.post-form > #containerImage > span > i,
+.post-form > #containerVideo > span > i {
+    cursor: pointer;
+}
+.post-form > #containerImage > form,
+.post-form > #containerVideo > form {
+    width: 99%;
+    height: fit-content;
+    border: none;
+    margin: 0;
+}
+.post-form > #containerVideo > form > div,
+.post-form > #containerImage > form > div {
+    display: grid;
+    column-gap: 1em;
+}
+main .post-form > #selector-media-post {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    height: 8em;
+    justify-items: center;
+    align-items: center;
+}
+#selector-media-post > .selector-media-image,
+#selector-media-post > .selector-media-video {
+    display: flex;
+    width: 97%;
+    height: 90%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: 900;
+    transition: .5s;
+}
+#selector-media-post > .selector-media-image:hover,
+#selector-media-post > .selector-media-video:hover,
+#selector-media-post > .selector-media-image:hover > i,
+#selector-media-post > .selector-media-video:hover > i,
+#selector-media-post > .selector-media-image:hover > b,
+#selector-media-post > .selector-media-video:hover > b {
+    background-color: var(--light-background-pink);
+    color: var(--light-text);
+    transition: .5s;
+}
+#selector-media-post > .selector-media-image > i.icon,
+#selector-media-post > .selector-media-video > i.icon {
+    font-size: 3em;
+    margin: 0;
+}
+#selector-media-post > .selector-media-image > b,
+#selector-media-post > .selector-media-video > b {
+    width: fit-content;
+}
+
+.post-form input[type="file"],
+#editavatar input[type="file"],
+#editcover input[type="file"]{
+    display: none;
+}
+.post-form .custom-post-file,
+#editavatar .custom-post-file,
+#editcover .custom-post-file{
+    display: flex;
+    width: 15em;
+    height: 2em;
+    margin-top: 1em;
+    background-color: var(--light-buttom);
+    border: 1px solid var(--dark-border);
+    cursor: pointer;
+    transition: .75s;
+    border-radius: 5px;
+}
+#editavatar .custom-post-file,
+#editcover .custom-post-file {
+    margin-bottom: 1em;
+}
+.post-form .custom-post-file:hover,
+#editavatar .custom-post-file:hover,
+#editcover .custom-post-file:hover {
+    background-color: var(--hover-buttom);
+    transition: .75s;
+}
+.post-form .custom-post-file i.icon,
+#editavatar .custom-post-file i.icon,
+#editcover .custom-post-file i.icon {
+    align-self: center;
+    width: 20px;
+    margin: 0 1em 0 1em;
+}
+.post-form .custom-post-file span,
+#editavatar .custom-post-file span,
+#editcover .custom-post-file span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-left: 1px solid var(--dark-border);
+    padding-left: 1em;
+    background-color: var(--light-background);
+    font-weight: 800;
+    color: #8a8a8a;
+    border-radius: 0 5px 5px 0;
+    transition: .75s;
+}
+.post-form .custom-post-file:hover span,
+#editavatar .custom-post-file:hover span,
+#editcover .custom-post-file:hover span {
+    transition: .75s;
+    color: var(--default-color-text);
+}
+.post-form .custom-post-file i.icon,
+#editavatar .custom-post-file i.icon,
+#editcover .custom-post-file i.icon {
+    color: #FFFFFF;
+}
+.post-form .ops-post {
+    display: grid;
+    grid-template-columns: auto 7em;
+    justify-items: center;
+    justify-content: center;
+    width: 80%;
+    font-weight: 800;
+    margin: 1.5em 0 1.5em 0;
+}
+.post-form .ops-post > label {
+    color: #8a8a8a;
+}
+.post-form .ops-post > select {
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+    color: var(--dark-text);
+}
+.post-form button,
+.feed .my_settings.one > .container_settings form button,
+.feed .my_settings.zero > form button,
+.checkout-container-form > form button,
+.my_settings.three .container_settings > form button,
+.feed .my_settings > .container_settings.setd > div.data form button {
+    width: 100%;
+    background-color: var(--light-buttom);
+    padding: 1em 0 1em 0;
+    font-weight: 900;
+    color: #FFFFFF;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .75s;
+}
+.checkout-container-form > form button,
+.my_settings.three .container_settings > form button,
+.feed .my_settings > .container_settings.setd > div.data form button {
+    margin-top: 1em;
+}
+.post-form button:hover,
+.feed .my_settings.one > .container_settings form button:hover,
+.feed .my_settings.two > .container_settings form button:hover,
+.feed .my_settings.zero > form button:hover,
+.checkout-container-form > form button:hover,
+.my_settings.three .container_settings > form button:hover,
+.feed .my_settings > .container_settings.setd > div.data form button:hover {
+    background-color: var(--hover-buttom);
+    transition: .75s;
+}
+.post-form textarea {
+    width: 100%;
+    padding: .2em;
+    margin-bottom: .5em;
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+    color: var(--dark-text);
+}
+main .feed {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: column;
+    width: 50em;
+    height: fit-content;
+    align-self: center;
+    align-items: center;
+    border-radius: 5px;
+}
+.feed .field {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    background-color: var(--light-background);
+    border-radius: 5px 5px 0 0;
+}
+.feed .field span {
+    text-align: center;
+    font-weight: 800;
+    padding: .5em 0 .5em 0;
+    cursor: pointer;
+    transition: .75s;
+}
+.feed .field span:hover {
+    background-color: var(--hover-buttom);
+    color: #FFFFFF;
+    transition: .75s;
+    border-radius: 5px;
+}
+.feed .field span > b {
+    color: #8a8a8a;
+    font-size: .75em;
+    font-weight: 900;
+    font-style: italic;
+}
+.feed .feed-content {
+    width: 100%;
+    height: fit-content;
+}
+
+.feed-content .post {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-top: 1em;
+    background-color: var(--light-background);
+    box-shadow: var(--shadows-medium) 5px 5px 10px;
+    border-radius: 5px;
+}
+.feed-content:nth-child(2) .post,
+.last_posts_container:nth-child(2) .post {
+    margin-top: 1em;
+}
+
+.post .post-ops {
+    display: grid;
+    grid-template-columns: 1fr 4em;
+    border-bottom: 1px solid var(--dark-border);
+    width: 90%;
+    padding-bottom: .5em;
+}
+.post-ops .post-user > a,
+.comment-item .user-area,
+.found-user > a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    font-weight: 900;
+}
+.post-ops .post-user > a,
+.found-user > a {
+    color: #000000;
+}
+.post-ops .post-user a > b,
+.comment-item .user-area a > b,
+.found-user a > b {
+    margin-left: .5em;
+    color: var(--default-color-text);
+}
+.post-user a > span,
+.comment-item .user-area a > span,
+.found-user a > span {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 3em;
+    height: 3em;
+    background-color: var(--light-background);
+    background: linear-gradient(130deg, rgba(255,234,254,1) 0%, rgba(252,129,252,1) 53%, rgba(255,0,255,1) 100%, rgba(247,79,247,1) 102%);;
+    border-radius: 50%;
+}
+.post-user a b > i,
+.found-user a b > i {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    font-size: 1.5em;
+    color: var(--verified-background-icon);
+    align-items: center;
+    justify-content: center;
+    margin-left: 1px;
+}
+.post-user a b i > b,
+.found-user a b i > b {
+    position: absolute;
+    color: #FFFFFF;
+    font-size: .5em;
+    font-weight: 900;
+}
+.post-user a > span > span,
+.comment-item .user-area a > span > span,
+.found-user a > span > span {
+    display: flex;
+    width: 2.75em;
+    height: 2.75em;
+    background-color: var(--light-background-pink);
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+}
+.post-ops span,
+.post-ops div.post-menu-dropdown-icon {
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}
+.post-ops .post-menu-dropdown-icon {
+    position: relative;
+}
+.post-menu-dropdown-icon > .dropdown-container {
+    position: absolute;
+    width: 9em;
+    height: fit-content;
+    top: 2.1em;
+    right: 1.5em;
+    padding: .5em 0 .5em 0;
+    background-color: var(--light-background);
+    border-radius: 4px 0 4px 4px;
+    box-shadow: var(--shadows-medium) 5px 5px 10px;
+    z-index: 1;
+}
+.dropdown-container .menu form > .item,
+.dropdown-container .menu > a > .item {
+    display: grid;
+    grid-template-columns: 2em 1fr;
+    font-size: 1em;
+    font-weight: 900;
+    margin-bottom: .5em;
+    padding: .5em 0 .5em 0;
+    color: var(--default-color-text);
+}
+.dropdown-container .menu form > .item:hover,
+.dropdown-container .menu > a > .item:hover,
+.menu > a:hover > .item:hover {
+    background-color: var(--light-background-pink);
+}
+.dropdown-container .menu .item > span > i.icon {
+    margin: 0;
+    font-size: 1em;
+}
+.follow_sign_container,
+.follow_sign_container_only {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1em;
+    width: 50em;
+    align-self: center;
+}
+.follow_sign_container_only {
+    grid-template-columns: 1fr;
+}
+/*.post .post-ops .follow_sign_container > .sign-user,*/
+/*.post .post-ops .follow_sign_container_only > .sign-user,*/
+/*.post .post-ops .follow_sign_container > .follow-form,*/
+/*.post .post-ops .follow_sign_container_only > .follow-form {*/
+.post .post-ops .follow_sign_container,
+.post .post-ops .follow_sign_container_only {
+    width: 100%;
+    padding: 1em 0 0 0;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+main > .follow_sign_container .sign-user,
+main > .follow_sign_container_only .follow-form,
+main > .follow_sign_container .follow-form {
+    margin-top: 2em;
+    align-self: center;
+    /*width: 50em;*/
+}
+.post .post-ops .follow_sign_container .sign-user > form > button,
+.post .post-ops .follow_sign_container_only .sign-user > form > button,
+.post .post-ops .follow_sign_container .follow-form > form > button,
+.post .post-ops .follow_sign_container_only .follow-form > form > button,
+main > .follow_sign_container .sign-user > form > button,
+main > .follow_sign_container_only .follow-form > form > button,
+main > .follow_sign_container .follow-form > form > button {
+    display: grid;
+    grid-template-columns: 1fr 8.5em;
+    width: 100%;
+    background-color: var(--light-buttom);
+    font-weight: 900;
+    border-radius: 5px;
+    padding: 1em;
+    border: var(--light-border) 1px solid;
+    transition: .75s;
+    cursor: pointer;
+}
+.post .post-ops .follow_sign_container .sign-user > form > button > span,
+.post .post-ops .follow_sign_container_only .sign-user > form > button > span,
+.post .post-ops .follow_sign_container .follow-form > form > button > span,
+.post .post-ops .follow_sign_container_only .follow-form > form > button > span,
+main > .follow_sign_container .sign-user > form > button > span,
+main > .follow_sign_container_only .follow-form > form > button > span,
+main > .follow_sign_container .sign-user > form > button > b,
+.post .post-ops .follow_sign_container_only .sign-user > form > button > b,
+main > .follow_sign_container .follow-form > form > button > span {
+    color: var(--light-text);
+}
+main > .follow_sign_container .sign-user > form > button.cancel {
+    background-color: var(--cancel-buttom);
+}
+.post .post-ops > .follow_sign_container .sign-user form > button > span,
+.post .post-ops > .follow_sign_container .follow-form form > button > span,
+.post .post-ops > .follow_sign_container_only .follow-form form > button > span,
+main > .follow_sign_container .sign-user form > button > span,
+main > .follow_sign_container_only .follow-form form > button > span,
+main > .follow_sign_container .follow-form form > button > span {
+    display: flex;
+    justify-content: left;
+}
+.post .post-ops .sign-user > form > button:hover,
+.post .post-ops .follow-form > form > button:hover,
+main .sign-user > form > button:hover,
+main .follow-form > form > button:hover {
+    background-color: var(--hover-buttom);
+    border: var(--dark-border) 1px solid;
+    transition: .75s;
+}
+main > .follow_sign_container .sign-user > form > button.cancel:hover,
+.post .post-ops .sign-user > form > button.cancel:hover {
+    background-color: var(--cancel-buttom-hover);
+}
+.post .post-ops .sign-user > form > button.cancel > span {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+.post div.home-preview-container {
+    display: grid;
+    position: relative;
+}
+.post .video-container {
+    position: relative;
+    width: 50em; /* aqui 30 x 30*/
+    height: 30em;
+    background-color: var(--light-background-pink);
+    border-radius: 5px;
+}
+.post .pandavideo-iframe {
+    width: 50em; /* aqui 30 x 30em */
+    height: 30em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.post .video-container > .video-controls {
+    width: 100%;
+    height: 2em;
+    position: absolute;
+    bottom: 0;
+    transition: .75s;
+}
+.post .video-container .video-controls > #progressbar {
+    background-color: #da75a8;
+    color: #da75a8;
+}
+.post .video-container > .video-controls:hover > .controls-for-hover {
+    display: block;
+    transition: .75s;
+}
+.post .video-container .video-controls > .controls-for-hover {
+    width: 100%;
+    background-color: #000000;
+    display: none;
+    padding: .25em 1em .25em 1em;
+    transition: .75s;
+    backdrop-filter: opacity(5);
+}
+.post .video-container .video-controls > .controls-for-hover > button {
+    background: none;
+    cursor: pointer;
+}
+.post .video-container .video-controls > .controls-for-hover button > i {
+    color: var(--controls-player);
+    font-size: 1.5em;
+}
+.post .video-container .video-controls > .controls-for-hover > b {
+    color: #FFFFFF;
+    font-weight: 900;
+}
+.post div.home-preview-container > span.post-image {
+    width: 50em; /* aqui 30 x 30em*/
+    height: 30em;
+    background-color: var(--light-background-pink);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat no-repeat;
+    border-radius: 5px;
+    margin: .5em 0 .5em 0;
+    border: var(--dark-border);
+    box-shadow: var(--shadows-medium) 5px 5px 10px;
+    cursor: pointer;
+}
+.post .post-interactions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 90%;
+    height: fit-content;
+    margin: 1.5em 0 .5em 0;
+}
+.post-interactions span {
+    justify-self: center;
+    align-items: center;
+    display: grid;
+    grid-template-columns: 2em 1fr;
+    text-align: center;
+    font-weight: 900;
+}
+.post-interactions span i.icon {
+    font-size: 2em;
+    cursor: pointer;
+}
+.post-interactions span b {
+    margin-left: .5em;
+}
+.post-interactions span i.heart.icon,
+.user-area > .comment-ops i.heart.icon {
+    color: var(--heart-liked-icon);
+}
+.post-interactions span i.outline.icon,
+.user-area > .comment-ops i.outline.icon {
+    color: var(--heart-icon);
+}
+.post-interactions > .post-comment-container {
+    flex-direction: column;
+    margin-top: 1em;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    background-color: var(--light-background-pink);
+    border-radius: 5px;
+}
+.post-comment-container .post-comment-form,
+.comments-on-my-post .container-comment > .post-comment-form {
+    width: 100%;
+    height: fit-content;
+    padding: .5em;
+}
+.post-comment-container .post-comment-form > form,
+.comments-on-my-post .container-comment > .post-comment-form > form {
+    display: grid;
+    grid-template-columns: 1fr 7em;
+    column-gap: .5em;
+}
+.post-comment-container .post-comment-form input[type=text],
+.comments-on-my-post .container-comment > .post-comment-form input[type=text] {
+    width: 100%;
+    border-radius: 5px;
+    padding-left: .5em;
+}
+.post-comment-container .post-comment-form button,
+.comments-on-my-post .container-comment > .post-comment-form button {
+    width: fit-content;
+    padding: .5em;
+    border-radius: 5px;
+    background-color: var(--light-buttom);
+    color: #FFFFFF;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .75s;
+}
+.post-comment-container .post-comment-form button:hover,
+.comments-on-my-post .container-comment > .post-comment-form button:hover {
+    background-color: var(--hover-buttom);
+    transition: .75s;
+}
+.comments-on-my-post .container-comment > .post-comments-container {
+    height: 80%;
+    padding: 0 0 1em 1.5em;
+    overflow-y: auto;
+}
+.post-comment-container .post-comments-container {
+    max-height: 13.5em;
+    padding: 0 0 1em 1.5em;
+    overflow-y: auto;
+}
+.post-comments-container > .comment-item {
+    margin-top: 1em;
+}
+.post-comments-container > .comment-item > .user-area {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 5em;
+}
+.post-comments-container > .comment-item > .user-area > a {
+    width: fit-content;
+    display: grid;
+    grid-template-columns: 3em 1fr;
+    align-items: center;
+    justify-items: left;
+    color: #000000;
+}
+.comment-item .user-area b {
+    width: 10em;
+    height: fit-content;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.post-comments-container > .comment-item > .user-area > .comment-ops {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+}
+.user-area > .comment-ops form button,
+.user-area > .comment-ops form i {
+    background: none;
+    cursor: pointer;
+}
+.user-area > .comment-ops i {
+    font-size: 1.5em;
+}
+.post-comments-container > .comment-item > .user-comment {
+    width: 98%;
+    padding: .5em;
+    margin-top: .25em;
+    background-color: var(--light-background);
+    border-radius: 0 5px 5px 5px;
+}
+.load_more_posts {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: var(--light-background);
+    padding: 2em 0 2em 0;
+    margin-top: 1em;
+}
+.load_more_posts button {
+    width: fit-content;
+    padding: .5em;
+    border-radius: 5px;
+    background-color: var(--light-buttom);
+    color: #FFFFFF;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .75s;
+}
+
+
+
+
+
+/* m - explorer */
+.search-explorer {
+    width: 100%;
+    background-color: var(--light-background);
+    border-radius: 5px;
+}
+.search-explorer form > .search-divisor {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 1em .5em 1em .5em;
+    column-gap: .25em;
+}
+.search-explorer form > .search-divisor > input[type=text] {
+    width: 100%;
+    height: 2em;
+    padding: .5em;
+    border-radius: 5px;
+    border: var(--dark-border) 1px solid;
+    color: var(--dark-text);
+}
+.search-explorer form > .search-divisor > span {
+    background-color: var(--light-buttom);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: .75s;
+}
+.search-explorer form > .search-divisor > span i.icon {
+    color: #FFFFFF;
+    margin: 0;
+}
+.search-explorer form > .search-divisor > span:hover {
+    background-color: var(--hover-buttom);
+    transition: .75s;
+}
+.found-user {
+    padding: .5em 0 .5em 1em;
+    cursor: pointer;
+}
+.found-user:hover {
+    background-color: var(--light-background-pink);
+}
+.search-results {
+    max-height: 30em;
+}
+
+
+
+
+/* m - me */
+.container main > .my-cover {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-self: center;
+    width: 700px; /* aqui 100 vw*/
+    height: 233.33px; /* aqui 20em */ /* 280px , 350px é perfeito*/
+    min-height: 233.33px;
+    background-color: var(--light-background);
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat no-repeat;
+}
+.user-data-container > .user-image-profile,
+.info-user > .user-image-profile {
+    display: grid;
+    width: fit-content;
+    align-items: center;
+    height: fit-content;
+    position: absolute;
+    top: 14.2em; /* aqui 17.5em */
+    margin-left: .5em;
+}
+.info-user > .user-image-profile {
+    position: initial;
+    margin-left: initial;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+.user-data-container .user-name-titulo > div > i,
+.info-user .user-name-titulo > div > i,
+.user-data-container .user-bio > i,
+.my-cover > i {
+    align-self: flex-end;
+    font-size: 1em;
+    color: var(--edit-background-icon);
+    cursor: pointer;
+}
+.my-cover > i {
+    position: absolute;
+    right: 2em;
+    bottom: 1em;
+}
+.user-data-container > .user-image-profile span,
+.info-user > .user-image-profile span {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 9em;
+    height: 9em;
+    background-color: var(--light-background-pink);
+    background: linear-gradient(130deg, rgba(255,234,254,1) 0%, rgba(252,129,252,1) 53%, rgba(255,0,255,1) 100%, rgba(247,79,247,1) 102%);
+    border-radius: 50%;
+}
+.user-data-container .user-at > i {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    color: var(--verified-background-icon);
+    align-items: center;
+    justify-content: center;
+    margin-left: 1px;
+}
+.user-data-container .user-at i > b {
+    position: absolute;
+    color: #FFFFFF;
+    font-size: .5em;
+    font-weight: 900;
+}
+.user-data-container .user-image-profile span > span,
+.info-user .user-image-profile span > span,
+.user-data-container .user-image-profile span > div.user-image-edit {
+    display: flex;
+    width: 8.75em;
+    height: 8.75em;
+    background-color: var(--light-background-pink);
+    background-size: cover;
+    background-position: top;
+    border-radius: 50%;
+}
+.user-data-container .user-image-profile span > div.user-image-edit {
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    cursor: pointer;
+    transition: .75s;
+}
+.user-data-container .user-image-profile span > div.user-image-edit:hover {
+    background-color: rgba(252, 224, 239, .3);
+    backdrop-filter: blur(5px);
+    transition: .75s;
+}
+.user-data-container .user-image-profile span > div.user-image-edit > i {
+    display: none;
+    color: #FFFFFF;
+    font-size: 1.5em;
+    transition: .75s;
+}
+.user-data-container .user-image-profile span > div.user-image-edit:hover > i {
+    display: block;
+    transition: .75s;
+}
+.user-data-container {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 50em;
+    height: 10em;
+    border-radius: 0 0 5px 5px;
+    background-color: var(--light-background);
+}
+.user-data-container .user-name-titulo > div {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    margin-left: 9.5em;
+}
+.user-data-container .user-name-titulo > div > i {
+    align-self: center;
+}
+.user-data-container .user-name-titulo > div > b {
+    /*display: flex;*/
+    /*align-items: center;*/
+    width: 12.5em; /* fit-content */
+    height: 1em;
+    font-size: 3em;
+    font-weight: 900;
+    font-style: italic;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-top: .15em;
+}
+.user-data-container .user-at {
+    width: 100%;
+    padding: .5em 0 1em 2.5em;
+    font-size: 1em;
+    font-weight: 700;
+    color: #8a8a8a;
+}
+.user-data-container .user-bio {
+    display: grid;
+    grid-template-columns: 1fr 1em;
+    width: 100%;
+    padding: 0 2.5em 0 2.5em;
+    margin-bottom: 1em;
+}
+.user-data-container .user-bio > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.my-feed-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-row-gap: 1em;
+    width: 100%;
+    height: fit-content;
+    background-color: var(--light-background);
+    padding: 1em 0 1em 0;
+    justify-items: center;
+}
+.my-feed-content .media-field {
+    position: relative;
+    width: 11.5em;
+    height: 11.5em;
+}
+.my-feed-content .media-field > div.status-preview,
+.post .home-preview-container > div.status-preview {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+}
+.my-feed-content .media-field .status-preview > i,
+.post .home-preview-container div.status-preview > i {
+    color: var(--draft-icon);
+    text-shadow: var(--shadows-medium) 5px 5px 5px;
+}
+.my-feed-content .media-field > span.image-min {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: var(--shadows-medium) 5px 5px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.my-feed-content .media-field > .bg-fullscreen,
+.container .feed .feed-content .post > .bg-fullscreen,
+.edit-profile-container,
+.epcclose {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 2;
+}
+.for-close-full {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 3;
+}
+@keyframes openFullscreen {
+    from {
+        width: 0;
+        height: 0;
+    }
+    to {
+        width: 50em;
+        height: 50em;
+    }
+}
+.media-field .bg-fullscreen > .fullscreen-container,
+.post .bg-fullscreen > .fullscreen-container {
+    position: relative;
+    background-color: var(--light-background);
+    border-radius: 5px;
+    padding: 1em;
+    animation: openFullscreen .75s;
+    animation-fill-mode: both;
+    text-align: right;
+    z-index: 4;
+}
+.media-field > .bg-fullscreen > .comments-on-my-post {
+    position: fixed;
+    width: 50em;
+    height: 50em;
+    background-color: var(--light-background-pink);
+    border-radius: 5px;
+    padding: 1em;
+    z-index: 5;
+}
+.comments-on-my-post > span { cursor: pointer; }
+.comments-on-my-post > span > i.icon {
+    margin-bottom: 1em;
+    font-weight: 900;
+}
+.media-field > .bg-fullscreen > .comments-on-my-post > .container-comment {
+    width: 100%;
+    height: 95%;
+}
+.container-comment > .video-subtitles {
+    background-color: var(--light-background);
+    border-radius: 5px;
+    padding: .5em;
+}
+.media-field .bg-fullscreen > .fullscreen-container > div > form {
+    display: inline-flex; /* aqui */
+}
+
+.media-field .bg-fullscreen > .fullscreen-container form > i,
+.post .bg-fullscreen > .fullscreen-container form > i {
+    margin-right: 1em;
+    cursor: pointer;
+}
+.media-field .bg-fullscreen > .fullscreen-container form > i.trash.icon,
+.post .bg-fullscreen > .fullscreen-container form > i.trash.icon,
+.dropdown-container .menu .item > span > i.trash.icon,
+.user-area > .comment-ops i.trash.icon {
+    color: var(--trash-icon);
+}
+.media-field .bg-fullscreen > .fullscreen-container form > i.eye.slash.icon.active,
+.media-field .bg-fullscreen > .fullscreen-container form > i.heart.icon.active,
+.media-field .bg-fullscreen > .fullscreen-container form > i.dollar.sign.icon.active,
+.post .bg-fullscreen > .fullscreen-container form > i.eye.slash.icon.active {
+    color: var(--draft-active-icon);
+}
+.media-field .bg-fullscreen > .fullscreen-container > div.image-subtitles,
+.post .bg-fullscreen > .fullscreen-container > div.image-subtitles {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: 8em;
+    text-align: left;
+    padding: 1em 1em 2em 1em;
+    transition: .75s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    border-radius: 0 0 5px 5px;
+}
+.fullscreen-container > div.image-subtitles:hover {
+    background-color: rgba(0, 0, 0, .5);
+    border-radius: 0 0 5px 5px;
+    color: #FFFFFF;
+    transition: .75s;
+}
+.post div.image-subtitles {
+    width: 90%;
+    height: fit-content;
+    margin: .5em 0 .5em 0;
+}
+.fullscreen-closed,
+.invisible-content {
+    display: none;
+}
+.visible-content { display: grid; }
+.bg-fullscreen > .fullscreen-container > span.image-full,
+.bg-fullscreen > .fullscreen-container > .video-container,
+.bg-fullscreen > .fullscreen-container > .video-container > iframe {
+    display: flex;
+    width: 100%;
+    height: 99%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat no-repeat;
+}
+.epcclose {
+    background: none;
+}
+.edit-profile-container > .form-for-edit {
+    width: 40em;
+    height: fit-content;
+    padding: 1em;
+    border-radius: 5px;
+    background-color: var(--light-background);
+    z-index: 4;
+}
+
+.edit-profile-container > .form-for-edit > form {
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+.edit-profile-container > .form-for-edit div > form > textarea {
+    width: 100%;
+    height: 4em;
+    margin-bottom: 1em;
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+}
+.edit-profile-container > .form-for-edit div > form input[type=text] {
+    width: 100%;
+    height: 3em;
+    padding: .5em;
+    margin-bottom: 1em;
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+}
+.edit-profile-container > .form-for-edit div > form > button {
+    width: 100%;
+    height: fit-content;
+    padding: .5em;
+    border-radius: 5px;
+    background-color: var(--light-buttom);
+    color: #FFFFFF;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .75s;
+}
+.edit-profile-container > .form-for-edit div > form > button:hover {
+    transition: .75s;
+    background-color: var(--hover-buttom);
+}
+
+
+
+/* users profiles */
+
+main .my-cover > div.user-statics {
+    position: absolute;
+    top: 1.5em;
+    left: 1em;
+    align-self: flex-start;
+    width: fit-content;
+    height: fit-content;
+    color: #FFFFFF;
+    font-weight: 900;
+    text-shadow: var(--shadows-medium) 1px 1px 5px;
+    font-size: 1.25em;
+}
+main .my-cover > div.user-statics > i.icon {
+    margin: 0;
+    color: var(--light-text);
+}
+main .my-cover > div.user-statics > b {
+    margin-left: .2em;
+    margin-right: 1em;
+    color: var(--light-text);
+}
+.not-subscribe-message {
+    width: 100%;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    text-align: center;
+    padding: 1em 0 1em 0;
+}
+.not-subscribe-message span > i {
+    font-size: 4em;
+    color: var(--heart-icon);
+}
+.not-subscribe-message h2 {
+    color: #8a8a8a;
+}
+
+
+
+
+
+
+
+
+#new_avatar_form,
+#new_cover_form {
+    display: flex;
+    flex-direction: column;
+}
+/* cropper */
+#image-cropper {
+    align-self: center;
+    justify-self: center;
+    margin-bottom: .5em;
+    width: 350px;
+    height: 350px;
+    background-color: var(--light-background-pink);
+}
+#image-cropper_cover {
+    align-self: center;
+    justify-self: center;
+    margin-bottom: .5em;
+    width: 350px;
+    height: 175px;
+    background-color: var(--light-background-pink);
+}
+
+
+
+
+
+
+
+/* myfollowers */
+.feed .my_subscribers,
+.feed .my_followers,
+.feed .my_settings {
+    background-color: var(--light-background);
+    width: 100%;
+    height: 30em;
+    border-radius: 5px;
+}
+.feed .my_followers {
+    margin-top: 2em;
+}
+.my_subscribers > .title,
+.my_followers > .title,
+.my_settings > .title {
+    background-color: var(--light-pink);
+    width: 100%;
+    text-align: center;
+    color: var(--light-text);
+    border-radius: 5px 5px 0 0;
+    padding: .5em 0 .5em 0;
+}
+.my_subscribers > .title > i.icon,
+.my_followers > .title > i.icon,
+.my_settings > .title > i.icon {
+    color: var(--light-text);
+}
+.my_subscribers > .title > b,
+.my_followers > .title > b,
+.my_settings > .title > b {
+    font-size: 1em;
+    color: var(--light-text);
+}
+.feed .my_settings.one,
+.feed .my_settings.two,
+.feed .my_settings.three {
+    height: fit-content;
+    margin-top: 2em;
+}
+.feed .my_settings.zero {
+    height: 3em;
+    margin-top: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.feed .my_settings.zero > form {
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+    align-items: center;
+}
+.my_settings.zero form > i.icon {
+    color: var(--default-color-text);
+}
+.feed .my_settings.zero > form > div.ui.toggle.checkbox {
+    width: 3.75em;
+}
+.feed .my_settings.zero .ui.toggle.checkbox input:checked ~ .box:before,
+.feed .my_settings.zero .ui.toggle.checkbox input:checked ~ label:before {
+    background-color: var(--darkmode-active-toggle);
+}
+.feed .my_settings.zero .ui.toggle.checkbox input ~ .box:before,
+.feed .my_settings.zero .ui.toggle.checkbox input ~ label:before {
+    background-color: var(--light-background-pink);
+}
+.feed .my_settings.one > .container_settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1em;
+    align-items: center;
+    justify-items: center;
+    padding: 1em 0 1em 0;
+}
+.checkout-container-form form > select,
+.feed .my_settings.one > .container_settings form select,
+.feed .my_settings.two > .container_settings form select,
+.feed .my_settings.one > .container_settings form input[type=date] {
+    width: 8em;
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+    margin-left: .5em;
+    padding: .25em;
+    color: var(--dark-text);
+}
+.checkout-container-form form > select > option,
+.feed .my_settings > .container_settings form select > option,
+.post-form .ops-post select > option {
+    color: var(--dark-text);
+}
+
+.feed .my_settings.one > .container_settings > form {
+    width: 100%;
+    position: relative;
+    padding-left: .5em;
+}
+.feed .my_settings.one > .container_settings form > button {
+    position: absolute;
+    right: .5em;
+}
+.feed .my_settings.one > .container_settings form button,
+.feed .my_settings.zero > form button {
+    width: 6em;
+    padding: .5em 0 .5em 0;
+    margin-left: .5em;
+}
+.container_settings label {
+    font-weight: 900;
+    color: #8a8a8a;
+}
+.feed .my_settings.two > .container_settings form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    justify-items: center;
+    padding: 1em 0 0 0;
+}
+.my_settings.two > .container_settings form button {
+    width: 100%;
+    padding: .5em 0 .5em 0;
+    justify-self: center;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    margin-top: 1em;
+    background-color: var(--light-buttom);
+    font-weight: 900;
+    color: #FFFFFF;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .75s;
+}
+.my_settings.three .container_settings > .info-creator {
+    background-color: #f6e4b6;
+    font-size: .75em;
+    padding: .5em;
+    line-height: 1.25em;
+}
+.my_settings.three .container_settings > .info-creator > span,
+.my_settings.three .container_settings > .info-creator > span > b {
+    font-family: sans-serif, arial;
+}
+.my_settings.three .container_settings > form {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+}
+.my_settings.three .container_settings > form label:nth-child(2) {
+    margin-top: 0;
+}
+.my_settings.three .container_settings > form label {
+    color: #a4a4a4;
+    font-size: .75em;
+    margin-top: 1em;
+}
+.my_settings.three .container_settings > form input,
+.my_settings.three .container_settings > form select {
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+    padding: .5em;
+}
+.my_settings.three .container_settings > form .bank div > input,
+.my_settings.three .container_settings > form .address input,
+.my_settings.three .container_settings > form .bank div  > select,
+.my_settings.three .container_settings > form .birth div > select,
+.my_settings.three .container_settings > form .plans_values div > select {
+    width: 12em;
+}
+.my_settings.three .container_settings > form > div.bank,
+.my_settings.three .container_settings > form > div.plans_values,
+.my_settings.three .container_settings > form > div.address,
+.my_settings.three .container_settings > form > div.birth {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    margin-top: 1em;
+}
+.my_settings.three .container_settings > form > div.address {
+    justify-items: left;
+}
+.my_settings.three .container_settings > form > div.bank,
+.my_settings.three .container_settings > form > div.birth {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.my_settings.three .container_settings > form > div.plans_values,
+.my_settings.three .container_settings > form > div.address {
+    grid-template-columns: 1fr 1fr;
+}
+.my_settings.three .container_settings > form > div.bank > div,
+.my_settings.three .container_settings > form > div.plans_values > div,
+.my_settings.three .container_settings > form > div.address > div,
+.my_settings.three .container_settings > form > div.birth > div {
+    display: flex;
+    flex-direction: column;
+}
+.my_settings.three .container_settings > form > div.plans_values > span {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+
+
+
+/* checkout */
+.checkout-container,
+.checkout-container-form {
+    width: 100%;
+}
+.checkout-container-form {
+    width: 100%;
+    height: fit-content;
+    background-color: var(--light-background);
+    padding: 1em;
+    border-radius: 5px;
+    margin-top: 2em;
+}
+.checkout-container-form > .checkout_invoice_link,
+.checkout-container-form > .checkout_signature_exist {
+    width: 100%;
+    text-align: center;
+}
+.checkout-container > .info-user {
+    width: 100%;
+    height: 15em;
+    background-color: var(--light-background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+.info-user > .user-name-titulo {
+    font-size: 2.5em;
+    height: 2.5em;
+}
+.checkout-container-form >  form label {
+    color: #a4a4a4;
+    font-size: .75em;
+}
+.checkout-container-form >  form select,
+.feed .my_settings > .container_settings.setd > div.data form select {
+    width: 100%;
+    padding: 1em;
+    border-radius: 5px;
+    border: var(--dark-border) 1px solid;
+    cursor: pointer;
+}
+
+/* finances */
+.feed .my_settings > .container_settings.invoices,
+.feed .my_settings > .container_settings.subscriptions,
+.feed .my_settings > .container_settings.invoices > div,
+.feed .my_settings > .container_settings.subscriptions > div {
+    display: grid;
+    grid-template-columns: 18em 6em 6em 15em;
+    row-gap: .5em;
+    column-gap: 1em;
+    justify-items: left;
+    padding: 1em;
+}
+.feed .my_settings > .container_settings.invoices,
+.feed .my_settings > .container_settings.invoices > div {
+    grid-template-columns: 18em 6em 6em 6em 8em;
+}
+/*.feed .my_settings > .container_settings.invoices span:nth-child(1),*/
+/*.feed .my_settings > .container_settings.subscriptions span:nth-child(1) {*/
+/*    width: 18em;*/
+/*}*/
+.feed .my_settings > .container_settings.invoices > div,
+.feed .my_settings > .container_settings.subscriptions > div {
+    grid-column-start: 1;
+    grid-column-end: 5;
+    padding: .5em 0 .5em 0;
+}
+.feed .my_settings > .container_settings.invoices > div:hover,
+.feed .my_settings > .container_settings.subscriptions > div:hover {
+    background-color: var(--light-background-pink);
+}
+
+.feed .my_settings > .container_settings.setd > div.filter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 1em;
+    background-color: #979798;
+}
+.feed .my_settings > .container_settings.setd > div.filter form select,
+.feed .my_settings > .container_settings.setd > div.filter form button {
+    border-radius: 5px;
+    padding: .5em;
+    cursor: pointer;
+}
+.feed .my_settings > .container_settings.setd > div.data {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+}
+.feed .my_settings > .container_settings.setd > div.data:hover {
+    background-color: #cfcfd0;
+}
+
+
+
+
+
+

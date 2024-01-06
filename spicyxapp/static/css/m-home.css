@@ -1,0 +1,391 @@
+@media only screen and (max-width: 450px) {
+    /* Home - mobile styles */
+
+nav div.open-notifications {
+    position: relative;
+}
+nav div.open-notifications .notifications-container {
+    position: absolute;
+    top: 2em;
+    right: 0;
+    width: 11.5em;
+    height: 13em;
+    border-radius: 5px;
+    box-shadow: var(--shadows-medium) 5px 5px 10px;
+    background-color: var(--light-background);
+    overflow-y: auto;
+    border: var(--light-border) 1px solid;
+}
+.notifications-container .notification-clear {
+    position: absolute;
+    width: 100%;
+    background-color: var(--navbar);
+    color: #FFFFFF;
+    font-size: .7em;
+    font-weight: 700;
+    text-align: center;
+    padding: .25em 0 .25em 0;
+    bottom: 0;
+}
+.notifications-container .notification {
+    display: grid;
+    grid-template-columns: 1fr 1em;
+    margin: .5em 0 .5em 0;
+    box-shadow: rgba(0, 0, 0, 0.10) 5px 5px 10px;
+    transition: .75s;
+}
+.notifications-container .notifi-container {
+    display: flex;
+    flex-direction: column;
+}
+.notifications-container .notifi-container > .notification-message {
+    font-size: .7em;
+}
+.notifications-container .notifi-container > a {
+    color: #000000;
+    font-weight: 700;
+    font-size: .7em;
+}
+.notifications-container .notification .notifi-viewed {
+}
+.notification .notifi-viewed form {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.notification .notifi-viewed form i.icon {
+    text-align: center;
+    align-self: center;
+    justify-self: center;
+    color: var(--trash-icon);
+    margin: 0;
+}
+
+.user-data-container {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 99vw;
+    height: 13em;
+    border-radius: 0 0 5px 5px;
+    background-color: var(--light-background);
+}
+.user-data-container .user-name-titulo > div > b {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    height: 2em;
+    font-size: 1.5em;
+    font-weight: 900;
+    font-style: italic;
+}
+.user-data-container .user-bio {
+    display: grid;
+    grid-template-columns: 1fr 1em;
+    width: 100%;
+    padding: 0 2.5em 0 2.5em;
+    margin-bottom: 1em;
+}
+.user-data-container .user-bio > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+main .post-form,
+.post-form .post-image-form form,
+.post-form .post-video-form form {
+    margin-top: 2em;
+    flex-direction: column;
+    background-color: var(--light-background);
+    width: 99vw;
+    height: fit-content;
+    align-self: center;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid var(--dark-border);
+}
+main .feed {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: column;
+    width: 99vw;
+    height: fit-content;
+    align-self: center;
+    align-items: center;
+    border-radius: 5px;
+}
+.feed-content .post {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    border-radius: 5px;
+    background-color: var(--light-background);
+}
+.post-form .custom-post-file {
+    display: flex;
+    width: 13em;
+    height: 2em;
+    margin-top: 1em;
+    background-color: var(--light-buttom);
+    border: 1px solid var(--dark-border);
+    cursor: pointer;
+    transition: .75s;
+    border-radius: 5px;
+}
+.post div.home-preview-container > span.post-image {
+    width: 99vw; /* aqui 28em x 28em ou 25 x 25 */
+    height: 25em;
+    background-color: var(--light-background-pink);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat no-repeat;
+    border-radius: 5px;
+    margin: .5em 0 .5em 0;
+    border: var(--dark-border);
+    box-shadow: var(--shadows-medium) 5px 5px 10px;
+    cursor: pointer;
+}
+.post .video-container {
+    position: relative;
+    width: 99vw; /* aqui 28em x 28em ou 25 x 25*/
+    height: 25em;
+    background-color: var(--light-background-pink);
+    border-radius: 5px;
+}
+.post .pandavideo-iframe {
+    width: 99vw; /* aqui 28em x 28 em ou 25 x 25*/
+    height: 25em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.my-feed-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 1em;
+    width: 100%;
+    height: fit-content;
+    background-color: var(--light-background);
+    padding: 1em 0 1em 0;
+    justify-items: center;
+}
+.my-feed-content .media-field {
+    position: relative;
+    width: 28em;
+    height: 28em;
+}
+.my-feed-content .media-field > div.status-preview {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    font-size: 1.75em;
+}
+.my-feed-content .media-field > .bg-fullscreen,
+.container .feed .feed-content .post > .bg-fullscreen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 2;
+}
+.for-close-full {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    cursor: pointer;
+    z-index: 3;
+}
+@keyframes openFullscreen {
+    from {
+        width: 0;
+        height: 0;
+    }
+    to {
+        width: 28em;
+        height: 30em;
+    }
+}
+.media-field .bg-fullscreen > .fullscreen-container,
+.post .bg-fullscreen > .fullscreen-container {
+    position: relative;
+    background-color: var(--light-background);
+    border-radius: 5px;
+    padding: 1em;
+    animation: openFullscreen .75s;
+    animation-fill-mode: both;
+    text-align: right;
+    z-index: 4;
+}
+.media-field .bg-fullscreen > .fullscreen-container > i,
+.post .bg-fullscreen > .fullscreen-container > i {
+    font-size: 1.75em;
+    margin-right: 1em;
+    cursor: pointer;
+}
+
+.media-field .bg-fullscreen > .fullscreen-container > div.image-subtitles,
+.post .bg-fullscreen > .fullscreen-container > div.image-subtitles {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: 8em;
+    text-align: left;
+    padding: 1em 1em 2em 1em;
+    transition: .75s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    border-radius: 0 0 5px 5px;
+}
+.fullscreen-container > div.image-subtitles:hover {
+    background-color: rgba(0, 0, 0, .5);
+    border-radius: 0 0 5px 5px;
+    color: #FFFFFF;
+    transition: .75s;
+}
+.bg-fullscreen > .fullscreen-container > span.image-full {
+    display: flex;
+    width: 100%;
+    height: 99%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat no-repeat;
+}
+
+.post-ops .follow_sign_container,
+main > .follow_sign_container,
+.post-ops .follow_sign_container_only,
+main > .follow_sign_container_only {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-self: center;
+}
+.follow_sign_container > .sign-user {
+    margin-top: 1em;
+}
+
+/* settings */
+.feed .my_settings.one > .container_settings {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 1em;
+    align-items: center;
+    justify-items: center;
+    padding: 1em 0 1em 0;
+}
+.feed .my_settings.two > .container_settings form,
+.my_settings.three .container_settings > form > div.birth {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+}
+.feed .my_settings.two > .container_settings form > select {
+    width: 90%;
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+    margin-top: .5em;
+    padding: .25em;
+}
+.feed .my_settings.one > .container_settings form > button {
+    position: absolute;
+    right: 1em;
+}
+.my_settings.three .container_settings > form label {
+    color: #a4a4a4;
+    font-size: 1em;
+    margin-top: 1em;
+}
+.my_settings.three .container_settings > form > div.bank,
+.my_settings.three .container_settings > form > div.plans_values,
+.my_settings.three .container_settings > form > div.address {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    margin-top: 1em;
+    width: 100%;
+}
+.my_settings.three .container_settings > form > div.bank div,
+.my_settings.three .container_settings > form > div.plans_values div {
+    width: 100%;
+}
+.my_settings.three .container_settings > form > div.bank,
+.my_settings.three .container_settings > form > div.birth div,
+.my_settings.three .container_settings > form > div.address div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.my_settings.three .container_settings > form > div.plans_values {
+    grid-template-columns: initial;
+}
+.my_settings.three .container_settings > .info-creator {
+    background-color: #f6e4b6;
+    font-size: .75em;
+    padding: .5em;
+    line-height: 1.25em;
+}
+.my_settings.three .container_settings > .info-creator > span,
+.my_settings.three .container_settings > .info-creator > span > b {
+    font-family: sans-serif, arial;
+    font-size: 1.15em;
+}
+.my_settings.three .container_settings > form input,
+.my_settings.three .container_settings > form select {
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+    padding: .5em;
+}
+.my_settings.three .container_settings > form .bank div > input,
+.my_settings.three .container_settings > form .address input,
+.my_settings.three .container_settings > form .bank div  > select,
+.my_settings.three .container_settings > form .birth div > select,
+.my_settings.three .container_settings > form .plans_values div > select {
+    width: 100%;
+}
+
+
+/* finances */
+.feed .my_settings > .container_settings.invoices,
+.feed .my_settings > .container_settings.subscriptions,
+.feed .my_settings > .container_settings.invoices > div,
+.feed .my_settings > .container_settings.subscriptions > div {
+    display: flex;
+    flex-direction: column;
+    row-gap: .5em;
+    column-gap: 1em;
+    justify-items: left;
+    padding: 1em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

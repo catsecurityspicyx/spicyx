@@ -1,0 +1,181 @@
+from spicyxapp import models
+from django.contrib.auth.models import User
+from datetime import datetime
+from django.utils import timezone
+from datetime import date
+from django.conf import settings
+import boto3
+from botocore.client import Config
+
+
+def CheckVerifyUser(profile):
+    try:
+        v = models.Profile.objects.get(user_id=profile.user.id)
+        v.user_verified = True
+        v.user_creator = True
+        v.last_update_account = timezone.now()
+        v.save()
+    except Exception as e:
+        print('Error on verify user: ' + str(e))
+        return None
+    return {'status': 'success'}
+
+
+def ApproveDocumentation(profile):
+    try:
+        doc = models.CreatorsRequest.objects.get(profile_creator=profile)
+        doc.status = 'approved'
+        doc.updated_at = timezone.now()
+        doc.save()
+    except Exception as e:
+        print('Error on approve documentation: ' + str(e))
+        return None
+    return {'status': 'success'}
+
+
+def addFanSignature(creator_user_id, fa_profile):
+    try:
+        s = models.Subscriber.objects.create(creator=creator_user_id,
+                                             subscriber=fa_profile)
+    except Exception as e:
+        print('Error on add fan signature: ' + str(e))
+        return None
+    return {'status': 'success'}
+
+
+def EditProfile(target, newData, user, userId):
+    try:
+        if target == 'cover':
+            bucket_name = settings.BUCKET_NAME
+            t = models.Profile.objects.get(user_id=userId)
+            t.profile_cover_file = newData
+            t.last_update_account = timezone.now()
+            t.save()
+            create_URL_temp = createPresignedUrl(bucket_name, str(t.profile_cover_file))
+            if create_URL_temp:
+                n_cov = models.Profile.objects.get(user_id=userId)
+                n_cov.profile_cover = create_URL_temp
+                n_cov.save()
+
+        elif target == 'avatar':
+
+            bucket_name = settings.BUCKET_NAME
+            t = models.Profile.objects.get(user_id=userId)
+            t.profile_avatar_file = newData
+            t.last_update_account = timezone.now()
+            t.save()
+            create_URL_temp = createPresignedUrl(bucket_name, str(t.profile_avatar_file))
+            if create_URL_temp:
+                n_ava = models.Profile.objects.get(user_id=userId)
+                n_ava.profile_avatar = create_URL_temp
+                n_ava.save()
+
+        elif target == 'name':
+            t = User.objects.get(username=user)
+            t.first_name = newData['first_name']
+            t.last_name = newData['last_name']
+            p = models.Profile.objects.get(user_id=userId)
+            p.last_update_account = timezone.now()
+            t.save()
+            p.save()
+
+        elif target == 'bio':
+            t = models.Profile.objects.get(user_id=userId)
+            t.profile_bio = newData
+            t.last_update_account = timezone.now()
+            t.save()
+        else:
+            status = False
+            return status
+    except:
+        status = False
+        return status
+
+    status = True
+    return status
+
+
+def createPresignedUrl(bucket_name, object_name, expiration=86400):
+    s3Client = boto3.client(
+        's3',
+        config=Config(signature_version='s3v4'),
+        region_name='us-east-2',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+    )
+    try:
+        response = s3Client.generate_presigned_url("get_object", Params={'Bucket': bucket_name,
+                                                                         'Key': object_name},
+                                                   ExpiresIn=expiration)
+    except Exception as err:
+        print('Error in Create Presigned URL.')
+        print(err)
+        return None
+    return response
+
+
+def generateNewsPresignedUrls():
+    posts_image = models.FeedUser.objects.filter(media_type='IMAGE', post_deleted=False)
+    today = date.today()
+    bucket_name = settings.BUCKET_NAME
+    for post in posts_image:
+        date_format = datetime.fromisoformat(str(post.updated_at))
+        date_formated = date_format.date()
+        if date_formated != today:
+            try:
+                newPresignedUrl = createPresignedUrl(bucket_name, str(post.file))
+                if newPresignedUrl:
+                    b = models.FeedUser.objects.get(file=post.file)
+                    b.media_url = newPresignedUrl
+                    b.updated_at = timezone.now()
+                    b.save()
+            except:
+                print('Erro ao atualizar URL de post ID: ' + post.id)
+                pass
+    return
+
+
+def generateNewsPresignedUrlsForProfiles():
+    profiles = models.Profile.objects.all()
+    today = date.today()
+    bucket_name = settings.BUCKET_NAME
+    for profile in profiles:
+        date_format = datetime.fromisoformat(str(profile.last_update_account))
+        date_formated = date_format.date()
+        if date_formated != today:
+            try:
+                newPresignedUrlAvatar = createPresignedUrl(bucket_name, str(profile.profile_avatar_file))
+                newPresignedUrlCover = createPresignedUrl(bucket_name, str(profile.profile_cover_file))
+                if newPresignedUrlAvatar and newPresignedUrlCover:
+                    b = models.Profile.objects.get(profile_avatar_file=profile.profile_avatar_file, profile_cover_file=profile.profile_cover_file)
+                    b.profile_avatar = newPresignedUrlAvatar
+                    b.profile_cover = newPresignedUrlCover
+                    b.save()
+            except:
+                print('Erro ao atualizar perfil nickname: ' + profile.nickname)
+                pass
+    return
+
+
+def checkUploadVideoLimite(userProfile, upload_limit):
+    if userProfile.user_creator == True:
+        return True
+    else:
+        fan_limite = upload_limit
+        user_uploads = models.FeedUser.objects.filter(profile_creator=userProfile, media_type='VIDEO', post_deleted=False).count()
+        if user_uploads <= fan_limite - 1:
+            return True
+        else:
+            return False
+
+
+def checkUploadImageLimite(userProfile, upload_limit):
+    if userProfile.user_creator == True:
+        return True
+    else:
+        fan_limite = upload_limit
+        user_uploads = models.FeedUser.objects.filter(profile_creator=userProfile, media_type='IMAGE', post_deleted=False).count()
+        if user_uploads <= fan_limite - 1:
+            return True
+        else:
+            return False

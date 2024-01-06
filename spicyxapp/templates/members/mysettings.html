@@ -1,0 +1,555 @@
+{% extends 'members/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Configurações</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-home.css' %}" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="feed">
+
+            <div class="my_settings zero">
+
+                <form action="/m/settings/" method="POST">
+                    {% csrf_token %}
+                    <i class="sun icon"></i>
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="darkmode" {% if darktheme == True %} checked {% endif %}>
+                        <label style="padding: 0; z-index: 0;"></label>
+                    </div>
+                    <i class="moon icon"></i>
+                    <input type="hidden" name="action" value="darkmode">
+                    <button>Salvar</button>
+                </form>
+                <script>
+                    $('.ui.toggle.checkbox')
+                        .checkbox()
+                        .checkbox({
+                            onChecked: function () {
+                                this.setAttribute('checked', 'checked');
+                            },
+                            onUnchecked: function () {
+                                this.removeAttribute('checked');
+                            }
+                        });
+                </script>
+            </div>
+
+            <div class="my_settings three">
+                <div class="title">
+                    <i class="dollar sign icon"></i>
+                    <b>Seja um Creator</b>
+                </div>
+                {% if profile.user_creator == False and not statusCreatorRequest %}
+                    <div class="container_settings">
+                        <div class="info-creator">
+                            <span><b>Tentativa: 1/3</b></span>
+                            <span><b><br/>Extensões permitidas:</b> .pdf, .png, .jpg. <b>Tamanho máximo de um arquivo:</b> 10Mb.</span>
+                            <span><br/><b>Atenção:</b> Arquivos devem ser legíveis, coloridos, com boa resolução e qualidade, não estarem vencidos; Comprovante de endereço não pode ser mais antigo que três meses e deve estar no nome do Creator.</span>
+                            <span><br/>Solicitações que não atenderem aos requisitos mínimos informados, serão recusadas.</span>
+                            <span><br/><b>A análise dos arquivos pode levar até 5 dias úteis.</b></span>
+                            <span><br/><b>No momento somente brasileiros podem se inscrever como Creators.</b></span>
+                        </div>
+                        <form id="creator_form" action="/m/sendreqcreator/" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="userid" value="{{ mySession.id }}">
+                            <label>Documento oficial com foto (RG, CNH, Passaporte):*</label>
+                            <input type="file" id="doc_official" name="doc_official" required>
+                            <label>CPF (Somente números, sem traços ou pontos):*</label>
+                            <input type="text" id="cpf" name="cpf" required>
+
+                            <label>Comprovante de endereço (Atualizado e em seu nome):*</label>
+                            <input type="file" id="doc_address" name="doc_address" required>
+                            <label>Selfie (Segurando documento oficial com foto próximo a face, com o lado da foto
+                                voltado para frente):*</label>
+                            <input type="file" id="selfie" name="selfie" required>
+                            <label>Nome completo (Nome por extenso da mesma forma que aparece no documento oficial
+                                enviado):*</label>
+                            <input type="text" id="full_name" name="full_name" required>
+
+                            <div class="birth">
+                                <div>
+                                    <label>Nasc. Dia:*</label>
+                                    <select name="day" required>
+                                        <option value=""></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Nasc. Mês:*</label>
+                                    <select name="month" required>
+                                        <option value=""></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Nasc. Ano:*</label>
+                                    <input type="text" id="year" name="year" required>
+                                </div>
+                            </div>
+
+                            <label>Celular somente números (Ex. 34999999999):*</label>
+                            <input type="text" id="phone" name="phone" required>
+
+                            <label>Você, um de seus representantes, membros da sua família ou outras pessoas estreitamente relacionadas a você, ocupa ou exerceu um cargo ou função pública importante ou é exposto politicamente?</label>
+                            <select name="political">
+                                <option value=""></option>
+                                <option value="yes">Sim</option>
+                                <option value="no">Não</option>
+                            </select>
+
+                            <div class="address">
+                                <div><label>Endereço (Rua/avenida/estrada, número, bairro):*</label>
+                                    <input type="text" id="full_address" name="full_address" required></div>
+
+                                <div><label>Complemento:*</label>
+                                    <input type="text" id="line2" name="line2"></div>
+
+                                <div><label>Cidade:*</label>
+                                    <input type="text" id="city" name="city" required></div>
+
+                                <div><label>Estado:*</label>
+                                    <input type="text" id="state" name="state" required></div>
+
+                                <div><label>CEP:*</label>
+                                    <input type="text" id="cep" name="cep" required></div>
+
+                                <div><label>País:*</label>
+                                    <input type="text" id="country" name="country" value="BR" readonly></div>
+                            </div>
+
+                            <div class="bank">
+                                <div>
+                                    <label>Agência:*</label>
+                                    <input type="number" id="ag" name="ag" required>
+                                </div>
+
+                                <div>
+                                    <label>Conta e digito (somente números):*</label>
+                                    <input type="number" id="cc" name="cc" required>
+                                </div>
+
+                                <div>
+                                    <label>Banco:*</label>
+                                    <select id="bankname" name="bankname" required>
+                                        <option value=""></option>
+                                        <option value="001">Banco do Brasil</option>
+                                        <option value="218">BS2</option>
+                                        <option value="403">Cora</option>
+                                        <option value="077">Inter</option>
+                                        <option value="341">Itaú</option>
+                                        <option value="655">Neon/Votorantim</option>
+                                        <option value="260">Nubank</option>
+                                        <option value="290">Pagseguro</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="plans_values">
+                                <span>Escolha quanto deseja cobrar por seus conteúdos exclusivos!</span>
+                                <div>
+                                    <label>R$ MENSAL</label>
+                                    <select id="plan_month" name="plan_month" required>
+                                        <option value="50">R$ 50,00</option>
+                                        <option value="15">R$ 15,00</option>
+                                        <option value="25">R$ 25,00</option>
+                                        <option value="75">R$ 75,00</option>
+                                        <option value="99.99">R$ 99,99</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label>R$ ANUAL</label>
+                                    <select id="plan_year" name="plan_year" required>
+                                        <option value="1100">R$ 1.100,00</option>
+                                        <option value="900">R$ 900,00</option>
+                                        <option value="1000">R$ 1.000,00</option>
+                                        <option value="1200">R$ 1.200,00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button id="send_requestcreator" type="submit">Enviar solicitação</button>
+                        </form>
+                    </div>
+                {% elif statusCreatorRequest.status == 'pending' and statusCreatorRequest.attempts < 3 %}
+                    <div class="container_settings">
+                        <div class="info-creator" style="text-align: center;">
+                            <span><b>Tentativa: {{ statusCreatorRequest.attempts }}/3</b></span>
+                            <span><b><br/>Solicitação para se tornar um Creator em análise, aguarde.</b></span>
+                        </div>
+                    </div>
+                {% elif statusCreatorRequest.status == 'refused' and statusCreatorRequest.attempts < 3 %}
+                    <div class="container_settings">
+                        <div class="info-creator" style="background-color: #F39A9AFF;">
+                            <span><b>Tentativa: {{ statusCreatorRequest.attempts }}/3</b></span>
+                            <span><b><br/>Solicitação negada.</b></span>
+                            <span><br/><b>Motivo: </b>{{ statusCreatorRequest.details }}</span>
+                            <br/><br/>
+                            <span><b>Extensões permitidas:</b> .pdf, .png, .jpg. <b>Tamanho máximo de um arquivo:</b> 10Mb.</span>
+                            <span><br/><b>Atenção:</b> Arquivos devem ser legíveis, coloridos, com boa resolução e qualidade, não estarem vencidos; Comprovante de endereço não pode ser mais antigo que três meses e deve estar no nome do Creator.</span>
+                            <span><br/>Solicitações que não atenderem aos requisitos mínimos informados, serão recusadas.</span>
+                            <span><br/><b>A análise dos arquivos pode levar até 5 dias úteis.</b></span>
+                            <span><br/><b>No momento somente brasileiros podem se inscrever como Creators.</b></span>
+                        </div>
+                        <form id="creator_form" action="/m/sendreqcreator/" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="userid" value="{{ mySession.id }}">
+                            <label>Documento oficial com foto (RG, CNH, Passaporte):*</label>
+                            <input type="file" id="doc_official" name="doc_official" required>
+                            <label>CPF (Somente números, sem traços ou pontos):*</label>
+                            <input type="text" id="cpf" name="cpf" required>
+
+                            <label>Comprovante de endereço (Atualizado e em seu nome):*</label>
+                            <input type="file" id="doc_address" name="doc_address" required>
+                            <label>Selfie (Segurando documento oficial com foto próximo a face, com o lado da foto
+                                voltado para frente):*</label>
+                            <input type="file" id="selfie" name="selfie" required>
+                            <label>Nome completo (Nome por extenso da mesma forma que aparece no documento oficial
+                                enviado):*</label>
+                            <input type="text" id="full_name" name="full_name" required>
+
+                            <div class="birth">
+                                <div>
+                                    <label>Nasc. Dia:*</label>
+                                    <select name="day" required>
+                                        <option value=""></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Nasc. Mês:*</label>
+                                    <select name="month" required>
+                                        <option value=""></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Nasc. Ano:*</label>
+                                    <input type="text" id="year" name="year" required>
+                                </div>
+                            </div>
+
+                            <label>Celular somente números (Ex. 34999999999):*</label>
+                            <input type="text" id="phone" name="phone" required>
+
+                            <label>Você, um de seus representantes, membros da sua família ou outras pessoas estreitamente relacionadas a você, ocupa ou exerceu um cargo ou função pública importante ou é exposto politicamente?</label>
+                            <select name="political">
+                                <option value=""></option>
+                                <option value="yes">Sim</option>
+                                <option value="no">Não</option>
+                            </select>
+
+                            <div class="address">
+                                <div><label>Endereço (Rua/avenida/estrada, número, bairro):*</label>
+                                    <input type="text" id="full_address" name="full_address" required></div>
+
+                                <div><label>Complemento:*</label>
+                                    <input type="text" id="line2" name="line2"></div>
+
+                                <div><label>Cidade:*</label>
+                                    <input type="text" id="city" name="city" required></div>
+
+                                <div><label>Estado:*</label>
+                                    <input type="text" id="state" name="state" required></div>
+
+                                <div><label>CEP:*</label>
+                                    <input type="text" id="cep" name="cep" required></div>
+
+                                <div><label>País:*</label>
+                                    <input type="text" id="country" name="country" value="BR" readonly></div>
+                            </div>
+
+                            <div class="bank">
+                                <div>
+                                    <label>Agência:*</label>
+                                    <input type="number" id="ag" name="ag" required>
+                                </div>
+
+                                <div>
+                                    <label>Conta e digito (somente números):*</label>
+                                    <input type="number" id="cc" name="cc" required>
+                                </div>
+
+                                <div>
+                                    <label>Banco:*</label>
+                                    <select id="bankname" name="bankname" required>
+                                        <option value=""></option>
+                                        <option value="001">Banco do Brasil</option>
+                                        <option value="218">BS2</option>
+                                        <option value="403">Cora</option>
+                                        <option value="077">Inter</option>
+                                        <option value="341">Itaú</option>
+                                        <option value="655">Neon/Votorantim</option>
+                                        <option value="260">Nubank</option>
+                                        <option value="290">Pagseguro</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="plans_values">
+                                <span>Escolha quanto deseja cobrar por seus conteúdos exclusivos!</span>
+                                <div>
+                                    <label>R$ MENSAL</label>
+                                    <select id="plan_month" name="plan_month" required>
+                                        <option value="50">R$ 50,00</option>
+                                        <option value="15">R$ 15,00</option>
+                                        <option value="25">R$ 25,00</option>
+                                        <option value="75">R$ 75,00</option>
+                                        <option value="99.99">R$ 99,99</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label>R$ ANUAL</label>
+                                    <select id="plan_year" name="plan_year" required>
+                                        <option value="1100">R$ 1.100,00</option>
+                                        <option value="900">R$ 900,00</option>
+                                        <option value="1000">R$ 1.000,00</option>
+                                        <option value="1200">R$ 1.200,00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button id="send_requestcreator" type="submit">Enviar solicitação</button>
+                        </form>
+
+                    </div>
+                {% elif statusCreatorRequest.status == 'approved' %}
+                    <div class="container_settings">
+                        <div class="info-creator" style="text-align: center; background-color: #7ADC72FF;">
+                            <span><b>Parabéns, agora você é um Creator!</b></span>
+                            <span><br/>Solicitação aceita.</span>
+                        </div>
+                    </div>
+                {% elif statusCreatorRequest.status == 'pending' and statusCreatorRequest.attempts == 3 %}
+                    <div class="container_settings">
+                        <div class="info-creator" style="text-align: center;">
+                            <span><b>Tentativa: {{ statusCreatorRequest.attempts }}/3</b></span>
+                            <span><b><br/>Solicitação para se tornar um Creator em análise, aguarde.</b></span>
+                        </div>
+                    </div>
+                {% elif statusCreatorRequest.status == 'refused' and statusCreatorRequest.attempts == 3 %}
+                    <div class="container_settings">
+                        <div class="info-creator" style="background-color: #F39A9AFF;">
+                            <span><b>Tentativa: {{ statusCreatorRequest.attempts }}/3</b></span>
+                            <span><b><br/>Solicitação negada.</b></span>
+                            <span><br/><b>Motivo: </b>{{ statusCreatorRequest.details }}</span>
+                            <span><br/>Não é possível enviar novas solicitações.</span>
+                        </div>
+                    </div>
+
+                {% endif %}
+            </div>
+
+            <div class="my_settings one">
+                <div class="title">
+                    <i class="cog icon"></i>
+                    <b>Minhas configurações</b>
+                </div>
+                <div class="container_settings">
+                    <form action="/m/settings/" method="POST">
+                        {% csrf_token %}
+                        <label>Gênero:</label>
+                        <select id="sex" name="sex">
+                            <option value="{{ profile.sex }}">{% if profile.sex == 'male' %}Homem{% else %}
+                                Mulher{% endif %}</option>
+                            <option value="male">Homem</option>
+                            <option value="female">Mulher</option>
+                        </select>
+                        <input type="hidden" name="action" value="gender">
+                        <button>Salvar</button>
+                    </form>
+
+                    <form action="/m/settings/" method="POST">
+                        {% csrf_token %}
+                        <label>Preferência:</label>
+                        <select id="interest" name="interest">
+                            <option value="{{ profile.interest }}">{% if profile.interest == 'male' %}
+                                Homem{% elif profile.interest == 'female' %}Mulher{% else %}Ambos{% endif %}</option>
+                            <option value="male">Homem</option>
+                            <option value="female">Mulher</option>
+                            <option value="all">Ambos</option>
+                        </select>
+                        <input type="hidden" name="action" value="interest">
+                        <button>Salvar</button>
+                    </form>
+
+                    <form action="/m/settings/" method="POST">
+                        {% csrf_token %}
+                        <label>Nascimento:</label>
+                        <input type="date" name="birth" value="{{ birth }}">
+                        <input type="hidden" name="action" value="birth">
+                        <button>Salvar</button>
+                    </form>
+
+                </div>
+            </div>
+
+            <!--<div class="my_settings two">
+                <div class="title">
+                    <i class="sort amount down icon"></i>
+                    <b>Meus interesses</b>
+                </div>
+                <div class="container_settings">
+                    <form>
+                    <select id="content_interest1" name="content_interest1">
+                    <option value="">Tema:</option>
+                    <option value="all">18+</option>
+                    <option value="male">Arte e Cultura</option>
+                    <option value="female">Viagem e Turismo</option>
+                    <option value="all">Educação</option>
+                    <option value="all">Culinária</option>
+                    <option value="all">Moda</option>
+                    <option value="all">Musica e Entretenimento</option>
+                    <option value="all">Natureza</option>
+                    <option value="all">Animais - Pets</option>
+                    <option value="all">Filmes e séries</option>
+                    </select>
+
+                    <select id="content_interest2" name="content_interest2">
+                    <option value="">Tema:</option>
+                    <option value="all">18+</option>
+                    <option value="male">Arte e Cultura</option>
+                    <option value="female">Viagem e Turismo</option>
+                    <option value="all">Educação</option>
+                    <option value="all">Culinária</option>
+                    <option value="all">Moda</option>
+                    <option value="all">Musica e Entretenimento</option>
+                    <option value="all">Natureza</option>
+                    <option value="all">Animais - Pets</option>
+                    <option value="all">Filmes e séries</option>
+                    </select>
+
+                    <select id="content_interest3" name="content_interest3">
+                    <option value="">Tema:</option>
+                    <option value="all">18+</option>
+                    <option value="male">Arte e Cultura</option>
+                    <option value="female">Viagem e Turismo</option>
+                    <option value="all">Educação</option>
+                    <option value="all">Culinária</option>
+                    <option value="all">Moda</option>
+                    <option value="all">Musica e Entretenimento</option>
+                    <option value="all">Natureza</option>
+                    <option value="all">Animais - Pets</option>
+                    <option value="all">Filmes e séries</option>
+                    </select>
+                        <button>Salvar</button>
+                    </form>
+
+                </div>
+            </div>-->
+
+
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+    <script>
+        document.getElementById("send_requestcreator").addEventListener('click',
+            function (event) {
+                event.preventDefault();
+                var button = event.target;
+                button.disabled = true;
+                button.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+                var creatorForm = document.getElementById("creator_form");
+                creatorForm.submit();
+                $.toast({
+                    title: 'Info.',
+                    class: 'info',
+                    message: 'Aguarde o upload ser concluído.',
+                    showProgress: 'bottom',
+                    classProgress: 'pink',
+                    position: 'bottom left',
+                    displayTime: 5000
+                });
+            })
+    </script>
+{% endblock %}

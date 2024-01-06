@@ -1,0 +1,137 @@
+{% extends 'painel/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Painel | Documentation</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-me.css' %}" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="feed">
+            <div class="my_settings three">
+                <div class="title">
+                    <b>Solicitações para Creators</b>
+                </div>
+                <div class="container_settings setd">
+                    <div class="filter">
+                        <form action="" method="GET">
+                        <b>Filtro:</b>
+                            <select id="filter" name="filter">
+                                <option value="{{ request.GET.filter }}">{{ request.GET.filter }}</option>
+                                <option value="pending">Pendente</option>
+                                <option value="refused">Recusado</option>
+                                <option value="approved">Aprovado</option>
+                            </select>
+                            <button>Filtrar</button>
+                        </form>
+
+                        {% if request.GET.filter == 'pending' %}
+                        <form id="form_generate_url" action="{% url 'docs' %}" method="POST">
+                            {% csrf_token %}
+                            <b>Válidas por 1 hora.</b>
+                            <input type="hidden" name="new_urls" value="generate">
+                            <button id="generate">Gerar novas URLs</button>
+                        </form>
+                        {% endif %}
+                    </div>
+
+                    {% for doc in documentations %}
+                        {% if doc.status == request.GET.filter %}
+                            <div class="data">
+                                <span><b>Status:</b> {{ doc.status }}</span><br/>
+
+                                <span><b>Nome: </b><a href="/m/@{{ doc.profile_creator.nickname }}"
+                                         target="_blank">{{ doc.full_name }}</a></span>
+                                <span><b>Exposição politica? </b> {{ doc.political_exposure }}</span>
+                                <span><b>Telefone: </b> {{ doc.phone }}</span>
+                                <span><b>CPF: </b> {{ doc.cpf }}</span>
+                                <span><b>Nascimento: </b> {{ doc.birth_day }}/{{ doc.birth_month }}/{{ doc.birth_year }}</span>
+                                <span><b>Documento oficial URL: </b><a href="{{ doc.doc_official_url }}" target="_blank">Ver doc oficial</a></span>
+                                <span><b>Documento endereço URL: </b><a href="{{ doc.doc_address_url }}" target="_blank">Ver doc endereço</a></span>
+                                <span><b>Documento selfie URL: </b><a href="{{ doc.doc_selfie_url }}" target="_blank">Ver doc selfie</a></span>
+
+                                <span><b>Endereço:</b> </span>
+                                <span>{{ doc.full_address }}</span>
+                                <span>{{ doc.complement }}</span>
+                                <span>{{ doc.city }} - {{ doc.state }}</span>
+                                <span><b>CEP: {{ doc.cep_address }} - {{ doc.country }}</b></span>
+
+                                <span><b>Banco:</b> {{ doc.bank }}</span>
+                                <span><b>Agência:</b> {{ doc.bank_agency }}</span>
+                                <span><b>Conta:</b> {{ doc.bank_account }}</span>
+
+                                <span><b>Valor/Mês:</b> R$ {{ doc.value_month }} / MÊS</span>
+                                <span><b>Valor/Ano:</b> R$ {{ doc.value_year }} / ANO</span>
+
+                                <span><b>Detalhes</b></span>
+                                <span>{{ doc.details }}</span>
+                                <span><b>IP: {{ doc.user_ip }}</b></span>
+
+                                <span><br/><b>Tentativa:</b> {{ doc.attempts }}</span>
+
+                                <form id="doc_review" action="{% url 'docs' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="creatorID" value="{{ doc.profile_creator.user.id }}">
+                                    <select name="status" required>
+                                        <option value=""></option>
+                                        <option value="refused">NEGAR</option>
+                                        <option value="approved">APROVAR</option>
+                                    </select>
+
+                                    <button id="savedoc">Salvar</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+<script>
+    document.getElementById("generate").addEventListener('click',
+        function (event2) {
+            event2.preventDefault();
+            var button2 = event2.target;
+            button2.disabled = true;
+            button2.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+            var generateForm = document.getElementById("form_generate_url");
+            generateForm.submit();
+            $.toast({
+                title: 'Info.',
+                class: 'info',
+                message: 'Gerando novas URLs....',
+                showProgress: 'bottom',
+                classProgress: 'pink',
+                position: 'bottom left',
+                displayTime: 5000
+            });
+        })
+
+    document.getElementById("savedoc").addEventListener('click',
+        function (event) {
+            event.preventDefault();
+            var button = event.target;
+            button.disabled = true;
+            button.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+            var creatorForm = document.getElementById("doc_review");
+            creatorForm.submit();
+            $.toast({
+                title: 'Info.',
+                class: 'info',
+                message: 'Aguarde....',
+                showProgress: 'bottom',
+                classProgress: 'pink',
+                position: 'bottom left',
+                displayTime: 5000
+            });
+        })
+</script>
+{% endblock %}

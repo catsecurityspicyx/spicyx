@@ -1,0 +1,58 @@
+{% extends 'painel/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Painel | Saques</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-me.css' %}" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="feed">
+            <div class="my_settings three">
+                <div class="title">
+                    <b>Histórico Saques Connect Accounts</b>
+                </div>
+                <div class="container_settings subscriptions">
+                    <span><b>Saque ID</b></span>
+                    <span><b>Valor</b></span>
+                    <span><b>Criado em</b></span>
+                    <span><b>Status</b></span>
+                    {% for payout in payouts %}
+                        {% if payout.creator == mySession.profile %}
+                            <div>
+                                <span>{{ payout.payout_id }}</span>
+                                <span>{{ payout.total_amount_payout }}</span>
+                                <span>{{ payout.created_at|date:"d/m/Y" }}</span>
+                                <span>{{ payout.status }}</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+
+
+                </div>
+            </div>
+
+{#            <div class="my_settings three">#}
+{#                <div class="title">#}
+{#                    <b>Saques</b>#}
+{#                </div>#}
+{#                <div class="container_settings">#}
+{#                    <form action="{% url 'payouts' %}" method="POST">#}
+{#                        {% csrf_token %}#}
+{#                        <button>Saque vai</button>#}
+{#                    </form>#}
+{#                </div>#}
+{#            </div>#}
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+
+{% endblock %}

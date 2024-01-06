@@ -1,0 +1,816 @@
+{% extends 'members/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | {{ user.first_name }} {{ user.last_name }}</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-me.css' %}" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <div id="epcontainer" class="edit-profile-container fullscreen-closed">
+        <div class="epcclose" onclick="fullscreenEditProfile('close', 'epcontainer', null)"></div>
+        <div class="form-for-edit">
+            <div id="editbio" class="fullscreen-closed">
+                <form name="bio" action="/m/editprofile/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="target" value="bio">
+                    <textarea name="bio">{{ profile.profile_bio }}</textarea>
+                    <button type="submit" onclick="document.forms['bio']">SALVAR</button>
+                </form>
+            </div>
+            <div id="editcover" class="fullscreen-closed">
+                <form id="new_cover_form" name="cover" action="/m/editprofile/" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="target" value="cover">
+                    <label for="filecover" class="custom-post-file"><i class="camera icon"></i><span id="span_edit_cover_file">Carregar imagem</span></label>
+                    <input type="file" id="filecover" name="filecover"/>
+                    <input type="hidden" id="cropped_file_cover" name="cropped_file_cover" value="">
+                    <div id="image-cropper_cover"><img id="image_cover" src=""></div>
+                    <button id="send_new_cover" type="submit" onclick="document.forms['cover']">SALVAR</button>
+
+                    <script>
+                        var image_c = document.getElementById('image_cover');
+                        var cropper_c = new Cropper(image_c, {
+                            aspectRatio: 3/1
+                        });
+                        document.getElementById('filecover').addEventListener('change', function (e) {
+                            var file_c = e.target.files[0];
+                            var reader_c = new FileReader();
+                            reader_c.onload = function (e) {
+                                cropper_c.replace(e.target.result);
+                            };
+                            reader_c.readAsDataURL(file_c);
+                        });
+
+                        document.getElementById('send_new_cover').addEventListener('click', function (f) {
+                            f.preventDefault();
+                            var base64image2 = cropper_c.getCroppedCanvas().toDataURL('image/png');
+                            var croppedInputHidden_c = document.getElementById('cropped_file_cover')
+                            croppedInputHidden_c.value = base64image2
+                        });
+
+                        $(document).ready(function () {
+                            $('#filecover').change(function (g) {
+                                var fileName2 = g.target.files[0].name;
+                                var span_target = document.getElementById('span_edit_cover_file')
+                                span_target.innerHTML = ''
+                                span_target.insertAdjacentText('beforeend', fileName2.slice(0, 10))
+                            });
+                        });
+                    </script>
+                </form>
+            </div>
+            <div id="editname" class="fullscreen-closed">
+                <form name="name" action="/m/editprofile/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="target" value="name">
+                    <span>Primeiro nome:</span>
+                    <input type="text" name="first_name" value="{{ user.first_name }}">
+                    <span>Ultimo nome:</span>
+                    <input type="text" name="last_name" value="{{ user.last_name }}">
+                    <button type="submit" onclick="document.forms['name']">SALVAR</button>
+                </form>
+            </div>
+            <div id="editavatar" class="fullscreen-closed">
+                <form id="new_avatar_form" name="avatar" action="/m/editprofile/" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="target" value="avatar">
+                    <label for="fileavatar" class="custom-post-file"><i class="camera icon"></i><span id="span_edit_avatar_file">Carregar imagem</span></label>
+                    <input type="file" id="fileavatar" name="fileavatar"/>
+                    <input type="hidden" id="cropped_file_avatar" name="cropped_file_avatar" value="">
+                    <div id="image-cropper"><img id="image" src=""></div>
+                    <button id="send_new_avatar" type="submit" onclick="document.forms['avatar']">SALVAR</button>
+
+                    <script>
+                        var image = document.getElementById('image');
+                        var cropper = new Cropper(image, {
+                            aspectRatio: 1
+                        });
+                        document.getElementById('fileavatar').addEventListener('change', function (e) {
+                            var file = e.target.files[0];
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                cropper.replace(e.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                        });
+
+                        document.getElementById('send_new_avatar').addEventListener('click', function (f) {
+                            f.preventDefault();
+                            var base64image = cropper.getCroppedCanvas().toDataURL('image/png');
+                            var croppedInputHidden = document.getElementById('cropped_file_avatar')
+                            croppedInputHidden.value = base64image
+                        });
+
+                        $(document).ready(function () {
+                            $('#fileavatar').change(function (g) {
+                                var fileName = g.target.files[0].name;
+                                span_target = document.getElementById('span_edit_avatar_file')
+                                span_target.innerHTML = ''
+                                span_target.insertAdjacentText('beforeend', fileName.slice(0, 10))
+                            });
+                        });
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+    <main>
+        <div class="my-cover" style="background-image: url('{{ profile.profile_cover }}');">
+            <i class="pen icon" onclick="fullscreenEditProfile('open', 'epcontainer', 'cover')"></i>
+            <div class="user-statics">
+                <i class="camera icon"></i><b>{{ countImages }} Fotos</b>
+                <i class="video icon"></i><b>{{ countVideos }} Vídeos</b>
+                <i class="hand holding usd icon"></i><b>{{ countSubscribers }} Assinantes</b>
+            </div>
+        </div>
+
+        <div class="user-data-container">
+            <div class="user-image-profile"><span><span
+                    style="background-image: url('{{ profile.profile_avatar }}');"></span><div class="user-image-edit"
+                                                                                               onclick="fullscreenEditProfile('open', 'epcontainer', 'avatar')"><i
+                    class="camera icon"></i></div></span></div>
+
+            <div class="user-name-titulo">
+                <div><b>{{ user.first_name }} {{ user.last_name }}</b>
+                    <i class="pen icon" onclick="fullscreenEditProfile('open', 'epcontainer', 'name')"></i>
+                </div>
+            </div>
+            <div class="user-at">@{{ profile.nickname }}
+                {% if profile.user_verified == True %}
+                    <i class="certificate icon"><b>✔</b></i>
+                {% endif %}
+            </div>
+            <div class="user-bio">
+                <div>
+                    {{ profile.profile_bio }}
+                </div>
+                <i class="pen icon" onclick="fullscreenEditProfile('open', 'epcontainer', 'bio')"></i>
+            </div>
+        </div>
+
+        <div id="home-post-form" class="post-form invisible-content">
+            <div id="selector-media-post">
+                <div id="mediaImage" class="selector-media-image" onclick="selectorMediaForPost('mediaImage')">
+                    <i class="camera icon"></i>
+                    <b>FOTO</b>
+                </div>
+                <div id="mediaVideo" class="selector-media-video" onclick="selectorMediaForPost('mediaVideo')">
+                    <i class="video icon"></i>
+                    <b>VÍDEO</b>
+                </div>
+            </div>
+            <div id="containerImage" class="post-image-form invisible-content">
+                <span id="back-to-selector-media" onclick="returnToSelectorMedia('containerImage')"><i
+                        class="undo icon"></i></span>
+                <form id="post-image-form" name="post-image-form" action="/m/uploadimage/" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="page" value="me">
+                    <label for="post-image" class="custom-post-file"><i
+                            class="camera icon"></i><span id="span_send_image_file">Carregar imagem</span></label>
+                    <input type="file" id="post-image" name="post-image"/>
+                    <script>
+                    $(document).ready(function(){
+                      $('#post-image').change(function(e){
+                        var fileName = e.target.files[0].name;
+                        span_target = document.getElementById('span_send_image_file')
+                          span_target.innerHTML = ''
+                          span_target.insertAdjacentText('beforeend', fileName.slice(0, 10))
+                      });
+                    });
+                    </script>
+
+                    <div class="ops-post">
+                        <label for="media-status">Escolha uma opção:</label>
+                        <select id="media-status" name="media-status">
+                          <option value="free">FREE</option>
+                            {% if profile.user_creator == True %}
+                                <option value="premium">PREMIUM</option>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <textarea name="subtitles" placeholder="Legenda..." maxlength="400"></textarea>
+
+                    <button id="send_image_home" type="submit" name="send-file">POSTAR</button>
+                </form>
+            </div>
+            <div id="containerVideo" class="post-video-form invisible-content">
+                <span id="back-to-selector-media" onclick="returnToSelectorMedia('containerVideo')"><i class="undo icon"></i></span>
+                <form id="post-video-form" name="post-video-form" action="/m/uploadvideo/" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="page" value="me">
+                    <div>
+                        <label for="post-video" class="custom-post-file"><i class="video icon"></i>
+                        <span id="span_send_video_file">Carregar vídeo</span></label>
+                        <input type="file" id="post-video" name="post-video"/>
+                        <script>
+                        $(document).ready(function(){
+                          $('#post-video').change(function(e){
+                            var fileName = e.target.files[0].name;
+                            span_target = document.getElementById('span_send_video_file')
+                              span_target.innerHTML = ''
+                              span_target.insertAdjacentText('beforeend', fileName.slice(0, 10))
+                          });
+                        });
+                        </script>
+                    </div>
+
+                    <div class="ops-post">
+                        <label for="media-status">Escolha uma opção:</label>
+                        <select id="media-status" name="media-status">
+                          <option value="free">FREE</option>
+                            {% if profile.user_creator == True %}
+                                <option value="premium">PREMIUM</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <textarea id="subtitles" name="subtitles" placeholder="Legenda..." maxlength="400"></textarea>
+
+                    <button id="send_video_home" type="submit" name="send-file">POSTAR</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="feed">
+            <div class="field">
+                <span onclick="selectViewContent('free-feed')"><i class="globe americas icon"></i>GRATUITO
+                    <b>({{ countFreePosts }})</b>
+                </span>
+                {% if profile.user_creator == True %}
+                <span onclick="selectViewContent('premium-feed')"><i class="dollar sign icon"></i>PREMIUM
+                    <b>({{ countPremiumPosts }})</b>
+                </span>
+                {% endif %}
+            </div>
+
+
+            <div id="free-feed" class="my-feed-content">
+            {% for post in feed %}
+            {% if post.profile_creator.user.id == mySession.id and post.media_free == True and post.post_deleted != True %}
+                <div class="media-field">
+                    <div class="status-preview">
+                        {% if post.media_premium == True %}
+                        <i class="dollar sign icon"></i>
+                        {% endif %}
+                        {% if post.post_hidden == True %}
+                        <i class="eye slash icon"></i>
+                        {% endif %}
+                        {% if post.media_type == 'VIDEO' %}
+                        <i class="play icon"></i>
+                        {% endif %}
+                    </div>
+
+                    {% if post.media_type == 'IMAGE' %}
+                    <span class="image-min"
+                          style="background-image: url('{{ post.media_url }}');"
+                          onclick='fullscreenMeida("open", "img{{ post.id }}", false, null)'></span>
+                    {% endif %}
+                    {% if post.media_type == 'VIDEO' %}
+                    <span class="image-min"
+                          style="background-image: url('https://b-vz-cc49f916-dfc.tv.pandavideo.com.br/{{ post.media_url }}/thumbnail.jpg');"
+                          onclick='fullscreenMeida("open", "img{{ post.id }}", false, null)'></span>
+                    {% endif %}
+
+                    <div id="img{{ post.id }}" class="fullscreen-closed">
+                        <div class="for-close-full" onclick='fullscreenMeida("close", "img{{ post.id }}", false, "comp{{ post.id }}")'></div>
+                        <div id="comp{{ post.id }}" class="comments-on-my-post invisible-content">
+                            <span class="close-view-comments" onclick="fullscreenMeida('close', null, true, 'comp{{ post.id }}')">
+                                <i class="undo icon"></i></span>
+                            <div class="container-comment">
+
+                                {% if post.media_type == 'VIDEO' and post.subtitles %}
+                                <div class="video-subtitles">{{ post.subtitles }}</div>
+                                {% endif %}
+
+                                <div class="post-comment-form">
+                                    <form action="/m/savecomment/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="page" value="me">
+                                    <input type="hidden" name="action" value="comment">
+                                    <input type="hidden" name="post" value="{{ post.id }}">
+                                    <input type="hidden" name="creator" value="{{ post.profile_creator.user.id }}">
+                                    <input type="hidden" name="fan_id" value="{{ mySession.id }}">
+                                    <input type="hidden" name="fan_nick" value="{{ mySession.profile.nickname }}">
+                                    <input type="text" name="comment" placeholder="Comente algo..." autocomplete="off"/>
+                                    <button type="submit">COMENTAR</button>
+                                </form>
+
+                                </div>
+                                <div class="post-comments-container">
+                                {% for comment in comments %}
+                                {% if comment.post.id == post.id %}
+                                    <div class="comment-item">
+                                        <div class="user-area">
+                                            <a href="/m/@{{ comment.profile_fan.nickname }}">
+                                                <span><span class="user-avatar" style="background-image: url('{{ comment.profile_fan.profile_avatar }}');"></span></span>
+                                                <b>{{ comment.profile_fan.user.first_name }} {{ comment.profile_fan.user.last_name }}</b>
+                                            </a>
+                                            <div class="comment-ops">
+                                                    <form name="deslikeComment{{ comment.id }}" action="/m/likecomment/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="page" value="me">
+                                                    <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                    <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                    <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                    <input type="hidden" name="action" value="deslike"/>
+                                                    </form>
+
+                                                    <form name="likeComment{{ comment.id }}" action="/m/likecomment/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="page" value="me">
+                                                    <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                    <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                    <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                    <input type="hidden" name="action" value="like"/>
+                                                    </form>
+
+                                                    {% if comment.id in liked_comment_ids %}
+                                                        <i id="heartcomment{{ comment.id }}" class="heart icon"></i>
+                                                    {% else %}
+                                                        <i id="heartcomment{{ comment.id }}" class="heart outline icon"></i>
+                                                    {% endif %}
+
+                                                    <script>
+                                                        $(document).ready(function () {
+                                                            $("#heartcomment{{ comment.id }}").click(function (e) {
+                                                                e.preventDefault();
+                                                                var heart_condition_c = document.getElementById("heartcomment{{ comment.id }}")
+                                                                if (heart_condition_c.classList.contains('outline')) {
+                                                                    var forml_c{{ comment.id }} = $('form[name="likeComment{{ comment.id }}"]')
+                                                                    $.ajax({
+                                                                        url: forml_c{{ comment.id }}.attr("action"),
+                                                                        type: forml_c{{ comment.id }}.attr("method"),
+                                                                        data: forml_c{{ comment.id }}.serialize(),
+                                                                        success: function () {
+                                                                            document.getElementById("heartcomment{{ comment.id }}").classList.remove("outline")
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    var formd_c{{ comment.id }} = $('form[name="deslikeComment{{ comment.id }}"]')
+                                                                    $.ajax({
+                                                                        url: formd_c{{ comment.id }}.attr("action"),
+                                                                        type: formd_c{{ comment.id }}.attr("method"),
+                                                                        data: formd_c{{ comment.id }}.serialize(),
+                                                                        success: function () {
+                                                                            document.getElementById("heartcomment{{ comment.id }}").classList.add("outline")
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        });
+                                                    </script>
+
+                                                {% if comment.profile_fan.user.id == mySession.id or comment.post.profile_creator.user.id == mySession.id %}
+                                                <form name="deleteComment{{ comment.id }}" action="/m/deletecomment/" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="page" value="me">
+                                                <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                <i class="trash icon" onclick="document.forms['deleteComment{{ comment.id }}'].submit()"></i>
+                                                </form>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="user-comment">
+                                            {{ comment.fan_comment }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fullscreen-container">
+                        <div>
+                            <form>
+                            <i class="comment dots outline icon"
+                               onclick="fullscreenMeida('open', null, true, 'comp{{ post.id }}')"></i>
+                            </form>
+
+                            {% if mySession.profile.user_creator == True %}
+                            {% if post.media_premium == False %}
+                                <form name="premiumPost{{ post.id }}" action="/m/changepremium/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="premium">
+                                <input type="hidden" name="page" value="me">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                <i class="dollar sign icon" onclick="document.forms['premiumPost{{ post.id }}'].submit()"></i>
+                                </form>
+                            {% else %}
+                                <form name="freePost{{ post.id }}" action="/m/changepremium/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="free">
+                                <input type="hidden" name="page" value="me">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                <i class="dollar sign icon active" onclick="document.forms['freePost{{ post.id }}'].submit()"></i>
+                                </form>
+                            {% endif %}
+                            {% endif %}
+
+                            {% if post.post_hidden == True %}
+                                <form name="visiblePost{{ post.id }}" action="/m/changehidden/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="visible">
+                                <input type="hidden" name="page" value="me">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                <i class="eye slash icon active" onclick="document.forms['visiblePost{{ post.id }}'].submit()"></i>
+                                </form>
+                            {% else %}
+                                <form name="hiddenPost{{ post.id }}" action="/m/changehidden/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="hidden">
+                                <input type="hidden" name="page" value="me">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                <i class="eye slash icon" onclick="document.forms['hiddenPost{{ post.id }}'].submit()"></i>
+                                </form>
+                            {% endif %}
+
+                            <form name="deletePost{{ post.id }}" action="/m/deletepost/" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="page" value="me">
+                            <input type="hidden" name="post" value="{{ post.id }}">
+                            <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                            <i class="trash icon" onclick="document.forms['deletePost{{ post.id }}'].submit()"></i>
+                            </form>
+                        </div>
+
+                        {% if post.media_type == 'IMAGE' %}
+                        {% if post.subtitles %}
+                        <div class="image-subtitles">{{ post.subtitles }}</div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if post.media_type == 'IMAGE' %}
+                        <span class="image-full"
+                              style="background-image: url('{{ post.media_url }}');"></span>
+                        {% endif %}
+                        {% if post.media_type == 'VIDEO' %}
+                            <div class="video-container">
+                            <iframe
+                                    id="panda-{{ post.media_url }}"
+                                    class="pandavideo-iframe"
+                                    src="https://player-vz-cc49f916-dfc.tv.pandavideo.com.br/embed/?v={{ post.media_url }}"
+                                    allow="accelerometer;gyroscope;autoplay;encrypted-media;"
+                                    allowfullscreen='true'>
+                            </iframe>
+                            </div>
+                            <script>
+                            window.pandascripttag = window.pandascripttag || [];
+                            window.pandascripttag.push(function (){
+                              const player = new PandaPlayer('panda-{{ post.media_url }}', {
+                                    onReady: () => {
+                                        //console.log('PLAYER LOADED')
+                                  }
+                              })
+                            })
+                            </script>
+                        {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+            </div>
+
+            {% if profile.user_creator == True %}
+            <div id="premium-feed" class="my-feed-content invisible-content">
+            {% for post in feed %}
+            {% if post.profile_creator.user.id == mySession.id and post.media_premium == True and post.post_deleted != True %}
+                <div class="media-field">
+                    <div class="status-preview">
+                        {% if post.media_premium == True %}
+                        <i class="dollar sign icon"></i>
+                        {% endif %}
+                        {% if post.post_hidden == True %}
+                        <i class="eye slash icon"></i>
+                        {% endif %}
+                        {% if post.media_type == 'VIDEO' %}
+                        <i class="play icon"></i>
+                        {% endif %}
+                    </div>
+
+                    {% if post.media_type == 'IMAGE' %}
+                    <span class="image-min"
+                          style="background-image: url('{{ post.media_url }}');"
+                          onclick='fullscreenMeida("open", "img{{ post.id }}", false, null)'></span>
+                    {% endif %}
+                    {% if post.media_type == 'VIDEO' %}
+                    <span class="image-min"
+                          style="background-image: url('https://b-vz-cc49f916-dfc.tv.pandavideo.com.br/{{ post.media_url }}/thumbnail.jpg');"
+                          onclick='fullscreenMeida("open", "img{{ post.id }}", false, null)'></span>
+                    {% endif %}
+
+                    <div id="img{{ post.id }}" class="fullscreen-closed">
+                        <div class="for-close-full" onclick='fullscreenMeida("close", "img{{ post.id }}", false, "comp{{ post.id }}")'></div>
+                        <div id="comp{{ post.id }}" class="comments-on-my-post invisible-content">
+                            <span class="close-view-comments" onclick="fullscreenMeida('close', null, true, 'comp{{ post.id }}')">
+                                <i class="undo icon"></i></span>
+                            <div class="container-comment">
+
+                                {% if post.media_type == 'VIDEO' and post.subtitles %}
+                                <div class="video-subtitles">{{ post.subtitles }}</div>
+                                {% endif %}
+
+                                <div class="post-comment-form">
+                                    <form action="/m/savecomment/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="page" value="me"/>
+                                    <input type="hidden" name="action" value="comment">
+                                    <input type="hidden" name="post" value="{{ post.id }}">
+                                    <input type="hidden" name="creator" value="{{ post.profile_creator.user.id }}">
+                                    <input type="hidden" name="fan_id" value="{{ mySession.id }}">
+                                    <input type="hidden" name="fan_nick" value="{{ mySession.profile.nickname }}">
+                                    <input type="text" name="comment" placeholder="Comente algo..." autocomplete="off"/>
+                                    <button type="submit">COMENTAR</button>
+                                </form>
+
+                                </div>
+                                <div class="post-comments-container">
+                                {% for comment in comments %}
+                                {% if comment.post.id == post.id %}
+                                    <div class="comment-item">
+                                        <div class="user-area">
+                                            <a href="/m/@{{ comment.profile_fan.nickname }}">
+                                                <span><span class="user-avatar" style="background-image: url('{{ comment.profile_fan.profile_avatar }}');"></span></span>
+                                                <b>{{ comment.profile_fan.user.first_name }} {{ comment.profile_fan.user.last_name }}</b>
+                                            </a>
+                                            <div class="comment-ops">
+                                                    <form name="deslikeComment{{ comment.id }}" action="/m/likecomment/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="page" value="me"/>
+                                                    <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                    <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                    <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                    <input type="hidden" name="action" value="deslike"/>
+                                                    </form>
+
+                                                    <form name="likeComment{{ comment.id }}" action="/m/likecomment/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="page" value="me"/>
+                                                    <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                    <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                    <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                    <input type="hidden" name="action" value="like"/>
+                                                    </form>
+
+                                                    {% if comment.id in liked_comment_ids %}
+                                                        <i id="heartcomment{{ comment.id }}" class="heart icon"></i>
+                                                    {% else %}
+                                                        <i id="heartcomment{{ comment.id }}" class="heart outline icon"></i>
+                                                    {% endif %}
+
+                                                    <script>
+                                                        $(document).ready(function () {
+                                                            $("#heartcomment{{ comment.id }}").click(function (e) {
+                                                                e.preventDefault();
+                                                                var heart_condition_c = document.getElementById("heartcomment{{ comment.id }}")
+                                                                if (heart_condition_c.classList.contains('outline')) {
+                                                                    var forml_c{{ comment.id }} = $('form[name="likeComment{{ comment.id }}"]')
+                                                                    $.ajax({
+                                                                        url: forml_c{{ comment.id }}.attr("action"),
+                                                                        type: forml_c{{ comment.id }}.attr("method"),
+                                                                        data: forml_c{{ comment.id }}.serialize(),
+                                                                        success: function () {
+                                                                            document.getElementById("heartcomment{{ comment.id }}").classList.remove("outline")
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    var formd_c{{ comment.id }} = $('form[name="deslikeComment{{ comment.id }}"]')
+                                                                    $.ajax({
+                                                                        url: formd_c{{ comment.id }}.attr("action"),
+                                                                        type: formd_c{{ comment.id }}.attr("method"),
+                                                                        data: formd_c{{ comment.id }}.serialize(),
+                                                                        success: function () {
+                                                                            document.getElementById("heartcomment{{ comment.id }}").classList.add("outline")
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        });
+                                                    </script>
+
+                                                {% if comment.profile_fan.user.id == mySession.id or comment.post.profile_creator.user.id == mySession.id %}
+                                                <form name="deleteComment{{ comment.id }}" action="/m/deletecomment/" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="page" value="me"/>
+                                                <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                <i class="trash icon" onclick="document.forms['deleteComment{{ comment.id }}'].submit()"></i>
+                                                </form>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="user-comment">
+                                            {{ comment.fan_comment }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fullscreen-container">
+                        <div>
+                            <form>
+                            <i class="comment dots outline icon"
+                               onclick="fullscreenMeida('open', null, true, 'comp{{ post.id }}')"></i>
+                            </form>
+
+                            {% if post.media_premium == False %}
+                                <form name="premiumPost{{ post.id }}" action="/m/changepremium/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="premium">
+                                <input type="hidden" name="page" value="me">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                <i class="dollar sign icon" onclick="document.forms['premiumPost{{ post.id }}'].submit()"></i>
+                                </form>
+                            {% else %}
+                                <form name="freePost{{ post.id }}" action="/m/changepremium/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="free">
+                                <input type="hidden" name="page" value="me">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                <i class="dollar sign icon active" onclick="document.forms['freePost{{ post.id }}'].submit()"></i>
+                                </form>
+                            {% endif %}
+
+                            {% if post.post_hidden == True %}
+                                <form name="visiblePost{{ post.id }}" action="/m/changehidden/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="visible">
+                                <input type="hidden" name="page" value="me">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                <i class="eye slash icon active" onclick="document.forms['visiblePost{{ post.id }}'].submit()"></i>
+                                </form>
+                            {% else %}
+                                <form name="hiddenPost{{ post.id }}" action="/m/changehidden/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="hidden">
+                                <input type="hidden" name="page" value="me">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                <i class="eye slash icon" onclick="document.forms['hiddenPost{{ post.id }}'].submit()"></i>
+                                </form>
+                            {% endif %}
+
+                            <form name="deletePost{{ post.id }}" action="/m/deletepost/" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="page" value="me">
+                            <input type="hidden" name="post" value="{{ post.id }}">
+                            <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                            <i class="trash icon" onclick="document.forms['deletePost{{ post.id }}'].submit()"></i>
+                            </form>
+                        </div>
+
+                        {% if post.media_type == 'IMAGE' %}
+                        {% if post.subtitles %}
+                        <div class="image-subtitles">{{ post.subtitles }}</div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if post.media_type == 'IMAGE' %}
+                        <span class="image-full"
+                              style="background-image: url('{{ post.media_url }}');"></span>
+                        {% endif %}
+                        {% if post.media_type == 'VIDEO' %}
+                            <div class="video-container">
+                            <iframe
+                                    id="panda-{{ post.media_url }}"
+                                    class="pandavideo-iframe"
+                                    src="https://player-vz-cc49f916-dfc.tv.pandavideo.com.br/embed/?v={{ post.media_url }}"
+                                    allow="accelerometer;gyroscope;autoplay;encrypted-media;"
+                                    allowfullscreen='true'>
+                            </iframe>
+                            </div>
+                            <script>
+                            window.pandascripttag = window.pandascripttag || [];
+                            window.pandascripttag.push(function (){
+                              const player = new PandaPlayer('panda-{{ post.media_url }}', {
+                                    onReady: () => {
+                                        //console.log('PLAYER LOADED')
+                                  }
+                              })
+                            })
+                            </script>
+                        {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+<script>
+window.onload = function() {
+    var elements = document.getElementsByClassName('for-close-full');
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].addEventListener('click', function () {
+            var videos = document.querySelectorAll('.pandavideo-iframe');
+            videos.forEach(function (video) {
+                var iframe = video.contentWindow;
+                iframe.postMessage({type: 'pause'}, '*');
+            });
+        });
+    }
+}
+</script>
+
+<script>
+    document.getElementById("send_video_home").addEventListener('click',
+    function (event) {
+        event.preventDefault();
+        var button = event.target;
+        button.disabled = true;
+        button.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+        var videoForm = document.getElementById("post-video-form");
+        videoForm.submit();
+        $.toast({
+            title: 'Info.',
+            class: 'info',
+            message: 'Aguarde o upload ser concluído.',
+            showProgress: 'bottom',
+            classProgress: 'pink',
+            position: 'bottom left',
+            displayTime: 5000
+        });
+    })
+
+    document.getElementById("send_image_home").addEventListener('click',
+    function (event) {
+        event.preventDefault();
+        var button = event.target;
+        button.disabled = true;
+        button.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+        var videoForm = document.getElementById("post-image-form");
+        videoForm.submit();
+        $.toast({
+            title: 'Info.',
+            class: 'info',
+            message: 'Aguarde o upload ser concluído.',
+            showProgress: 'bottom',
+            classProgress: 'pink',
+            position: 'bottom left',
+            displayTime: 5000
+        });
+    })
+
+    document.getElementById("send_new_avatar").addEventListener('click',
+    function (event) {
+        event.preventDefault();
+        var button = event.target;
+        button.disabled = true;
+        button.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+        var avatarForm = document.getElementById("new_avatar_form");
+        avatarForm.submit();
+        $.toast({
+            title: 'Info.',
+            class: 'info',
+            message: 'Aguarde o upload ser concluído.',
+            showProgress: 'bottom',
+            classProgress: 'pink',
+            position: 'bottom left',
+            displayTime: 5000
+        });
+    })
+
+    document.getElementById("send_new_cover").addEventListener('click',
+    function (event) {
+        event.preventDefault();
+        var button = event.target;
+        button.disabled = true;
+        button.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+        var avatarForm = document.getElementById("new_cover_form");
+        avatarForm.submit();
+        $.toast({
+            title: 'Info.',
+            class: 'info',
+            message: 'Aguarde o upload ser concluído.',
+            showProgress: 'bottom',
+            classProgress: 'pink',
+            position: 'bottom left',
+            displayTime: 5000
+        });
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="form-index">
+        <div class="site-container">
+            <div class="logo_and_titulo">
+                <img class="logo" src="{% static 'images/spicyx.png' %}" alt="logo">
+                <b>SpicyX</b>
+            </div>
+            <div class="index_subtitles">
+                <b>Seja um apoiador dos seus criadores favoritos</b>
+            </div>
+        </div>
+        <span>Faça login</span>
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="myspicyemail@exemplo.com" required>
+            <input type="password" name="password" placeholder="senha" required>
+            <input type="hidden" name="next" value="{{ next }}"/>
+            <button type="submit" name="submit">ENTRAR</button>
+        </form>
+        <div class="login_links_form">
+            <a href="/password_reset/">Esqueceu sua senha?</a>
+        </div>
+    <div class="send_to_cad">
+        Não tem uma conta? <a href="/cadastro/">Cadastre-se</a>
+    </div>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,162 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+
+    {% block title %}
+        <title>SpicyX</title>
+    {% endblock %}
+
+    <meta name="description"
+          content="A SpicyX é a plataforma social focada em impulsionar as conexões de criadores e fãs. A plataforma inclui artistas e criadores de conteúdo de todos os gêneros e permite que eles monetizem seu conteúdo exclusivo enquanto desenvolvem relacionamentos autênticos com sua fanbase.">
+    <meta name="keywords" content="SpicyX">
+    <meta name="author" content="Cat Security">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name=theme-color content=#da75a8>
+    <meta name=robots content=noimageindex>
+    <meta name=pinterest content=nopin>
+    <link rel="shortcut icon" href="{% static 'images/spicyx_icon_clean.png' %}"/>
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+    <link rel="icon" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}"/>
+    <link rel="icon" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/default_theme.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/semantic.min.css' %}" media="screen"/>-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-main.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    {% block styles %}
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
+    <!--<script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/semantic.min.js' %}"></script>-->
+    {% block scripts %}
+    {% endblock %}
+</head>
+
+<body>
+<div class="container-index">
+    <div id="cookie-banner">
+        <span>Este site usa cookies para garantir que você obtenha a melhor experiência em nosso site.
+        Utilizamos cookies para lhe proporcionar a melhor experiência e garantir a segurança dos nossos utilizadores. Os
+        únicos cookies não essenciais que usamos são para quaisquer referências pessoais que você fizer. Não rastreamos
+        você em outros sites.
+        <button id="accept-cookies">ACEITAR TODOS</button>
+        </span>
+    </div>
+<script>
+        window.onload = function() {
+            var banner = document.getElementById('cookie-banner');
+            var button = document.getElementById('accept-cookies');
+
+            if (!document.cookie.includes('cookies-accepted')) {
+                banner.style.display = 'flex';
+            }
+
+            button.onclick = function() {
+                document.cookie = 'cookies-accepted=true; max-age=31536000; path=/';
+                banner.style.display = 'none';
+            }
+        }
+    </script>
+
+
+    {% if err %}
+        <script>
+            $.toast({
+                title: 'Erro:',
+                class: 'error',
+                message: '{{ err }}',
+                showProgress: 'bottom',
+                classProgress: 'pink',
+                position: 'bottom left'
+            });
+        </script>
+    {% elif success %}
+        <script>
+            $.toast({
+                title: 'Sucesso!',
+                class: 'success',
+                message: '{{ success }}',
+                showProgress: 'bottom',
+                classProgress: 'pink',
+                position: 'bottom left'
+            });
+        </script>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+<div id="last_posts_container" class="last_posts_container">
+    <div class="feed-content">
+        <span>Últimas postagens em destaque</span>
+        {% for post in last_posts %}
+            <div class="post">
+                <div class="post-ops">
+                    <div class="post-user">
+                        <a href="/m/@{{ post.profile_creator.nickname }}">
+                                <span><span
+                                        style="background-image: url('{{ post.profile_creator.profile_avatar }}');"></span></span>
+                            <b>@{{ post.profile_creator.nickname }}
+                                {% if post.profile_creator.user_verified == True %}
+                                    <i class="certificate icon"><b>✔</b></i>
+                                {% endif %}
+                            </b>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="image-subtitles">
+                    {{ post.subtitles }}
+                </div>
+
+                {% if post.media_type == 'IMAGE' %}
+                    <div class="home-preview-container">
+                        <span class="post-image" style="background-image: url('{{ post.media_url }}');"></span>
+                    </div>
+                    <div id="img{{ post.id }}" class="fullscreen-closed"></div>
+                {% endif %}
+                {% if post.media_type == 'VIDEO' %}
+                    <div class="video-container">
+                        <iframe
+                                id="panda-{{ post.media_url }}"
+                                class="pandavideo-iframe"
+                                src="https://player-vz-cc49f916-dfc.tv.pandavideo.com.br/embed/?v={{ post.media_url }}&controls=play-large"
+                                allow="accelerometer;gyroscope;autoplay;encrypted-media;"
+                                allowfullscreen='false'>
+                        </iframe>
+                    </div>
+                    <script>
+                        window.pandascripttag = window.pandascripttag || [];
+                        window.pandascripttag.push(function () {
+                            const player = new PandaPlayer('panda-{{ post.media_url }}', {
+                                onReady: () => {
+                                    //console.log('PLAYER LOADED')
+                                }
+                            })
+                        })
+                    </script>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<footer>
+    <div class="collumn_two">
+        <a href="/termos/">Termos de serviço</a>
+        <a href="/privacidade/">Politica de privacidade</a>
+    </div>
+    <div class="collumn_one">
+        <span>2023 SpicyX</span>
+        <span>contato@spicyx.com.br</span>
+    </div>
+</footer>
+</body>
+</html>

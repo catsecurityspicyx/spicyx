@@ -1,0 +1,139 @@
+{% extends 'members/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Financeiro</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-home.css' %}" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="feed">
+
+            {% if profile.user_creator == True %}
+            <div class="my_settings three">
+                <div class="title">
+                    <i class="wallet icon"></i>
+                    <b>Histórico de saques</b>
+                </div>
+                <div class="container_settings subscriptions">
+                    <span><b>Saque ID</b></span>
+                    <span><b>Valor</b></span>
+                    <span><b>Criado em</b></span>
+                    <span><b>Status</b></span>
+                    {% for payout in payouts %}
+                        {% if payout.creator == mySession.profile %}
+                            <div>
+                                <span>{{ payout.payout_id }}</span>
+                                <span>{{ payout.total_amount_payout }}</span>
+                                <span>{{ payout.created_at|date:"d/m/Y" }}</span>
+                                <span>{{ payout.status }}</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="my_settings three">
+                <div class="title">
+                    <i class="wallet icon"></i>
+                    <b>Reembolsos e Chargebacks</b>
+                </div>
+                <div class="container_settings subscriptions">
+                    <span><b>Saque ID</b></span>
+                    <span><b>Valor</b></span>
+                    <span><b>Criado em</b></span>
+                    <span><b>Status</b></span>
+                    {% for payout in payouts %}
+                        {% if payout.creator == mySession.profile %}
+                            <div>
+                                <span>{{ payout.payout_id }}</span>
+                                <span>{{ payout.total_amount_payout }}</span>
+                                <span>{{ payout.created_at|date:"d/m/Y" }}</span>
+                                <span>{{ payout.status }}</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="my_settings three">
+                <div class="title">
+                    <i class="hand holding usd icon"></i>
+                    <b>Assinaturas ativas</b>
+                </div>
+                <div class="container_settings subscriptions">
+                    <span><b>Assinatura ID</b></span>
+                    <span><b>Creator</b></span>
+                    <span><b>Criada em</b></span>
+                    <span><b>Status</b></span>
+                    {% for sub in subscriptions %}
+                        {% if sub.subscriber == mySession.profile %}
+                            <div>
+                                <span>{{ sub.subscription_id }}</span>
+                                <span><a href="/m/@{{ sub.creator.profile.nickname }}" target="_blank">@{{ sub.creator.profile.nickname }}</a></span>
+                                <span>{{ sub.created_at|date:"d/m/Y" }}</span>
+                                <span>Ativa</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="my_settings three">
+                <div class="title">
+                    <i class="receipt icon"></i>
+                    <b>Minhas faturas</b>
+                </div>
+                <div class="container_settings invoices">
+                    <span><b>Fatura ID</b></span>
+                    <span><b>Link</b></span>
+                    <span><b>Valor (R$)</b></span>
+                    <span><b>Status</b></span>
+                    <span><b>Criado em</b></span>
+                    {% for invoice in invoices %}
+                        {% if invoice.fan == mySession.profile %}
+                            <div>
+                            <span>{{ invoice.invoice_id }}</span>
+                            <span><a href="{{ invoice.invoice_url }}" target="_blank">Ver fatura</a></span>
+                            <span>R$ {{ invoice.value }}</span>
+                            <span>{{ invoice.status }}</span>
+                            <span>{{ invoice.created_at|date:"d/m/Y" }}</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+    <script>
+    document.getElementById("send_requestcreator").addEventListener('click',
+    function (event) {
+        event.preventDefault();
+        var button = event.target;
+        button.disabled = true;
+        button.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+        var creatorForm = document.getElementById("creator_form");
+        creatorForm.submit();
+        $.toast({
+            title: 'Info.',
+            class: 'info',
+            message: 'Aguarde o upload ser concluído.',
+            showProgress: 'bottom',
+            classProgress: 'pink',
+            position: 'bottom left',
+            displayTime: 5000
+        });
+    })
+    </script>
+{% endblock %}

@@ -1,0 +1,683 @@
+{% extends 'members/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Post</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-home.css' %}" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <main>
+
+        <div class="feed">
+            <div class="field">
+            </div>
+            <div class="feed-content">
+
+                {% for post in found %}
+                    {% if post.post_hidden == False and post.post_deleted == False and post.media_free == True and post.media_premium == False %}
+                        <div class="post">
+                    <div class="post-ops">
+                        <div class="post-user">
+                            <a href="/m/@{{ post.profile_creator.nickname }}">
+                                <span><span
+                                        style="background-image: url('{{ post.profile_creator.profile_avatar }}');"></span></span>
+                                <b>{{ post.profile_creator.user.first_name }} {{ post.profile_creator.user.last_name }}
+                                    {% if post.profile_creator.user_verified == True %}
+                                    <i class="certificate icon"><b>✔</b></i>
+                                    {% endif %}
+                                </b>
+                            </a>
+                        </div>
+
+                        {% if post.profile_creator.user.id == mySession.id %}
+                        <div class="post-menu-dropdown-icon" onclick="openDropdownMenu('post{{ post.id }}')">
+                            <i class="ellipsis vertical icon"></i>
+                            <div id="post{{ post.id }}" class="dropdown-container invisible-content">
+                                <div class="menu">
+                                <form name="deletePost{{ post.id }}" action="/m/deletepost/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="page" value="explorer">
+                                    <input type="hidden" name="post" value="{{ post.id }}">
+                                    <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                    <div class="item" onclick="document.forms['deletePost{{ post.id }}'].submit()">
+                                        <span><i class="trash icon"></i></span>DELETAR
+                                    </div>
+                                </form>
+                                <form name="hiddenPost{{ post.id }}" action="/m/changehidden/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="hidden">
+                                    <input type="hidden" name="page" value="explorer">
+                                    <input type="hidden" name="post" value="{{ post.id }}">
+                                    <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                    <div class="item" onclick="document.forms['hiddenPost{{ post.id }}'].submit()">
+                                        <span><i class="eye slash icon"></i></span>OCULTAR
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="image-subtitles">
+                        {{ post.subtitles }}
+                    </div>
+
+                    {% if post.media_type == 'IMAGE' %}
+                        <div class="home-preview-container">
+                        <span class="post-image" style="background-image: url('{{ post.media_url }}');" onclick='fullscreenMeida("open", "img{{ post.id }}", false, null)'></span>
+
+                        <div class="status-preview">
+                        {% if post.media_premium == True %}
+                        <i class="dollar sign icon"></i>
+                        {% endif %}
+                        </div>
+                    </div>
+                        <div id="img{{ post.id }}" class="fullscreen-closed">
+                        <div class="for-close-full" onclick='fullscreenMeida("close", "img{{ post.id }}", false, null)'></div>
+                        <div class="fullscreen-container">
+
+                            <span class="image-full"
+                                  style="background-image: url('{{ post.media_url }}');"></span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if post.media_type == 'VIDEO' %}
+                        <div class="video-container">
+                            <iframe
+                                    id="panda-{{ post.media_url }}"
+                                    class="pandavideo-iframe"
+                                    src="https://player-vz-cc49f916-dfc.tv.pandavideo.com.br/embed/?v={{ post.media_url }}"
+                                    allow="accelerometer;gyroscope;autoplay;encrypted-media;"
+                                    allowfullscreen='true'>
+                            </iframe>
+                        </div>
+                        <script>
+                        window.pandascripttag = window.pandascripttag || [];
+                        window.pandascripttag.push(function (){
+                          const player = new PandaPlayer('panda-{{ post.media_url }}', {
+                                onReady: () => {
+                                    //console.log('PLAYER LOADED')
+                              }
+                          })
+                        })
+                        </script>
+                    {% endif %}
+
+                    <div class="post-interactions">
+                        <span>
+                                <form name="deslike{{ post.id }}" action="/m/likepost/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="page" value="explorer">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="creator" value="{{ post.profile_creator.user.id }}"/>
+                                <input type="hidden" name="fan_id" value="{{ mySession.id }}"/>
+                                <input type="hidden" name="fan_nick" value="{{ mySession.profile.nickname }}"/>
+                                <input type="hidden" name="action" value="deslike">
+                                </form>
+
+                                <form name="like{{ post.id }}" action="/m/likepost/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="page" value="explorer">
+                                <input type="hidden" name="post" value="{{ post.id }}"/>
+                                <input type="hidden" name="creator" value="{{ post.profile_creator.user.id }}"/>
+                                <input type="hidden" name="fan_id" value="{{ mySession.id }}"/>
+                                <input type="hidden" name="fan_nick" value="{{ mySession.profile.nickname }}"/>
+                                <input type="hidden" name="action" value="like"/>
+                                </form>
+
+                                {% if post.id in liked_post_ids %}
+                                    <i id="heart{{ post.id }}" class="heart icon"></i>
+                                    {% else %}
+                                    <i id="heart{{ post.id }}" class="heart outline icon"></i>
+                                {% endif %}
+
+                                    <script>
+                                        $(document).ready(function () {
+                                            $("#heart{{ post.id }}").click(function (e) {
+                                                e.preventDefault();
+                                                var heart_condition = document.getElementById("heart{{ post.id }}")
+                                                if (heart_condition.classList.contains('outline')) {
+                                                    var forml{{ post.id }} = $('form[name="like{{ post.id }}"]')
+                                                    $.ajax({
+                                                        url: forml{{ post.id }}.attr("action"),
+                                                        type: forml{{ post.id }}.attr("method"),
+                                                        data: forml{{ post.id }}.serialize(),
+                                                        success: function () {
+                                                            document.getElementById("heart{{ post.id }}").classList.remove("outline")
+                                                            var bnew{{ post.id }} = document.getElementById("b{{ post.id }}")
+                                                            var likesnow{{ post.id }} = Number(bnew{{ post.id }}.textContent) + 1
+                                                            bnew{{ post.id }}.innerHTML = ''
+                                                            bnew{{ post.id }}.innerHTML = likesnow{{ post.id }}
+                                                        }
+                                                    });
+                                                } else {
+                                                    var formd{{ post.id }} = $('form[name="deslike{{ post.id }}"]')
+                                                    $.ajax({
+                                                        url: formd{{ post.id }}.attr("action"),
+                                                        type: formd{{ post.id }}.attr("method"),
+                                                        data: formd{{ post.id }}.serialize(),
+                                                        success: function () {
+                                                            document.getElementById("heart{{ post.id }}").classList.add("outline")
+                                                            var b_new{{ post.id }} = document.getElementById("b{{ post.id }}")
+                                                            var deslikesnow{{ post.id }} = Number(b_new{{ post.id }}.textContent) - 1
+                                                            b_new{{ post.id }}.innerHTML = ''
+                                                            b_new{{ post.id }}.innerHTML = deslikesnow{{ post.id }}
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    </script>
+
+                                <b id="b{{ post.id }}">{{ post.likedpost_set.count }}</b>
+                        </span>
+                        <span><i class="comment dots outline icon" onclick="postComment('commentPost{{ post.id }}')"></i>
+                            <b>{{ post.commentpost_set.count }}</b>
+                        </span>
+                        <div id="commentPost{{ post.id }}" class="post-comment-container invisible-content">
+                            <div class="post-comment-form">
+                                <form action="/m/savecomment/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="page" value="explorer">
+                                    <input type="hidden" name="action" value="comment">
+                                    <input type="hidden" name="post" value="{{ post.id }}">
+                                    <input type="hidden" name="creator" value="{{ post.profile_creator.user.id }}">
+                                    <input type="hidden" name="fan_id" value="{{ mySession.id }}">
+                                    <input type="hidden" name="fan_nick" value="{{ mySession.profile.nickname }}">
+                                    <input type="text" name="comment" placeholder="Comente algo..." autocomplete="off"/>
+                                    <button type="submit">COMENTAR</button>
+                                </form>
+                            </div>
+                            <div class="post-comments-container">
+
+                                {% for comment in comments %}
+                                    {% if comment.post.id == post.id %}
+
+                                <div class="comment-item">
+                                    <div class="user-area">
+                                        <a href="/m/@{{ comment.fan_nickname }}">
+                                            <span><span class="user-avatar"
+                                                        style="background-image: url('{{ comment.profile_fan.profile_avatar }}');"></span></span>
+                                            <b>{{ comment.profile_fan.user.first_name }} {{ comment.profile_fan.user.last_name }}</b>
+                                        </a>
+                                        <div class="comment-ops">
+                                                    <form name="deslikeComment{{ comment.id }}" action="/m/likecomment/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="page" value="explorer">
+                                                    <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                    <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                    <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                    <input type="hidden" name="action" value="deslike"/>
+                                                    </form>
+
+                                                    <form name="likeComment{{ comment.id }}" action="/m/likecomment/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="page" value="explorer">
+                                                    <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                    <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                    <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                    <input type="hidden" name="action" value="like"/>
+                                                    </form>
+
+                                                    {% if comment.id in liked_comment_ids %}
+                                                        <i id="heartcomment{{ comment.id }}" class="heart icon"></i>
+                                                    {% else %}
+                                                        <i id="heartcomment{{ comment.id }}" class="heart outline icon"></i>
+                                                    {% endif %}
+
+                                                    <script>
+                                                        $(document).ready(function () {
+                                                            $("#heartcomment{{ comment.id }}").click(function (e) {
+                                                                e.preventDefault();
+                                                                var heart_condition_c = document.getElementById("heartcomment{{ comment.id }}")
+                                                                if (heart_condition_c.classList.contains('outline')) {
+                                                                    var forml_c{{ comment.id }} = $('form[name="likeComment{{ comment.id }}"]')
+                                                                    $.ajax({
+                                                                        url: forml_c{{ comment.id }}.attr("action"),
+                                                                        type: forml_c{{ comment.id }}.attr("method"),
+                                                                        data: forml_c{{ comment.id }}.serialize(),
+                                                                        success: function () {
+                                                                            document.getElementById("heartcomment{{ comment.id }}").classList.remove("outline")
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    var formd_c{{ comment.id }} = $('form[name="deslikeComment{{ comment.id }}"]')
+                                                                    $.ajax({
+                                                                        url: formd_c{{ comment.id }}.attr("action"),
+                                                                        type: formd_c{{ comment.id }}.attr("method"),
+                                                                        data: formd_c{{ comment.id }}.serialize(),
+                                                                        success: function () {
+                                                                            document.getElementById("heartcomment{{ comment.id }}").classList.add("outline")
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        });
+                                                    </script>
+
+                                            {% if comment.profile_fan.user.id == mySession.id or comment.post.profile_creator.user.id == mySession.id %}
+                                                <form name="deleteComment{{ comment.id }}" action="/m/deletecomment/" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="page" value="explorer"/>
+                                                <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                <i class="trash icon" onclick="document.forms['deleteComment{{ comment.id }}'].submit()"></i>
+                                                </form>
+                                                {% endif %}
+
+                                        </div>
+                                    </div>
+                                    <div class="user-comment">
+                                        {{ comment.fan_comment }}
+                                    </div>
+                                </div>
+
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    {% endif %}
+                    {% if post.post_hidden == False and post.post_deleted == False and post.media_free == False and post.media_premium == True %}
+                        {% if post.profile_creator.user.id in subscribe or post.profile_creator.user.id == mySession.id %}
+                            <div class="post">
+                    <div class="post-ops">
+                        <div class="post-user">
+                            <a href="/m/@{{ post.profile_creator.nickname }}">
+                                <span><span
+                                        style="background-image: url('{{ post.profile_creator.profile_avatar }}');"></span></span>
+                                <b>{{ post.profile_creator.user.first_name }} {{ post.profile_creator.user.last_name }}
+                                    {% if post.profile_creator.user_verified == True %}
+                                    <i class="certificate icon"><b>✔</b></i>
+                                    {% endif %}
+                                </b>
+                            </a>
+                        </div>
+
+                        {% if post.profile_creator.user.id == mySession.id %}
+                        <div class="post-menu-dropdown-icon" onclick="openDropdownMenu('post{{ post.id }}')">
+                            <i class="ellipsis vertical icon"></i>
+                            <div id="post{{ post.id }}" class="dropdown-container invisible-content">
+                                <div class="menu">
+                                <form name="deletePost{{ post.id }}" action="/m/deletepost/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="page" value="explorer">
+                                    <input type="hidden" name="post" value="{{ post.id }}">
+                                    <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                    <div class="item" onclick="document.forms['deletePost{{ post.id }}'].submit()">
+                                        <span><i class="trash icon"></i></span>DELETAR
+                                    </div>
+                                </form>
+                                <form name="hiddenPost{{ post.id }}" action="/m/changehidden/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="hidden">
+                                    <input type="hidden" name="page" value="explorer">
+                                    <input type="hidden" name="post" value="{{ post.id }}">
+                                    <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                    <div class="item" onclick="document.forms['hiddenPost{{ post.id }}'].submit()">
+                                        <span><i class="eye slash icon"></i></span>OCULTAR
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if post.profile_creator.user_id != mySession.profile.user_id %}
+
+                                <div
+                                {% if post.profile_creator.user_creator == True %}
+                                class="follow_sign_container"
+                                {% else %}
+                                class="follow_sign_container_only"
+                                {% endif %}
+                                >
+
+                        <form name="unfollow{{ post.id }}" action="/m/follow/" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="unfollow">
+                            <input type="hidden" name="creator" value="{{ post.profile_creator.user_id }}">
+                            <input type="hidden" name="creator_nick" value="{{ post.profile_creator.nickname }}">
+                        </form>
+                        <form name="follow{{ post.id }}" action="/m/follow/" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="follow">
+                            <input type="hidden" name="creator" value="{{ post.profile_creator.user_id }}">
+                            <input type="hidden" name="creator_nick" value="{{ post.profile_creator.nickname }}">
+                        </form>
+                        <script>
+                            $(document).ready(function () {
+                                $("#but_follow{{ post.id }}").click(function (fo) {
+                                    fo.preventDefault();
+                                    var follow_buttons = document.getElementsByClassName("span_follow{{ post.profile_creator.nickname }}");
+                                    var follow_condition = follow_buttons[0];
+                                    if (follow_condition.textContent == 'SEGUIR') {
+                                        var formf{{ post.id }} = $('form[name="follow{{ post.id }}"]');
+                                        $.ajax({
+                                            url: formf{{ post.id }}.attr("action"),
+                                            type: formf{{ post.id }}.attr("method"),
+                                            data: formf{{ post.id }}.serialize(),
+                                            success: function () {
+                                                for (var b = 0; b < follow_buttons.length; b++) {
+                                                    follow_buttons[b].innerHTML = '';
+                                                    follow_buttons[b].innerHTML = 'DEIXAR DE SEGUIR';
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        var formu{{ post.id }} = $('form[name="unfollow{{ post.id }}"]');
+                                        $.ajax({
+                                            url: formu{{ post.id }}.attr("action"),
+                                            type: formu{{ post.id }}.attr("method"),
+                                            data: formu{{ post.id }}.serialize(),
+                                            success: function () {
+                                                for (var x = 0; x < follow_buttons.length; x++) {
+                                                    follow_buttons[x].innerHTML = '';
+                                                    follow_buttons[x].innerHTML = 'SEGUIR';
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            });
+                        </script>
+                        {% if post.profile_creator.user_id in follower %}
+                            <div class="follow-form">
+                                <form>
+                                <button id="but_follow{{ post.id }}" type="submit">
+                                <span class="span_follow{{ post.profile_creator.nickname }}">DEIXAR DE SEGUIR</span>
+                                <b></b>
+                                </button>
+                                </form>
+                            </div>
+                        {% else %}
+                            <div class="follow-form">
+                                <form>
+                                <button id="but_follow{{ post.id }}" type="submit">
+                                <span class="span_follow{{ post.profile_creator.nickname }}">SEGUIR</span>
+                                <b></b>
+                                </button>
+                                </form>
+                            </div>
+                        {% endif %}
+
+                        {% if post.profile_creator.user_creator == True %}
+                            {% if post.profile_creator.user.id in subscribe %}
+                                <div class="sign-user">
+                                    <form action="/m/desactive/signature/" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="creator" value="{{ post.profile_creator.user_id }}">
+                                        <input type="hidden" name="creator_nick" value="{{ post.profile_creator.nickname }}">
+                                        <button class="cancel" type="submit">
+                                            <span>ENCERRAR ASSINATURA</span>
+                                            <b></b>
+                                        </button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <div class="sign-user">
+                                    <form action="/m/active/signature/" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="creator" value="{{ post.profile_creator.user_id }}">
+                                        <input type="hidden" name="creator_nick" value="{{ post.profile_creator.nickname }}">
+                                        <button type="submit">
+                                            <span>ASSINAR CONTEÚDO</span>
+                                            <b>R$ 1.000/mês</b>
+                                        </button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="image-subtitles">
+                        {{ post.subtitles }}
+                    </div>
+
+                    {% if post.media_type == 'IMAGE' %}
+                        <div class="home-preview-container">
+                        <span class="post-image" style="background-image: url('{{ post.media_url }}');" onclick='fullscreenMeida("open", "img{{ post.id }}", false, null)'></span>
+
+                        <div class="status-preview">
+                        {% if post.media_premium == True %}
+                        <i class="dollar sign icon"></i>
+                        {% endif %}
+                        </div>
+                    </div>
+                        <div id="img{{ post.id }}" class="fullscreen-closed">
+                        <div class="for-close-full" onclick='fullscreenMeida("close", "img{{ post.id }}", false, null)'></div>
+                        <div class="fullscreen-container">
+
+                            <span class="image-full"
+                                  style="background-image: url('{{ post.media_url }}');"></span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if post.media_type == 'VIDEO' %}
+                        <div class="video-container">
+                            <iframe
+                                    id="panda-{{ post.media_url }}"
+                                    class="pandavideo-iframe"
+                                    src="https://player-vz-cc49f916-dfc.tv.pandavideo.com.br/embed/?v={{ post.media_url }}"
+                                    allow="accelerometer;gyroscope;autoplay;encrypted-media;"
+                                    allowfullscreen='true'>
+                            </iframe>
+                        </div>
+                        <script>
+                        window.pandascripttag = window.pandascripttag || [];
+                        window.pandascripttag.push(function (){
+                          const player = new PandaPlayer('panda-{{ post.media_url }}', {
+                                onReady: () => {
+                                    //console.log('PLAYER LOADED')
+                              }
+                          })
+                        })
+                        </script>
+                    {% endif %}
+
+                    <div class="post-interactions">
+                        <span>
+                                <form name="deslike{{ post.id }}" action="/m/likepost/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="page" value="explorer">
+                                <input type="hidden" name="post" value="{{ post.id }}">
+                                <input type="hidden" name="creator" value="{{ post.profile_creator.user.id }}"/>
+                                <input type="hidden" name="fan_id" value="{{ mySession.id }}"/>
+                                <input type="hidden" name="fan_nick" value="{{ mySession.profile.nickname }}"/>
+                                <input type="hidden" name="action" value="deslike">
+                                </form>
+
+                                <form name="like{{ post.id }}" action="/m/likepost/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="page" value="explorer">
+                                <input type="hidden" name="post" value="{{ post.id }}"/>
+                                <input type="hidden" name="creator" value="{{ post.profile_creator.user.id }}"/>
+                                <input type="hidden" name="fan_id" value="{{ mySession.id }}"/>
+                                <input type="hidden" name="fan_nick" value="{{ mySession.profile.nickname }}"/>
+                                <input type="hidden" name="action" value="like"/>
+                                </form>
+
+                                {% if post.id in liked_post_ids %}
+                                    <i id="heart{{ post.id }}" class="heart icon"></i>
+                                    {% else %}
+                                    <i id="heart{{ post.id }}" class="heart outline icon"></i>
+                                {% endif %}
+
+                                    <script>
+                                        $(document).ready(function () {
+                                            $("#heart{{ post.id }}").click(function (e) {
+                                                e.preventDefault();
+                                                var heart_condition = document.getElementById("heart{{ post.id }}")
+                                                if (heart_condition.classList.contains('outline')) {
+                                                    var forml{{ post.id }} = $('form[name="like{{ post.id }}"]')
+                                                    $.ajax({
+                                                        url: forml{{ post.id }}.attr("action"),
+                                                        type: forml{{ post.id }}.attr("method"),
+                                                        data: forml{{ post.id }}.serialize(),
+                                                        success: function () {
+                                                            document.getElementById("heart{{ post.id }}").classList.remove("outline")
+                                                            var bnew{{ post.id }} = document.getElementById("b{{ post.id }}")
+                                                            var likesnow{{ post.id }} = Number(bnew{{ post.id }}.textContent) + 1
+                                                            bnew{{ post.id }}.innerHTML = ''
+                                                            bnew{{ post.id }}.innerHTML = likesnow{{ post.id }}
+                                                        }
+                                                    });
+                                                } else {
+                                                    var formd{{ post.id }} = $('form[name="deslike{{ post.id }}"]')
+                                                    $.ajax({
+                                                        url: formd{{ post.id }}.attr("action"),
+                                                        type: formd{{ post.id }}.attr("method"),
+                                                        data: formd{{ post.id }}.serialize(),
+                                                        success: function () {
+                                                            document.getElementById("heart{{ post.id }}").classList.add("outline")
+                                                            var b_new{{ post.id }} = document.getElementById("b{{ post.id }}")
+                                                            var deslikesnow{{ post.id }} = Number(b_new{{ post.id }}.textContent) - 1
+                                                            b_new{{ post.id }}.innerHTML = ''
+                                                            b_new{{ post.id }}.innerHTML = deslikesnow{{ post.id }}
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    </script>
+
+                                <b id="b{{ post.id }}">{{ post.likedpost_set.count }}</b>
+                        </span>
+                        <span><i class="comment dots outline icon" onclick="postComment('commentPost{{ post.id }}')"></i>
+                            <b>{{ post.commentpost_set.count }}</b>
+                        </span>
+                        <div id="commentPost{{ post.id }}" class="post-comment-container invisible-content">
+                            <div class="post-comment-form">
+                                <form action="/m/savecomment/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="page" value="explorer">
+                                    <input type="hidden" name="action" value="comment">
+                                    <input type="hidden" name="post" value="{{ post.id }}">
+                                    <input type="hidden" name="creator" value="{{ post.profile_creator.user.id }}">
+                                    <input type="hidden" name="fan_id" value="{{ mySession.id }}">
+                                    <input type="hidden" name="fan_nick" value="{{ mySession.profile.nickname }}">
+                                    <input type="text" name="comment" placeholder="Comente algo..." autocomplete="off"/>
+                                    <button type="submit">COMENTAR</button>
+                                </form>
+                            </div>
+                            <div class="post-comments-container">
+
+                                {% for comment in comments %}
+                                    {% if comment.post.id == post.id %}
+
+                                <div class="comment-item">
+                                    <div class="user-area">
+                                        <a href="/m/@{{ comment.fan_nickname }}">
+                                            <span><span class="user-avatar"
+                                                        style="background-image: url('{{ comment.profile_fan.profile_avatar }}');"></span></span>
+                                            <b>{{ comment.profile_fan.user.first_name }} {{ comment.profile_fan.user.last_name }}</b>
+                                        </a>
+                                        <div class="comment-ops">
+                                                    <form name="deslikeComment{{ comment.id }}" action="/m/likecomment/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="page" value="explorer">
+                                                    <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                    <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                    <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                    <input type="hidden" name="action" value="deslike"/>
+                                                    </form>
+
+                                                    <form name="likeComment{{ comment.id }}" action="/m/likecomment/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="page" value="explorer">
+                                                    <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                    <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                    <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                    <input type="hidden" name="action" value="like"/>
+                                                    </form>
+
+                                                    {% if comment.id in liked_comment_ids %}
+                                                        <i id="heartcomment{{ comment.id }}" class="heart icon"></i>
+                                                    {% else %}
+                                                        <i id="heartcomment{{ comment.id }}" class="heart outline icon"></i>
+                                                    {% endif %}
+
+                                                    <script>
+                                                        $(document).ready(function () {
+                                                            $("#heartcomment{{ comment.id }}").click(function (e) {
+                                                                e.preventDefault();
+                                                                var heart_condition_c = document.getElementById("heartcomment{{ comment.id }}")
+                                                                if (heart_condition_c.classList.contains('outline')) {
+                                                                    var forml_c{{ comment.id }} = $('form[name="likeComment{{ comment.id }}"]')
+                                                                    $.ajax({
+                                                                        url: forml_c{{ comment.id }}.attr("action"),
+                                                                        type: forml_c{{ comment.id }}.attr("method"),
+                                                                        data: forml_c{{ comment.id }}.serialize(),
+                                                                        success: function () {
+                                                                            document.getElementById("heartcomment{{ comment.id }}").classList.remove("outline")
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    var formd_c{{ comment.id }} = $('form[name="deslikeComment{{ comment.id }}"]')
+                                                                    $.ajax({
+                                                                        url: formd_c{{ comment.id }}.attr("action"),
+                                                                        type: formd_c{{ comment.id }}.attr("method"),
+                                                                        data: formd_c{{ comment.id }}.serialize(),
+                                                                        success: function () {
+                                                                            document.getElementById("heartcomment{{ comment.id }}").classList.add("outline")
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        });
+                                                    </script>
+
+                                            {% if comment.profile_fan.user.id == mySession.id or comment.post.profile_creator.user.id == mySession.id %}
+                                                <form name="deleteComment{{ comment.id }}" action="/m/deletecomment/" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="page" value="explorer"/>
+                                                <input type="hidden" name="post" value="{{ post.id }}"/>
+                                                <input type="hidden" name="comment" value="{{ comment.id }}"/>
+                                                <input type="hidden" name="user_id" value="{{ mySession.id }}"/>
+                                                <i class="trash icon" onclick="document.forms['deleteComment{{ comment.id }}'].submit()"></i>
+                                                </form>
+                                                {% endif %}
+
+                                        </div>
+                                    </div>
+                                    <div class="user-comment">
+                                        {{ comment.fan_comment }}
+                                    </div>
+                                </div>
+
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                        {% else %}
+                            <div class="not-subscribe-message">
+                                <span><i class="heart broken icon"></i></span>
+                                <h2>Ops!<br>Você não é um assinante de <a href="/m/@{{ post.profile_creator.nickname }}">@{{ post.profile_creator.nickname }}</a>.</h2>
+                            </div>
+                        {% endif %}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+{% endblock %}

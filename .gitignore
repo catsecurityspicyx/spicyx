@@ -1,20 +1,15 @@
 
 # Elastic Beanstalk Files
-.elasticbeanstalk/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 aws-elastic-beanstalk-cli-setup/*
-.ebextensions/
-.ebextensions/*
 
 #My app
 spicyx/settings.py
 spicyxapp/migrations/
 spicyxapp/temp/*
-spicyxapp/templates/members/bkp_*
 spicyxapp/STORAGE_S3.py
-templates/
 
 
 # Defaults

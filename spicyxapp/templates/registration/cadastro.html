@@ -1,0 +1,90 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX</title>
+{% endblock %}
+
+{% block content %}
+    <div class="form-index">
+        <div class="site-container">
+            <div class="logo_and_titulo">
+                <img class="logo" src="{% static 'images/spicyx.png' %}" alt="logo">
+                <b>SpicyX</b>
+            </div>
+            <div class="index_subtitles">
+                <b>Seja um apoiador dos seus criadores favoritos</b>
+            </div>
+        </div>
+        <span>Crie sua conta</span>
+        <form action="{% url 'cadastro' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="first_name" placeholder="Nome" required>
+
+            <input type="text" name="last_name" placeholder="Sobrenome" required>
+
+            <input type="email" name="username" placeholder="myspicyemail@exemplo.com" required>
+
+            <input type="password" name="password" placeholder="senha" required>
+            <!--<input type="hidden" name="next" value="{{ next }}"/>-->
+            <label>Data de nascimento</label>
+            <input type="date" name="birth" required>
+
+            <div class="divisor_sex_target">
+                <select id="sex" name="sex" required>
+                    <option value="">Gênero:</option>
+                    <option value="male">Homem</option>
+                    <option value="female">Mulher</option>
+                </select>
+
+                <select id="interest" name="interest" required>
+                    <option value="">Preferência:</option>
+                    <option value="male">Homem</option>
+                    <option value="female">Mulher</option>
+                    <option value="all">Ambos</option>
+                </select>
+            </div>
+            <button id="create_account" type="submit" name="submit">CADASTRAR</button>
+        </form>
+        <script>
+            var fields = document.querySelectorAll('input')
+            var selectsfields = document.querySelectorAll('select')
+            var submitbutton = document.getElementById('create_account')
+            function checkFields() {
+                for (var i = 0; i < fields.length; i++) {
+                    if (fields[i].value === '') {
+                        submitbutton.disabled = true
+                        submitbutton.style = 'background-color: #8a8a8a;'
+                        return
+                    }
+                }
+                for (var j = 0; j < selectsfields.length; j++) {
+                    if (selectsfields[j].value === '') {
+                        submitbutton.disabled = true
+                        submitbutton.style = 'background-color: #8a8a8a;'
+                        return
+                    }
+                }
+                submitbutton.disabled = false
+                submitbutton.style = 'background-color: #e59cc4;'
+            }
+
+            for (var i = 0; i < fields.length; i++) {
+                fields[i].addEventListener('input', checkFields)
+            }
+            for (var j = 0; j < selectsfields.length; j++) {
+                selectsfields[j].addEventListener('change', checkFields)
+            }
+
+            checkFields()
+        </script>
+        <div class="notice_terms">
+            Ao se inscrever, você concorda com nossos
+            <a href="/termos/">Termos de Serviço</a> e <a href="/privacidade/">Política de Privacidade</a> e confirma que tem
+            pelo menos 18 anos de idade.
+        </div>
+    <div class="send_to_login">
+        Já tem uma conta? <a href="/">Login</a>
+    </div>
+    </div>
+{% endblock %}

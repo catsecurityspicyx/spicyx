@@ -1,0 +1,127 @@
+{% if user.is_authenticated %}
+    {% load static %}
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="utf-8">
+
+        {% block title %}
+            <title>SpicyX | Painel</title>
+        {% endblock %}
+
+        <meta name="description"
+              content="A SpicyX é a plataforma social focada em impulsionar as conexões de criadores e fãs. A plataforma inclui artistas e criadores de conteúdo de todos os gêneros e permite que eles monetizem seu conteúdo exclusivo enquanto desenvolvem relacionamentos autênticos com sua fanbase.">
+        <meta name="keywords" content="SpicyX">
+        <meta name="author" content="Cat Security">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name=theme-color content=#da75a8>
+        <meta name=robots content=noimageindex>
+        <meta name=pinterest content=nopin>
+        <link rel="shortcut icon" href="{% static 'images/spicyx_icon_clean.png' %}"/>
+        <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+        <link rel="icon" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}"/>
+        <link rel="icon" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/darkmode_theme.css' %}" media="screen"/>
+        <link rel="stylesheet" type="text/css"
+              href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" media="screen"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+        {% block styles %}
+        {% endblock %}
+
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
+
+        <script src="{% static 'js/functions.js' %}"></script>
+        {% block scripts %}
+        {% endblock %}
+    </head>
+
+    <body>
+    <nav>
+        <span><div class="ui dropdown">
+                <input type="hidden" name="more-options-menu">
+                <i class="bars icon size-icons-nav"></i>
+                <div class="menu">
+                    <a href="{% url 'docs' %}"><div class="item" data-value="docs"><span><i class="dollar sign icon"></i> Documentação Creators</span></div></a>
+                    <a href="{% url 'payouts' %}"><div class="item" data-value="payouts"><span><i class="dollar sign icon"></i> Saques</span></div></a>
+                    <a href="/m/logout/"><div class="item" data-value="logout"><span><i class="sign out alternate icon"></i> Sair</span></div></a>
+                </div>
+            </div>
+            <script>
+                $('.ui.dropdown')
+                    .dropdown()
+                ;
+            </script></span>
+    </nav>
+
+    <div class="container">
+        <div id="cookie-banner">
+        <span>Este site usa cookies para garantir que você obtenha a melhor experiência em nosso site.
+        Utilizamos cookies para lhe proporcionar a melhor experiência e garantir a segurança dos nossos utilizadores. Os
+        únicos cookies não essenciais que usamos são para quaisquer referências pessoais que você fizer. Não rastreamos
+        você em outros sites.
+        <button id="accept-cookies">ACEITAR TODOS</button>
+        </span>
+        </div>
+        <script>
+            window.onload = function () {
+                var banner = document.getElementById('cookie-banner');
+                var button = document.getElementById('accept-cookies');
+
+                if (!document.cookie.includes('cookies-accepted')) {
+                    banner.style.display = 'flex';
+                }
+
+                button.onclick = function () {
+                    document.cookie = 'cookies-accepted=true; max-age=31536000; path=/';
+                    banner.style.display = 'none';
+                }
+            }
+        </script>
+
+        {% if request.GET.status == 'error' %}
+            <script>
+                $.toast({
+                    title: 'Erro:',
+                    class: 'error',
+                    message: '{{ request.GET.info }}',
+                    showProgress: 'bottom',
+                    classProgress: 'pink',
+                    position: 'bottom left'
+                });
+            </script>
+        {% elif request.GET.status == 'success' %}
+            <script>
+                $.toast({
+                    title: 'Sucesso!:',
+                    class: 'success',
+                    message: '{{ request.GET.info }}' || 'Upload realizado com sucesso.',
+                    showProgress: 'bottom',
+                    classProgress: 'pink',
+                    position: 'bottom left'
+                });
+            </script>
+        {% elif info %}
+            <script>
+                $.toast({
+                    title: 'Info.',
+                    class: 'info',
+                    message: '{{ info }}',
+                    showProgress: 'bottom',
+                    classProgress: 'pink',
+                    position: 'bottom left',
+                    displayTime: 5000
+                });
+            </script>
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </div>
+    {% block scripts_end %}
+    {% endblock %}
+    </body>
+    </html>
+{% endif %}

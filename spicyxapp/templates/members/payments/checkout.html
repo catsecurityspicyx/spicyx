@@ -1,0 +1,74 @@
+{% extends 'members/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Checkout</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-home.css' %}" media="screen"/>
+{% endblock %}
+{% block scripts %}
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="feed">
+            <div class="checkout-container">
+                <div class="info-user">
+                    <div class="user-image-profile"><a href="/m/@{{ profile.nickname }}"><span><span
+                            style="background-image: url('{{ profile.profile_avatar }}');"></span></span></a>
+                    </div>
+
+                    <div class="user-name-titulo">
+                        <div><b>@{{ profile.nickname }}</b></div>
+                    </div>
+                </div>
+
+                <div class="checkout-container-form">
+                {% if currentInvoice %}
+                    <div class="checkout_invoice_link">
+                        <b>Você tem uma fatura pendente.</b><br/>
+                        <a href="{{ currentInvoice.invoice_url }}" target="_blank">Visualizar fatura</a>
+                    </div>
+                {% else %}
+                    {% if not subscriber %}
+                    <form action="/m/@{{ profile.nickname }}/checkout/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="lookup_key" value="{{PRICE_LOOKUP_KEY}}" >
+                    <input type="hidden" name="creator" value="{{ profile.nickname }}">
+                    <input type="hidden" name="fan" value="{{ mySession.profile.nickname }}">
+                    <label>Plano</label>
+                        <select name="plan">
+                        {% for prod in product %}
+                            {% if prod.recurrence == 'month' %}
+                                <option value="month">R$ {{ prod.value|floatformat:2 }} /MÊS</option>
+                            {% endif %}
+                            {% if prod.recurrence == 'year' %}
+                                <option value="year">R$ {{ prod.value|floatformat:2 }} /ANO</option>
+                            {% endif %}
+                        {% endfor %}
+                        </select>
+
+                    <button type="submit">ASSINAR</button>
+                    </form>
+                    {% else %}
+                        <div class="checkout_signature_exist">
+                            <b>Você já é assinante deste Creator!</b>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+{% endblock %}

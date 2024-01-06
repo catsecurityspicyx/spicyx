@@ -1,0 +1,68 @@
+{% extends 'members/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Fãs e Assinantes</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-home.css' %}" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="feed">
+
+            {% if mySession.profile.user_creator == True %}
+            <div class="my_subscribers">
+                <div class="title">
+                    <i class="hand holding usd icon"></i>
+                    <b>{{ countSubscribers }} Assinantes</b>
+                </div>
+                <div class="people_container">
+                    {% for sub in subscribers %}
+                    <div class="found-user">
+                        <a href="/m/@{{ sub.subscriber.nickname }}">
+                            <span><span style="background-image:url('{{ sub.subscriber.profile_avatar }}')"></span></span>
+                            <b>{{ sub.subscriber.user.first_name }} {{ sub.subscriber.user.last_name }} (@{{ sub.subscriber.nickname }})
+                                {% if sub.subscriber.user_verified == True %}
+                                    <i class="certificate icon"><b>✔</b></i>
+                                {% endif %}
+                            </b>
+                        <div style="margin-left: .5em; color: var(--medium-text);">{{ sub.created_at|date:"d/m/Y" }}</div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="my_followers">
+                <div class="title">
+                    <i class="users icon"></i>
+                    <b>{{ countFollowers }} Seguidores</b>
+                </div>
+                <div class="people_container">
+                    {% for follow in followers %}
+                    <div class="found-user">
+                        <a href="/m/@{{ follow.follower.nickname }}">
+                            <span><span style="background-image:url('{{ follow.follower.profile_avatar }}')"></span></span>
+                            <b>{{ follow.follower.user.first_name }} {{ follow.follower.user.last_name }} (@{{ follow.follower.nickname }})
+                                {% if follow.follower.user_verified == True %}
+                                    <i class="certificate icon"><b>✔</b></i>
+                                {% endif %}
+                            </b>
+                         <div style="margin-left: .5em; color: var(--medium-text);">{{ follow.created_at|date:"d/m/Y" }}</div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+{% endblock %}

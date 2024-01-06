@@ -1,0 +1,18 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Politica de privacidade</title>
+{% endblock %}
+
+{% block content %}
+    <script>
+        window.onload = function () {
+            var banner = document.getElementById('cookie-banner');
+            var last_posts = document.getElementById('last_posts_container')
+            banner.style.display = 'none'
+            last_posts.style.display = 'none'
+        }
+    </script>
+    politica de privacidade
+{% endblock %}

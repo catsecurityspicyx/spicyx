@@ -1,0 +1,195 @@
+{% if user.is_authenticated %}
+    {% load static %}
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="utf-8">
+
+        {% block title %}
+            <title>SpicyX | Home</title>
+        {% endblock %}
+
+        <meta name="description"
+              content="A SpicyX é a plataforma social focada em impulsionar as conexões de criadores e fãs. A plataforma inclui artistas e criadores de conteúdo de todos os gêneros e permite que eles monetizem seu conteúdo exclusivo enquanto desenvolvem relacionamentos autênticos com sua fanbase.">
+        <meta name="keywords" content="SpicyX">
+        <meta name="author" content="Cat Security">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name=theme-color content=#da75a8>
+        <meta name=robots content=noimageindex>
+        <meta name=pinterest content=nopin>
+        <link rel="shortcut icon" href="{% static 'images/spicyx_icon_clean.png' %}"/>
+        <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+        <link rel="icon" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}"/>
+        <link rel="icon" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}"/>
+        {% if darktheme == False %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/default_theme.css' %}" media="screen"/>
+        {% else %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/darkmode_theme.css' %}" media="screen"/>
+        {% endif %}
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css">
+        <!--<link rel="stylesheet" type="text/css" href="{% static 'css/semantic.min.css' %}" media="screen"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/cropper.css' %}" media="screen"/>-->
+        <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" media="screen"/>
+        {% block styles %}
+        {% endblock %}
+
+        <script async src="https://player.pandavideo.com.br/api.v2.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
+        <script src="https://unpkg.com/cropperjs"></script>
+        <!--<script src="{% static 'js/api.v2.js' %}"></script>
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/semantic.min.js' %}"></script>
+        <script src="{% static 'js/cropper.js' %}"></script>-->
+        <script src="{% static 'js/functions.js' %}"></script>
+        {% block scripts %}
+        {% endblock %}
+    </head>
+
+    <body>
+        <nav>
+            <a href="/m/home/"><span><i class="home icon"></i></span></a>
+            <span onclick="changeStatePostForm('show', 'home-post-form')"><i class="photo video icon"></i></span>
+            <a href="/m/explorer/"><span><i class="globe americas icon"></i></span></a>
+            <a href="/m/me/"><span><i class="user circle icon"></i></span></a>
+            {% if countNotifications == 0 %}
+            <span><i class="bell outline icon"></i></span>
+            {% elif countNotifications > 0 %}
+                <div class="open-notifications">
+                    <span id="notifications_number" onclick="changeStateNotifications('show', 'notifications-container')">
+                        {% if countNotifications <= 99 and countNotifications > 0 %}
+                            {{ countNotifications }}
+                        {% else %}
+                            99+
+                        {% endif %}
+                    </span>
+                    <i class="bell icon" onclick="changeStateNotifications('show', 'notifications-container')"></i>
+                    <div id="notifications-container" class="notifications-container invisible-content">
+                        <div class="scroll-notifications">
+                        {% for notification in notifications %}
+                            {% if notification.viewed == False and notification.profile_to == mySession.id %}
+                            <div class="notification">
+                                <div class="notifi-container">
+                                    <a href="/m/@{{ notification.profile_from.nickname }}"><span
+                                            class="from">@{{ notification.profile_from.nickname }}</span></a>
+                                    <div class="notification-message">
+                                        {{ notification.context_msg }}
+                                        {% if notification.context_link %}
+                                            <a href="{{ notification.context_link }}">Acesse</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="notifi-viewed">
+                                    <form name="clear_only_notification{{ notification.id }}" action="/m/clearnotification/" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="page" value="{{ request.path }}">
+                                        <input type="hidden" name="target" value="only">
+                                        <input type="hidden" name="noti_id" value="{{ notification.id }}">
+                                        <input type="hidden" name="page_two" value="post">
+                                        <i class="times icon" onclick="document.forms['clear_only_notification{{ notification.id }}'].submit()"></i>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                        <div class="notification-clear">
+                            <form name="clear_all_notifications" action="/m/clearnotification/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="page" value="{{ request.path }}">
+                                <input type="hidden" name="target" value="all">
+                                <span onclick="document.forms['clear_all_notifications'].submit()">Limpar tudo</span>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <span><div class="ui dropdown">
+                <input type="hidden" name="more-options-menu">
+                <i class="bars icon size-icons-nav"></i>
+                <div class="menu">
+                    <a href="/m/myfollowers/"><div class="item" data-value="fas"><span><i class="users icon"></i> Meus Fãs</span></div></a>
+                    <a href="/m/settings/"><div class="item" data-value="settings"><span><i class="cog icon"></i> Configurações</span></div></a>
+                    <a href="/m/finances/"><div class="item" data-value="finance"><span><i class="credit card icon"></i> Financeiro</span></div></a>
+                    <a href="/m/logout/"><div class="item" data-value="logout"><span><i class="sign out alternate icon"></i> Sair</span></div></a>
+                </div>
+            </div>
+            <script>
+                $('.ui.dropdown')
+                    .dropdown()
+                ;
+            </script></span>
+        </nav>
+
+    <div class="container">
+    <div id="cookie-banner">
+        <span>Este site usa cookies para garantir que você obtenha a melhor experiência em nosso site.
+        Utilizamos cookies para lhe proporcionar a melhor experiência e garantir a segurança dos nossos utilizadores. Os
+        únicos cookies não essenciais que usamos são para quaisquer referências pessoais que você fizer. Não rastreamos
+        você em outros sites.
+        <button id="accept-cookies">ACEITAR TODOS</button>
+        </span>
+    </div>
+<script>
+        window.onload = function() {
+            var banner = document.getElementById('cookie-banner');
+            var button = document.getElementById('accept-cookies');
+
+            if (!document.cookie.includes('cookies-accepted')) {
+                banner.style.display = 'flex';
+            }
+
+            button.onclick = function() {
+                document.cookie = 'cookies-accepted=true; max-age=31536000; path=/';
+                banner.style.display = 'none';
+            }
+        }
+    </script>
+
+    {% if request.GET.status == 'error' %}
+    <script>
+        $.toast({
+            title: 'Erro:',
+            class: 'error',
+            message: '{{ request.GET.info }}',
+            showProgress: 'bottom',
+            classProgress: 'pink',
+            position: 'bottom left'
+        });
+    </script>
+{% elif request.GET.status == 'success' %}
+    <script>
+        $.toast({
+            title: 'Sucesso!:',
+            class: 'success',
+            message: '{{ request.GET.info }}' || 'Upload realizado com sucesso.',
+            showProgress: 'bottom',
+            classProgress: 'pink',
+            position: 'bottom left'
+        });
+    </script>
+{% elif info %}
+    <script>
+        $.toast({
+            title: 'Info.',
+            class: 'info',
+            message: '{{ info }}',
+            showProgress: 'bottom',
+            classProgress: 'pink',
+            position: 'bottom left',
+            displayTime: 5000
+        });
+    </script>
+{% endif %}
+        {% block content %}
+        {% endblock %}
+    </div>
+    {% block scripts_end %}
+    {% endblock %}
+    </body>
+    </html>
+{% endif %}

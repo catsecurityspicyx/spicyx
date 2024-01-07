@@ -29,7 +29,7 @@
                         {% if payout.creator == mySession.profile %}
                             <div>
                                 <span>{{ payout.payout_id }}</span>
-                                <span>{{ payout.total_amount_payout }}</span>
+                                <span>R$ {{ payout.total_amount_payout }}</span>
                                 <span>{{ payout.created_at|date:"d/m/Y" }}</span>
                                 <span>{{ payout.status }}</span>
                             </div>
@@ -40,24 +40,37 @@
 
             <div class="my_settings three">
                 <div class="title">
-                    <i class="wallet icon"></i>
+                    <i class="receipt icon"></i>
                     <b>Reembolsos e Chargebacks</b>
                 </div>
-                <div class="container_settings subscriptions">
-                    <span><b>Saque ID</b></span>
+                <div class="container_settings invoices">
+                    <span><b>ID</b></span>
                     <span><b>Valor</b></span>
+                    <span><b>Motivo</b></span>
                     <span><b>Criado em</b></span>
                     <span><b>Status</b></span>
-                    {% for payout in payouts %}
-                        {% if payout.creator == mySession.profile %}
+                    {% for dispute in disputes %}
+                        {% if dispute.creator == mySession %}
                             <div>
-                                <span>{{ payout.payout_id }}</span>
-                                <span>{{ payout.total_amount_payout }}</span>
-                                <span>{{ payout.created_at|date:"d/m/Y" }}</span>
-                                <span>{{ payout.status }}</span>
+                                <span>{{ dispute.dispute_id }}</span>
+                                <span>R$ {{ dispute.value }}</span>
+                                <span>{{ dispute.reason }}</span>
+                                <span>{{ dispute.created_at|date:"d/m/Y" }}</span>
+                                <span>{{ dispute.status }}</span>
                             </div>
                         {% endif %}
                     {% endfor %}
+                {% for refund in refunds %}
+                    {% if refund.creator == mySession %}
+                        <div>
+                                <span>{{ refund.invoice_id }}</span>
+                                <span>R$ {{ refund.value }}</span>
+                                <span>Reembolsado ao cliente.</span>
+                                <span>{{ refund.created_at|date:"d/m/Y" }}</span>
+                                <span>{{ refund.status }}</span>
+                            </div>
+                    {% endif %}
+                {% endfor %}
                 </div>
             </div>
             {% endif %}

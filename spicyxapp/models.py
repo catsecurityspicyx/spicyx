@@ -212,6 +212,7 @@ class DisputeChargeback(models.Model):
     reason = models.CharField(max_length=100)
     description = models.TextField()
     status = models.CharField(max_length=25)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         s = str(self.dispute_id) + ' - R$ ' + str(self.value) + ' - ' + str(self.status)

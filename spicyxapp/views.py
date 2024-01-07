@@ -3,6 +3,7 @@ from spicyxapp import models
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import logout
 from datetime import datetime
+from django.contrib.auth import authenticate, login
 from .functions import EditProfile
 from .functions import createPresignedUrl
 from .functions import generateNewsPresignedUrls
@@ -37,6 +38,7 @@ import time
 stripe.api_key = settings.STRIPE_SECRET_API_KEY
 
 
+
 @ratelimit(key='ip', rate='200/5m', block=True)
 @csrf_protect
 def searchUsers(request):
@@ -67,6 +69,29 @@ def start(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect("/m/home/")
     else:
+        if request.POST:
+            username = escape(request.POST['username'])
+            password = escape(request.POST['password'])
+
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY,
+                           'response': recaptcha_response}
+            req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+            result = req.json()
+            if result['success']:
+                pass
+            else:
+                return HttpResponseRedirect("/")
+
+            authLogin = authenticate(request, username=username, password=password)
+            if authLogin is not None:
+                login(request, authLogin)
+                return HttpResponseRedirect("/m/home/")
+            else:
+                err_msg = '?status=error&info=E-mail ou senha incorreto.'
+                return HttpResponseRedirect("/" + err_msg)
+
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY
         try:
             admin_profile = models.User.objects.get(username='spicyx').profile
             last_six_posts = models.FeedUser.objects.filter(profile_creator=admin_profile,
@@ -75,8 +100,8 @@ def start(request):
                                                             media_premium=False,
                                                             media_free=True).order_by('-created_at')[:6]
         except:
-            return render(request, 'registration/login.html')
-        return render(request, 'registration/login.html', {'last_posts': last_six_posts})
+            return render(request, 'registration/login.html', {'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
+        return render(request, 'registration/login.html', {'last_posts': last_six_posts, 'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
 
 
 @ratelimit(key='ip', rate='100/5m', block=True)
@@ -91,7 +116,30 @@ def privacity(request):
 
 @ratelimit(key='ip', rate='50/5m', block=True)
 @csrf_protect
+def myPaaswordReset(request):
+    GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY
+
+    if request.POST:
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY,
+                       'response': recaptcha_response}
+        req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+        result = req.json()
+        if result['success']:
+            pass
+        else:
+            return HttpResponseRedirect("/password_reset/")
+
+        return render(request, 'registration/password_reset_form.html', {'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
+
+    return render(request, 'registration/password_reset_form.html', {'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
+
+
+@ratelimit(key='ip', rate='50/5m', block=True)
+@csrf_protect
 def registration(request):
+    GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY
+
     try:
         admin_profile = models.User.objects.get(username='spicyx').profile
         last_six_posts = models.FeedUser.objects.filter(profile_creator=admin_profile,
@@ -105,6 +153,16 @@ def registration(request):
         pass
 
     if request.POST:
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY,
+                       'response': recaptcha_response}
+        req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+        result = req.json()
+        if result['success']:
+            pass
+        else:
+            return HttpResponseRedirect("/cadastro/")
+
         birth = escape(request.POST['birth'])
         sex = escape(request.POST['sex'])
         interest = escape(request.POST['interest'])
@@ -174,12 +232,14 @@ def registration(request):
                 a.save()
 
                 success = 'Cadastro realizado com sucesso!'
-                return render(request, 'registration/login.html', {'success': success, 'last_posts': last_six_posts})
+                return render(request, 'registration/login.html', {'success': success, 'last_posts': last_six_posts,
+                                                                   'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
         except:
             err = 'E-mail já cadastrado.'
-            return render(request, 'registration/cadastro.html', {'err': err, 'last_posts': last_six_posts})
+            return render(request, 'registration/cadastro.html', {'err': err, 'last_posts': last_six_posts,
+                                                                  'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
 
-    return render(request, 'registration/cadastro.html', {'last_posts': last_six_posts})
+    return render(request, 'registration/cadastro.html', {'last_posts': last_six_posts, 'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
 
 
 @ratelimit(key='ip', rate='50/5m', block=True)
@@ -1609,12 +1669,14 @@ def financesView(request):
         subscriptions = models.Subscriber.objects.filter(
             subscriber=profileData, suspended=False).order_by('-created_at')
 
-        disputes
+        disputes = models.DisputeChargeback.objects.filter(creator=userData)
+        refunds = models.Invoice.objects.filter(creator=userData, status='refunded')
 
         return render(request, "members/finances.html",
                       {'profile': profileData, 'mySession': mySession, 'darktheme': darktheme,
                        'countNotifications': countNotifications, 'notifications': notifications,
-                       'invoices': invoices, 'subscriptions': subscriptions, 'payouts': payouts})
+                       'invoices': invoices, 'subscriptions': subscriptions, 'payouts': payouts,
+                       'disputes': disputes, 'refunds': refunds})
     else:
         return HttpResponseRedirect("/")
 

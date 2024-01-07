@@ -35,6 +35,7 @@ from .views import creatorRequestStart
 from .views import adminDocumentation
 from .views import financesView
 from .views import adminPayouts
+from .views import myPaaswordReset
 
 urlpatterns = [
     path('', start, name='start'),
@@ -64,8 +65,8 @@ urlpatterns = [
     path('m/follow/', followView, name='follow'),
     path('m/myfollowers/', myfollowers, name='myfollowers'),
 
-    path('i6z7Q2iNki8/painel/docs/', adminDocumentation, name='docs'),
-    path('i6z7Q2iNki8/painel/payouts/', adminPayouts, name='payouts'),
+    path('X9GpxKcPV7nZKQJgQbH3/painel/docs/', adminDocumentation, name='docs'),
+    path('X9GpxKcPV7nZKQJgQbH3/painel/payouts/', adminPayouts, name='payouts'),
 
     path('m/desactive/signature/', desactiveSignatureFan, name='desactivesignature'),
     path('m/sendreqcreator/', creatorRequestStart, name='creatorrequeststart'),
@@ -74,10 +75,10 @@ urlpatterns = [
     path('m/<str:nickname>/checkout/', stripeCheckoutView, name='checkout'),
     path('webhooks/C7SWQA7b2n9ijrnxcrW5G/', webhooks, name='webhooks'),
 
-    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    # path('password_reset/', myPaaswordReset, name='password_reset'),
+    # path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    # path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
     path('m/api/load_more_posts/<int:start_index>/<str:origin>/', loadMorePosts, name='load_more_posts'),
 ]

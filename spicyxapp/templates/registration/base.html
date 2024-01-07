@@ -37,6 +37,7 @@
     <script src="{% static 'js/semantic.min.js' %}"></script>-->
     {% block scripts %}
     {% endblock %}
+    {% include "django_recaptcha/widget_v3.html" %}
 </head>
 
 <body>
@@ -66,12 +67,12 @@
     </script>
 
 
-    {% if err %}
+    {% if err or request.GET.status == 'error'%}
         <script>
             $.toast({
                 title: 'Erro:',
                 class: 'error',
-                message: '{{ err }}',
+                message: '{{ err }} {{ request.GET.info }}',
                 showProgress: 'bottom',
                 classProgress: 'pink',
                 position: 'bottom left'

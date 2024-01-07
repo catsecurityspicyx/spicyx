@@ -20,5 +20,5 @@ from django.urls import include
 
 urlpatterns = [
     path('', include('spicyxapp.urls')),
-    path('uuWSGS9qS8Bge6Xf23c5/admin/', admin.site.urls),
+    path('FzD5Y4oPLrU2fvG37my3/admin/', admin.site.urls),
 ]

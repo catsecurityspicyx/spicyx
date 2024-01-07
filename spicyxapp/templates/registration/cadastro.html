@@ -5,6 +5,10 @@
     <title>SpicyX</title>
 {% endblock %}
 
+{% block scripts %}
+    <script src='https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}'></script>
+{% endblock %}
+
 {% block content %}
     <div class="form-index">
         <div class="site-container">
@@ -26,7 +30,6 @@
             <input type="email" name="username" placeholder="myspicyemail@exemplo.com" required>
 
             <input type="password" name="password" placeholder="senha" required>
-            <!--<input type="hidden" name="next" value="{{ next }}"/>-->
             <label>Data de nascimento</label>
             <input type="date" name="birth" required>
 
@@ -44,6 +47,15 @@
                     <option value="all">Ambos</option>
                 </select>
             </div>
+
+            <script>
+                grecaptcha.ready(function () {
+                    grecaptcha.execute('{{recaptcha_site_key}}', {action: "/contact/"}).then(function (token) {
+                        document.getElementById('g-recaptcha-response').value = token;
+                    });
+                });
+            </script>
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
             <button id="create_account" type="submit" name="submit">CADASTRAR</button>
         </form>
         <script>

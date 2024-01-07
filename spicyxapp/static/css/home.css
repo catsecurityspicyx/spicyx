@@ -1466,6 +1466,7 @@ main .my-cover > div.user-statics > b {
     border: var(--dark-border) 1px solid;
     border-radius: 5px;
     padding: .5em;
+    color: var(--dark-text);
 }
 .my_settings.three .container_settings > form .bank div > input,
 .my_settings.three .container_settings > form .address input,
@@ -1484,7 +1485,7 @@ main .my-cover > div.user-statics > b {
     margin-top: 1em;
 }
 .my_settings.three .container_settings > form > div.address {
-    justify-items: left;
+    justify-items: center;
 }
 .my_settings.three .container_settings > form > div.bank,
 .my_settings.three .container_settings > form > div.birth {

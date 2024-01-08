@@ -65,8 +65,8 @@ urlpatterns = [
     path('m/follow/', followView, name='follow'),
     path('m/myfollowers/', myfollowers, name='myfollowers'),
 
-    path('X9GpxKcPV7nZKQJgQbH3/painel/docs/', adminDocumentation, name='docs'),
-    path('X9GpxKcPV7nZKQJgQbH3/painel/payouts/', adminPayouts, name='payouts'),
+    path('Dr3LEVLueVBY6Ht5LvS6/painel/docs/', adminDocumentation, name='docs'),
+    path('Dr3LEVLueVBY6Ht5LvS6/painel/payouts/', adminPayouts, name='payouts'),
 
     path('m/desactive/signature/', desactiveSignatureFan, name='desactivesignature'),
     path('m/sendreqcreator/', creatorRequestStart, name='creatorrequeststart'),

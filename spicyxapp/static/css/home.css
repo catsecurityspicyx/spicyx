@@ -1206,6 +1206,7 @@ main > .follow_sign_container .sign-user > form > button.cancel:hover,
     margin-bottom: 1em;
     border: var(--dark-border) 1px solid;
     border-radius: 5px;
+    color: var(--dark-text);
 }
 .edit-profile-container > .form-for-edit div > form input[type=text] {
     width: 100%;
@@ -1214,6 +1215,7 @@ main > .follow_sign_container .sign-user > form > button.cancel:hover,
     margin-bottom: 1em;
     border: var(--dark-border) 1px solid;
     border-radius: 5px;
+    color: var(--dark-text);
 }
 .edit-profile-container > .form-for-edit div > form > button {
     width: 100%;

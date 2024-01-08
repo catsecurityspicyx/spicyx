@@ -47,27 +47,28 @@
                     <option value="all">Ambos</option>
                 </select>
             </div>
-
-            <script>
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+            <button id="create_account" type="submit" name="submit">CADASTRAR</button>
+        </form>
+        <script>
                 grecaptcha.ready(function () {
                     grecaptcha.execute('{{recaptcha_site_key}}', {action: "/contact/"}).then(function (token) {
                         document.getElementById('g-recaptcha-response').value = token;
                     });
                 });
             </script>
-            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-            <button id="create_account" type="submit" name="submit">CADASTRAR</button>
-        </form>
         <script>
             var fields = document.querySelectorAll('input')
             var selectsfields = document.querySelectorAll('select')
             var submitbutton = document.getElementById('create_account')
             function checkFields() {
                 for (var i = 0; i < fields.length; i++) {
-                    if (fields[i].value === '') {
-                        submitbutton.disabled = true
-                        submitbutton.style = 'background-color: #8a8a8a;'
-                        return
+                    if (fields[i].type !== 'hidden' || fields[i].id !== 'g-recaptcha-response') {
+                        if (fields[i].value === '') {
+                            submitbutton.disabled = true
+                            submitbutton.style = 'background-color: #8a8a8a;'
+                            return
+                        }
                     }
                 }
                 for (var j = 0; j < selectsfields.length; j++) {

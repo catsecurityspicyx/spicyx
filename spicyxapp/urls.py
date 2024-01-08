@@ -75,10 +75,10 @@ urlpatterns = [
     path('m/<str:nickname>/checkout/', stripeCheckoutView, name='checkout'),
     path('webhooks/C7SWQA7b2n9ijrnxcrW5G/', webhooks, name='webhooks'),
 
-    # path('password_reset/', myPaaswordReset, name='password_reset'),
-    # path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    # path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('password_reset/', myPaaswordReset, name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
     path('m/api/load_more_posts/<int:start_index>/<str:origin>/', loadMorePosts, name='load_more_posts'),
 ]

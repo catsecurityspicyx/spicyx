@@ -34,6 +34,7 @@ body {
     justify-content: center;
     z-index: 10;
     border-bottom: var(--light-background-pink) 1px solid;
+    color: #000000;
 }
 #cookie-banner > span {
     padding: .5em;
@@ -45,6 +46,7 @@ body {
     width: 700px;
     max-width: 700px;
     font-family: sans-serif, arial;
+    color: #000000;
 }
 #cookie-banner #accept-cookies {
     align-self: end;
@@ -182,7 +184,7 @@ img.logo {
 }
 footer {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     column-gap: 1em;
     width: 100vw;
     height: fit-content;
@@ -190,10 +192,20 @@ footer {
     background-color: var(--light-background);
 }
 footer .collumn_one,
-footer .collumn_two {
+footer .collumn_two,
+footer .collumn_three {
     font-family: sans-serif, arial;
     display: flex;
     flex-direction: column;
+}
+footer .collumn_three > a,
+footer .collumn_three a > i.icon,
+footer .collumn_one > span {
+    color: #000000;
+    font-family: sans-serif, arial;
+}
+footer .collumn_two > a {
+    font-family: sans-serif, arial;
 }
 .last_posts_container {
     display: flex;

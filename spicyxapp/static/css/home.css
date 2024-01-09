@@ -985,7 +985,7 @@ main > .follow_sign_container .sign-user > form > button.cancel:hover,
 .user-data-container .user-name-titulo > div > b {
     /*display: flex;*/
     /*align-items: center;*/
-    width: 12.5em; /* fit-content */
+    width: 12.4em; /* fit-content */
     height: 1em;
     font-size: 3em;
     font-weight: 900;

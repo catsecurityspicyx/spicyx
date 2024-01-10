@@ -269,3 +269,15 @@ class Notification(models.Model):
     def __str__(self):
         s = str(self.created_at) + '| FROM:' + str(self.profile_from) + ' > TO:' + str(self.profile_to) + ' - VIEWED: ' + str(self.viewed)
         return s
+
+
+class HttpError(models.Model):
+    user_ip = models.GenericIPAddressField(blank=True, null=True)
+    url = models.URLField(max_length=200)
+    status_code = models.IntegerField()
+    event_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        s = str(self.event_date) + ' (' + str(self.status_code) + ') [' + str(self.user_ip) + '] - ' + str(self.url)
+        return s
+

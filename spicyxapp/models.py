@@ -272,7 +272,7 @@ class Notification(models.Model):
 
 
 class HttpError(models.Model):
-    user_ip = models.GenericIPAddressField(blank=True, null=True)
+    user_ip = models.TextField(blank=True, null=True)
     url = models.URLField(max_length=200)
     status_code = models.IntegerField()
     event_date = models.DateTimeField(default=timezone.now)

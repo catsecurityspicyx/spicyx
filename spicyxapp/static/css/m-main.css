@@ -65,8 +65,16 @@
     height: 30em;
 }
 
-
-
+footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1em;
+    row-gap: 1em;
+    width: 100vw;
+    height: fit-content;
+    padding: 1em;
+    background-color: var(--light-background);
+}
 
 
 

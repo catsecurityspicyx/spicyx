@@ -65,15 +65,15 @@ urlpatterns = [
     path('m/follow/', followView, name='follow'),
     path('m/myfollowers/', myfollowers, name='myfollowers'),
 
-    path('Dr3LEVLueVBY6Ht5LvS6/painel/docs/', adminDocumentation, name='docs'),
-    path('Dr3LEVLueVBY6Ht5LvS6/painel/payouts/', adminPayouts, name='payouts'),
+    path('7j3k2b9QVYQf4XNg89qAthG/painel/docs/', adminDocumentation, name='docs'),
+    path('7j3k2b9QVYQf4XNg89qAthG/painel/payouts/', adminPayouts, name='payouts'),
 
     path('m/desactive/signature/', desactiveSignatureFan, name='desactivesignature'),
     path('m/sendreqcreator/', creatorRequestStart, name='creatorrequeststart'),
     path('m/finances/', financesView, name='finances'),
 
     path('m/<str:nickname>/checkout/', stripeCheckoutView, name='checkout'),
-    path('webhooks/C7SWQA7b2n9ijrnxcrW5G/', webhooks, name='webhooks'),
+    path('webhooks/WB8c7Zn5yRFyTyS8QtYv8gg/', webhooks, name='webhooks'),
 
     path('password_reset/', myPaaswordReset, name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),

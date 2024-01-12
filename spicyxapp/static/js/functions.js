@@ -52,6 +52,17 @@ function fullscreenEditProfile(action, alvo, dataAlvo) {
     }
 }
 
+function confirmation(status) {
+    var status = status || null
+    if (status === 'open') {
+        document.getElementById('confirm_action_container').style = 'display: flex'
+        document.getElementById('confirm_action_container_for_close').style = 'display: flex'
+    } else { //close
+        document.getElementById('confirm_action_container').style = 'display: none'
+        document.getElementById('confirm_action_container_for_close').style = 'display: none'
+    }
+}
+
 function changeStatePostForm(action, alvo) {
     if (action == 'show') {
         document.getElementById(alvo).classList.toggle('invisible-content')

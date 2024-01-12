@@ -316,7 +316,8 @@ main .post-form > #selector-media-post {
 .feed .my_settings.zero > form button,
 .checkout-container-form > form button,
 .my_settings.three .container_settings > form button,
-.feed .my_settings > .container_settings.setd > div.data form button {
+.feed .my_settings > .container_settings.setd > div.data form button,
+.confirm_action_container > .confirm_action button {
     width: 100%;
     background-color: var(--light-buttom);
     padding: 1em 0 1em 0;
@@ -337,7 +338,8 @@ main .post-form > #selector-media-post {
 .feed .my_settings.zero > form button:hover,
 .checkout-container-form > form button:hover,
 .my_settings.three .container_settings > form button:hover,
-.feed .my_settings > .container_settings.setd > div.data form button:hover {
+.feed .my_settings > .container_settings.setd > div.data form button:hover,
+.confirm_action_container > .confirm_action button:hover {
     background-color: var(--hover-buttom);
     transition: .75s;
 }
@@ -1145,6 +1147,46 @@ main > .follow_sign_container .sign-user > form > button.cancel:hover,
 .post .bg-fullscreen > .fullscreen-container form > i.eye.slash.icon.active {
     color: var(--draft-active-icon);
 }
+.confirm_action_container {
+    top: 0;
+    left: 0;
+    z-index: 8;
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    transition: .75s;
+}
+.confirm_action_container_for_close {
+    z-index: 8;
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 15, 16, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+.confirm_action_container .confirm_action {
+    z-index: 10;
+    width: 20em;
+    height: fit-content;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--light-background);
+    border-radius: 5px;
+}
+.confirm_action_container > .confirm_action span {
+    color: var(--default-color-text);
+    text-align: left;
+}
+.confirm_action_container > .confirm_action button {
+    margin-top: 1em;
+}
+
 .media-field .bg-fullscreen > .fullscreen-container > div.image-subtitles,
 .post .bg-fullscreen > .fullscreen-container > div.image-subtitles {
     position: absolute;

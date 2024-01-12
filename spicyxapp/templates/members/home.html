@@ -119,24 +119,36 @@
                             </a>
                         </div>
 
+                        <div id="confirm_action_container" class="confirm_action_container">
+                            <div id="confirm_action_container_for_close" class="confirm_action_container_for_close"
+                                 onclick="confirmation('close')"></div>
+                            <div id="confirm_action" class="confirm_action">
+                                <span>
+                                    Ao clicar em CONFIRMAR o post será deletado permanentemente e esta ação não pode ser revertida.
+                                </span>
+                                <form name="deletePost{{ post.id }}" action="/m/deletepost/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="page" value="home">
+                                    <input type="hidden" name="post" value="{{ post.id }}">
+                                    <input type="hidden" name="user_id" value="{{ mySession.id }}">
+                                    <button onclick="document.forms['deletePost{{ post.id }}'].submit()">Confirmar</button>
+                                </form>
+                            </div>
+                        </div>
                         {% if post.profile_creator.user.id == mySession.id %}
                         <div class="post-menu-dropdown-icon" onclick="openDropdownMenu('post{{ post.id }}')">
                             <i class="ellipsis vertical icon"></i>
                             <div id="post{{ post.id }}" class="dropdown-container invisible-content">
                                 <div class="menu">
-                                <form name="deletePost{{ post.id }}" action="/m/deletepost/" method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="page" value="explorer">
-                                    <input type="hidden" name="post" value="{{ post.id }}">
-                                    <input type="hidden" name="user_id" value="{{ mySession.id }}">
-                                    <div class="item" onclick="document.forms['deletePost{{ post.id }}'].submit()">
+                                <form>
+                                    <div class="item" onclick="confirmation('open')">
                                         <span><i class="trash icon"></i></span>DELETAR
                                     </div>
                                 </form>
                                 <form name="hiddenPost{{ post.id }}" action="/m/changehidden/" method="POST">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="hidden">
-                                    <input type="hidden" name="page" value="explorer">
+                                    <input type="hidden" name="page" value="home">
                                     <input type="hidden" name="post" value="{{ post.id }}">
                                     <input type="hidden" name="user_id" value="{{ mySession.id }}">
                                     <div class="item" onclick="document.forms['hiddenPost{{ post.id }}'].submit()">

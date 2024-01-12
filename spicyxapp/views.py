@@ -545,6 +545,11 @@ def deletePost(request):
                 return HttpResponseRedirect('/m/explorer/' + err_msg)
             elif returnTo == 'post':
                 return HttpResponseRedirect('/m/me/' + err_msg)
+            if returnTo == '/m/home/':
+                return HttpResponseRedirect('/m/home/' + err_msg)
+            elif returnTo == '/m/explorer/':
+                return HttpResponseRedirect('/m/explorer/' + err_msg)
+
         return HttpResponseRedirect('/m/home/')
     else:
         return HttpResponseRedirect("/")

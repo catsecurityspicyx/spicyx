@@ -35,6 +35,8 @@ from .stripe_functions import cancelSubscription
 from .stripe_functions import docs_generateNewsPresignedUrls
 from .stripe_functions import saveWebhookBD
 import time
+import io
+from PIL import Image
 stripe.api_key = settings.STRIPE_SECRET_API_KEY
 
 
@@ -1012,6 +1014,13 @@ def editprofile(request):
                         extension = namefile.split('.')[1]
 
                     if extension in extensions_allowed:
+                        # compress img to 60% quality
+                        img_compress = Image.open(cropped_image)
+                        output = io.BytesIO()
+                        img_compress.save(output, format=str(extension), quality=60)
+                        output.seek(0)
+                        new_avatar_file = ContentFile(output.getvalue(), name=namefile)
+
                         newData = new_avatar_file
                         EditProfile(target, newData, request.user, request.user.id)
 
@@ -1034,6 +1043,13 @@ def editprofile(request):
                         extension = namefile.split('.')[1]
 
                     if extension in extensions_allowed:
+                        # compress img to 60% quality
+                        img_compress = Image.open(cropped_image)
+                        output = io.BytesIO()
+                        img_compress.save(output, format=str(extension), quality=60)
+                        output.seek(0)
+                        new_cover_file = ContentFile(output.getvalue(), name=namefile)
+
                         newData = new_cover_file
                         EditProfile(target, newData, request.user, request.user.id)
             except:

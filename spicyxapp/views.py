@@ -56,7 +56,7 @@ def searchUsers(request):
                     searchResult = list(User.objects.all().values())
 
                 return JsonResponse({'searchResult': searchResult}, safe=True)
-            except:
+            except Exception as e:
                 error = 'Erro ao buscar usuário.'
                 return HttpResponseRedirect("/m/explorer/?status=error&info=" + error)
         else:
@@ -88,6 +88,10 @@ def start(request):
             authLogin = authenticate(request, username=username, password=password)
             if authLogin is not None:
                 login(request, authLogin)
+
+                generateNewsPresignedUrls()
+                generateNewsPresignedUrlsForProfiles()
+
                 return HttpResponseRedirect("/m/home/")
             else:
                 err_msg = '?status=error&info=E-mail ou senha incorreto.'
@@ -101,7 +105,7 @@ def start(request):
                                                             post_hidden=False,
                                                             media_premium=False,
                                                             media_free=True).order_by('-created_at')[:6]
-        except:
+        except Exception as e:
             return render(request, 'registration/login.html', {'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
         return render(request, 'registration/login.html', {'last_posts': last_six_posts, 'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
 
@@ -833,9 +837,6 @@ def home(request):
 
         countNotifications = models.Notification.objects.filter(profile_to=mySession.id, viewed=False).count()
         notifications = models.Notification.objects.all().order_by('-created_at')
-
-        generateNewsPresignedUrls()
-        generateNewsPresignedUrlsForProfiles()
 
         upload_authorization = checkUploadVideoLimite(mySession.profile, 2)
 

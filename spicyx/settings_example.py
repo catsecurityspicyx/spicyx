@@ -13,10 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from decouple import config
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -33,7 +31,6 @@ ALLOWED_HOSTS = [
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -43,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
 
-    'storages'
+    'django_recaptcha',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'spicyxapp.myMiddleware.CaptureErrorIPMiddleware',
 ]
 
 ROOT_URLCONF = 'spicyx.urls'
@@ -87,7 +87,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -118,6 +117,18 @@ USE_I18N = True
 
 USE_TZ = True
 
+# django-redis for cache configurations
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'django_s3'
+    }
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -134,14 +145,14 @@ if USE_S3:
     BUCKET_NAME = AWS_STORAGE_BUCKET_NAME
 
 # AWS PUBLIC FOR STATIC FILES
-USE_PUBLIC_BUCKET = False
+USE_PUBLIC_BUCKET = True
 if USE_PUBLIC_BUCKET:
     # S3 PUBLIC STATIC SETTINGS
     STATIC_URL = 'https://.s3.amazonaws.com/static/'
-    STATICFILES_STORAGE = 'spicyxapp.STORAGE_S3.StaticBucket'
+    STATICFILES_STORAGE = '.STORAGE_S3.StaticBucket'
 else:
-    STATIC_URL = 'spicyxapp/static/'
-    STATIC_ROOT = 'spicyxapp/static/'
+    STATIC_URL = ''
+    STATIC_ROOT = ''
 
 
 # Default primary key field type
@@ -153,21 +164,23 @@ LOGIN_REDIRECT_URL = 'home'
 
 
 # Descomentar as linhas abaixo referente a segurança quando em produção
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# SECURE_BROWSER_XSS_FILTER = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 # Configurações do servidor de e-mail
-# DEFAULT_FROM_EMAIL = '@steste.com'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = config('EMAIL_HOST')
-# EMAIL_PORT = 465
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = 'no-reply@spicyx.com.br'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_TIMEOUT = None
 
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 #10Mb
@@ -191,3 +204,9 @@ VIDEO_SIZE_LIMITE = 1000 * 1024 * 1024
 STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOKS_SECRET')
 STRIPE_SECRET_API_KEY = config('STRIPE_SECRET_API_KEY')
 
+
+# GOOGLE RECAPTCHA
+RECAPTCHA_PUBLIC_KEY = config('GOOGLE_RECAPTCHA_SITE_KEY')
+RECAPTCHA_PRIVATE_KEY = config('GOOGLE_RECAPTCHA_SECRET_KEY')
+RECAPTCHA_REQUEST_METHOD = "POST"
+NOCAPTCHA = False

@@ -12,6 +12,8 @@ from .functions import checkUploadVideoLimite
 from .functions import checkUploadImageLimite
 from .functions import CheckVerifyUser
 from .functions import ApproveDocumentation
+# from .functions import Post_create_profile_link
+# from .functions import Check_link_to_template
 import base64
 import requests
 import random
@@ -219,7 +221,7 @@ def registration(request):
                                                   birth=birth,
                                                   sex=sex,
                                                   interest=interest,
-                                                  user_ip=request.META['REMOTE_ADDR'],
+                                                  user_ip=request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR'),
                                                   folder_videos=folder_name)
                 elif not check_exist_nick:
                     models.Profile.objects.create(user_id=newUser.id,
@@ -227,7 +229,7 @@ def registration(request):
                                                   birth=birth,
                                                   sex=sex,
                                                   interest=interest,
-                                                  user_ip=request.META['REMOTE_ADDR'],
+                                                  user_ip=request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR'),
                                                   folder_videos=folder_name)
 
                 response = requests.request("POST", url, json=payload, headers=headers)
@@ -266,7 +268,8 @@ def saveComment(request):
                     fan = models.Profile.objects.get(user=request.user.id)
                     fan_nick = escape(request.POST['fan_nick'])
                     models.CommentPost.objects.create(post=post_id, profile_creator=creator_post, profile_fan=fan,
-                                                      fan_nickname=fan_nick, fan_comment=comment, user_ip=request.META['REMOTE_ADDR'])
+                                                      fan_nickname=fan_nick, fan_comment=comment,
+                                                      user_ip=request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR'))
 
                     creator_nick = models.User.objects.get(id=creator_post).profile.nickname
                     link_to = f'/m/post/{creator_nick}/{escape(request.POST["post"])}/'
@@ -311,7 +314,8 @@ def saveLike(request):
                     fan = models.Profile.objects.get(user=escape(request.POST['fan_id']))
                     fan_nick = escape(request.POST['fan_nick'])
                     models.LikedPost.objects.create(post=post_id, profile_creator=creator_post, profile_fan=fan,
-                                                    fan_nickname=fan_nick, user_ip=request.META['REMOTE_ADDR'])
+                                                    fan_nickname=fan_nick,
+                                                    user_ip=request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR'))
 
                     creator_nick = models.User.objects.get(id=creator_post).profile.nickname
                     link_to = f'/m/post/{creator_nick}/{escape(request.POST["post"])}/'
@@ -368,7 +372,7 @@ def saveLikeinComment(request):
                     post_id = models.FeedUser.objects.get(id=escape(request.POST["post"]))
                     user_profile = models.Profile.objects.get(user=escape(request.POST['user_id']))
                     models.LikeInComment.objects.create(comment=comment_id, post=post_id, user_profile=user_profile,
-                                                        user_ip=request.META['REMOTE_ADDR'])
+                                                        user_ip=request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR'))
 
                     fan_nick = post_id.profile_creator.nickname
                     link_to = f'/m/post/{fan_nick}/{escape(request.POST["post"])}/'
@@ -536,7 +540,7 @@ def deletePost(request):
                 user_profile = models.Profile.objects.get(user=request.user.id)
 
                 d = models.FeedUser.objects.get(id=post_id, profile_creator=user_profile)
-                d.user_ip = request.META['REMOTE_ADDR']
+                d.user_ip = request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR')
                 d.post_deleted = True
                 d.save()
             except:
@@ -659,7 +663,7 @@ def uploadImage(request):
                                                              media_free=free,
                                                              media_premium=premium,
                                                              media_relevance=relevance,
-                                                             user_ip=request.META['REMOTE_ADDR'])
+                                                             user_ip=request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR'))
 
                     create_URL_temp = createPresignedUrl(bucket_name, str(save_BD.file))
                     if create_URL_temp:
@@ -786,7 +790,7 @@ def uploadVideoForPanda(request):
                                                            media_premium=premium,
                                                            media_relevance=relevance,
                                                            media_type='VIDEO',
-                                                           user_ip=request.META['REMOTE_ADDR'])
+                                                           user_ip=request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR'))
                             break
 
                 if returnTo == 'home':
@@ -1265,7 +1269,7 @@ def followView(request):
                 if not found:
                     try:
                         models.Follower.objects.create(creator=creator, follower=my_profile,
-                                                       user_ip=request.META['REMOTE_ADDR'])
+                                                       user_ip=request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR'))
 
                         link_to = f'/m/@' + my_profile.nickname
                         msg_to = 'Começou a te seguir.'
@@ -1472,7 +1476,7 @@ def creatorRequestStart(request):
             value_month = escape(request.POST['plan_month'])
             value_year = escape(request.POST['plan_year'])
             bankname = escape(request.POST['bankname'])
-            user_ip = request.META['REMOTE_ADDR']
+            user_ip = request.headers.get('CF-Connecting-IP') or request.headers.get('X-Forwarded-For') or request.META.get('REMOTE_ADDR')
             political_exposure = escape(request.POST['political'])
             old_cpf = escape(request.POST['cpf'])
             cpf = old_cpf.replace(".", "").replace("-", "")

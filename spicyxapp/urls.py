@@ -39,6 +39,7 @@ from .views import myPaaswordReset
 
 urlpatterns = [
     path('', start, name='start'),
+    path('login/', start, name='login'),
     path('m/home/', home, name='home'),
     path('m/explorer/', explorer, name='explorer'),
     path('', include('django.contrib.auth.urls')),

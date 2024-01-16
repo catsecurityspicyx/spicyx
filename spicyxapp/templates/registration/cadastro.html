@@ -52,7 +52,7 @@
         </form>
         <script>
                 grecaptcha.ready(function () {
-                    grecaptcha.execute('{{recaptcha_site_key}}', {action: "/contact/"}).then(function (token) {
+                    grecaptcha.execute('{{recaptcha_site_key}}', {action: "/cadastro/"}).then(function (token) {
                         document.getElementById('g-recaptcha-response').value = token;
                     });
                 });

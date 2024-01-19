@@ -195,6 +195,9 @@ img.logo {
     grid-template-columns: 1fr 1fr;
     column-gap: 1em;
 }
+.divider_fullname input {
+    width: 100%;
+}
 footer {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;

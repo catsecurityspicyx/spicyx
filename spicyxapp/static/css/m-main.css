@@ -20,7 +20,10 @@
 .divider_fullname {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: initial;
+    column-gap: 1em;
+}
+.divider_fullname input {
+    width: 100%;
 }
 .last_posts_container {
     display: flex;

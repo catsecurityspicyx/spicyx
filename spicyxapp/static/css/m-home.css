@@ -354,6 +354,15 @@ main > .follow_sign_container_only {
 .my_settings.three .container_settings > form .plans_values div > select {
     width: 100%;
 }
+.container_settings > .plans_container_settings form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1em 0 1em;
+}
+.container_settings > .plans_container_settings form button {
+    margin-bottom: 1em;
+}
 
 
 /* finances */

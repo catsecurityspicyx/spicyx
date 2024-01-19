@@ -316,9 +316,11 @@ main .post-form > #selector-media-post {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 1em;
+    padding: 0 1em 0 1em;
 }
 .container_settings > .plans_container_settings div {
     display: flex;
+    position: relative;
     flex-direction: column;
     padding: 1em;
     align-items: center;
@@ -1523,6 +1525,7 @@ main .my-cover > div.user-statics > b {
 .my_settings.three .container_settings > .info-creator > span,
 .my_settings.three .container_settings > .info-creator > span > b {
     font-family: sans-serif, arial;
+    color: var(--dark-text);
 }
 .my_settings.three .container_settings > form {
     padding: 1em;

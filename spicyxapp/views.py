@@ -1130,6 +1130,51 @@ def mysettings(request):
                 except:
                     err_msg = '?status=error&info=Algo deu errado, tente novamente mais tarde.'
                     return HttpResponseRedirect('/m/settings/' + err_msg)
+            if action == 'updateproduct':
+                try:
+                    prod_creator_userID1 = escape(request.POST['creator_month'])
+                    prod_creator_userID2 = escape(request.POST['creator_year'])
+                    creatorProfile_session = models.Profile.objects.get(user_id=request.user.id)
+                    newprice_month = escape(request.POST['newprice_month'])
+                    newprice_month = float(newprice_month.replace(",", "."))
+                    newprice_year = escape(request.POST['newprice_year'])
+                    newprice_year = float(newprice_year.replace(",", "."))
+                    prodID_month = escape(request.POST['prod_id_month'])
+                    prodID_year = escape(request.POST['prod_id_year'])
+
+                    if prod_creator_userID1 == prod_creator_userID2 and prod_creator_userID1 == str(request.user.id):
+                        checkModifyMonth = models.Product.objects.filter(creator=creatorProfile_session,
+                                                                         product_id=prodID_month,
+                                                                         recurrence='month',
+                                                                         value=newprice_month).exists()
+                        checkModifyYear = models.Product.objects.filter(creator=creatorProfile_session,
+                                                                        product_id=prodID_year,
+                                                                        recurrence='year',
+                                                                        value=newprice_year).exists()
+                        if not checkModifyMonth:
+                            updatePriceMonth = updateProduct(newprice_month, prodID_month)
+                        else:
+                            updateProdBDMonth = models.Product.objects.get(product_id=prodID_month)
+                            updateProdBDMonth.updated_at = timezone.now()
+                            updateProdBDMonth.save()
+                        if not checkModifyYear:
+                            updatePriceYear = updateProduct(newprice_year, prodID_year)
+                        else:
+                            updateProdBDYear = models.Product.objects.get(product_id=prodID_year)
+                            updateProdBDYear.updated_at = timezone.now()
+                            updateProdBDYear.save()
+
+                        successmsg = '?status=success&info=Preços atualizados com sucesso.'
+                        return HttpResponseRedirect('/m/settings/' + successmsg)
+                    else:
+                        err_msg = '?status=error&info=Algo deu errado, tente novamente mais tarde.'
+                        return HttpResponseRedirect('/m/settings/' + err_msg)
+
+                except Exception as e:
+                    print(e)
+                    err_msg = '?status=error&info=Algo deu errado, tente novamente mais tarde.'
+                    return HttpResponseRedirect('/m/settings/' + err_msg)
+
 
         darktheme = models.Profile.objects.get(user=request.user).dark_theme
         userData = User.objects.get(username=request.user)
@@ -1813,7 +1858,7 @@ def adminProducts(request):
 
             try:
                 getProductBD = models.Product.objects.get(product_id=prodID)
-                update_Product = updateProduct(newValue, getProductBD.product_id, getProductBD.creator.nickname, getProductBD.recurrence)
+                update_Product = updateProduct(newValue, getProductBD.product_id)
                 return HttpResponseRedirect(
                     '/7j3k2b9QVYQf4XNg89qAthG/painel/products/?status=success&info=Preço atualizado.')
             except:

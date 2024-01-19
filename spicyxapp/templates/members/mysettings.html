@@ -435,15 +435,18 @@
                             Assinantes antigos não serão afetados.</span>
                         </div>
                     <div class="plans_container_settings">
-                        <form>
+                        <form action="/m/settings/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" id="action" name="action" value="updateproduct">
                             {% for product in products %}
+                                <input type="hidden" name="prod_id_{{ product.recurrence }}" value="{{ product.product_id }}">
+                                <input type="hidden" name="creator_{{ product.recurrence }}" value="{{ product.creator.user.id }}">
                                 <div>
                                     <span><b>@{{ profile.nickname }}_plan_{{ product.recurrence }}</b></span>
                                     <span>Valor atual R$ {{ product.value|floatformat:2 }}</span>
 
                                     <label>Novo valor R$:</label>
-                                    <input type="text" name="newprice_{{ product.recurrence }}"
-                                           placeholder="{{ product.value }}">
+                                    <input type="text" name="newprice_{{ product.recurrence }}" placeholder="{{ product.value }}">
                                 </div>
                             {% endfor %}
                         <button>Atualizar preço</button>

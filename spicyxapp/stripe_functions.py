@@ -181,10 +181,8 @@ def createProduct(name_month, price_month, description, profileUser, name_year, 
         return None
 
 
-def updateProduct(new_price, productID, creator_nick, recurring):
+def updateProduct(new_price, productID):
     new_price = int(new_price * 100)
-    prod_name = '@' + str(creator_nick) + '_plan_' + str(recurring)
-
     try:
         createPrice = stripe.Price.create(
             currency='brl',
@@ -201,6 +199,12 @@ def updateProduct(new_price, productID, creator_nick, recurring):
                 productID,
                 default_price=createPrice.id,
             )
+            if updateProduct.id:
+                updateProdBD = models.Product.objects.get(product_id=productID)
+                updateProdBD.value = float(new_price/100)
+                updateProdBD.updated_at = timezone.now()
+                updateProdBD.save()
+
         except Exception as err:
             print('Error in update product price: ' + str(err))
             return None

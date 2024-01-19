@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
 
-    'django_recaptcha',
     'storages',
 ]
 
@@ -118,16 +117,18 @@ USE_I18N = True
 USE_TZ = True
 
 # django-redis for cache configurations
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
-        'KEY_PREFIX': 'django_s3'
+USE_CACHE = False
+if USE_CACHE:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': 'redis://127.0.0.1:6379/1',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+            'KEY_PREFIX': 'django_s3'
+        }
     }
-}
 
 
 # Static files (CSS, JavaScript, Images)
@@ -141,15 +142,15 @@ if USE_S3:
     AWS_STORAGE_BUCKET_NAME = ''
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
-    DEFAULT_FILE_STORAGE = 'spicyxapp.STORAGE_S3.PrivateBucket'
+    DEFAULT_FILE_STORAGE = 'spicyxapp.STORAGE_S3.'
     BUCKET_NAME = AWS_STORAGE_BUCKET_NAME
 
 # AWS PUBLIC FOR STATIC FILES
 USE_PUBLIC_BUCKET = True
 if USE_PUBLIC_BUCKET:
     # S3 PUBLIC STATIC SETTINGS
-    STATIC_URL = 'https://.s3.amazonaws.com/static/'
-    STATICFILES_STORAGE = '.STORAGE_S3.StaticBucket'
+    STATIC_URL = 'https://.s3.amazonaws.com/'
+    STATICFILES_STORAGE = 'spicyxapp.STORAGE_S3.'
 else:
     STATIC_URL = ''
     STATIC_ROOT = ''
@@ -164,11 +165,13 @@ LOGIN_REDIRECT_URL = 'home'
 
 
 # Descomentar as linhas abaixo referente a segurança quando em produção
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+USE_HTTPS = False
+if USE_HTTPS:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 # Configurações do servidor de e-mail
@@ -209,4 +212,3 @@ STRIPE_SECRET_API_KEY = config('STRIPE_SECRET_API_KEY')
 RECAPTCHA_PUBLIC_KEY = config('GOOGLE_RECAPTCHA_SITE_KEY')
 RECAPTCHA_PRIVATE_KEY = config('GOOGLE_RECAPTCHA_SECRET_KEY')
 RECAPTCHA_REQUEST_METHOD = "POST"
-NOCAPTCHA = False

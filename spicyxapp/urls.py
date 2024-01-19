@@ -36,6 +36,7 @@ from .views import adminDocumentation
 from .views import financesView
 from .views import adminPayouts
 from .views import myPaaswordReset
+from .views import adminProducts
 
 urlpatterns = [
     path('', start, name='start'),
@@ -68,6 +69,7 @@ urlpatterns = [
 
     path('7j3k2b9QVYQf4XNg89qAthG/painel/docs/', adminDocumentation, name='docs'),
     path('7j3k2b9QVYQf4XNg89qAthG/painel/payouts/', adminPayouts, name='payouts'),
+    path('7j3k2b9QVYQf4XNg89qAthG/painel/products/', adminProducts, name='products'),
 
     path('m/desactive/signature/', desactiveSignatureFan, name='desactivesignature'),
     path('m/sendreqcreator/', creatorRequestStart, name='creatorrequeststart'),

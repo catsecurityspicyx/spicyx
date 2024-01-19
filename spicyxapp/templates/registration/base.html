@@ -33,6 +33,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <!--<script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/semantic.min.js' %}"></script>-->
     {% block scripts %}
@@ -40,7 +41,7 @@
 </head>
 
 <body>
-<div class="container-index">
+<div class="container-index {{ request.path }}">
     <div id="cookie-banner">
         <span>Este site usa cookies para garantir que você obtenha a melhor experiência em nosso site.
         Utilizamos cookies para lhe proporcionar a melhor experiência e garantir a segurança dos nossos utilizadores. Os
@@ -77,12 +78,12 @@
                 position: 'bottom left'
             });
         </script>
-    {% elif success %}
+    {% elif success or request.GET.status == 'success'%}
         <script>
             $.toast({
                 title: 'Sucesso!',
                 class: 'success',
-                message: '{{ success }}',
+                message: '{{ success }} {{ request.GET.info }}',
                 showProgress: 'bottom',
                 classProgress: 'pink',
                 position: 'bottom left'

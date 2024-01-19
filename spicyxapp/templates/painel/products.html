@@ -1,0 +1,81 @@
+{% extends 'painel/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Painel | Products</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-me.css' %}" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="feed">
+            <div class="my_settings three">
+                <div class="title">
+                    <b>Produtos</b>
+                </div>
+                <div class="container_settings setd">
+                    {% for product in products %}
+                        <span>@{{ product.creator.nickname }}</span>
+                        <span>Plano: {{ product.recurrence }}</span>
+                        <span>R$ {{ product.value }}</span>
+                        <div class="data">
+                            <form id="update_product" action="{% url 'products' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="creator_profile" value="{{ product.creator }}" required>
+                                <input type="hidden" name="prod_id" value="{{ product.product_id }}" required>
+                                <input type="text" name="new_value" required>
+                                <button id="saveupdateprod">Salvar</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+    <script>
+        document.getElementById("generate").addEventListener('click',
+            function (event2) {
+                event2.preventDefault();
+                var button2 = event2.target;
+                button2.disabled = true;
+                button2.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+                var generateForm = document.getElementById("form_generate_url");
+                generateForm.submit();
+                $.toast({
+                    title: 'Info.',
+                    class: 'info',
+                    message: 'Gerando novas URLs....',
+                    showProgress: 'bottom',
+                    classProgress: 'pink',
+                    position: 'bottom left',
+                    displayTime: 5000
+                });
+            })
+
+        document.getElementById("saveupdateprod").addEventListener('click',
+            function (event) {
+                event.preventDefault();
+                var button = event.target;
+                button.disabled = true;
+                button.innerHTML = '<div class="ui tiny active centered inline loader"></div>';
+                var creatorForm = document.getElementById("update_product");
+                creatorForm.submit();
+                $.toast({
+                    title: 'Info.',
+                    class: 'info',
+                    message: 'Aguarde....',
+                    showProgress: 'bottom',
+                    classProgress: 'pink',
+                    position: 'bottom left',
+                    displayTime: 5000
+                });
+            })
+    </script>
+{% endblock %}

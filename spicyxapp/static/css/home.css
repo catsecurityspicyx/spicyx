@@ -311,13 +311,39 @@ main .post-form > #selector-media-post {
     border-radius: 5px;
     color: var(--dark-text);
 }
+.container_settings > .plans_container_settings form {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1em;
+}
+.container_settings > .plans_container_settings div {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    align-items: center;
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+    margin-top: 1em;
+}
+.container_settings > .plans_container_settings form input {
+    border: var(--dark-border) 1px solid;
+    border-radius: 5px;
+    padding: 1em;
+}
+.container_settings > .plans_container_settings form button {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    margin-top: 1em;
+}
 .post-form button,
 .feed .my_settings.one > .container_settings form button,
 .feed .my_settings.zero > form button,
 .checkout-container-form > form button,
 .my_settings.three .container_settings > form button,
 .feed .my_settings > .container_settings.setd > div.data form button,
-.confirm_action_container > .confirm_action button {
+.confirm_action_container > .confirm_action button,
+.container_settings > .plans_container_settings form button {
     width: 100%;
     background-color: var(--light-buttom);
     padding: 1em 0 1em 0;
@@ -339,7 +365,8 @@ main .post-form > #selector-media-post {
 .checkout-container-form > form button:hover,
 .my_settings.three .container_settings > form button:hover,
 .feed .my_settings > .container_settings.setd > div.data form button:hover,
-.confirm_action_container > .confirm_action button:hover {
+.confirm_action_container > .confirm_action button:hover,
+.container_settings > .plans_container_settings form button:hover {
     background-color: var(--hover-buttom);
     transition: .75s;
 }
@@ -1511,6 +1538,7 @@ main .my-cover > div.user-statics > b {
     margin-top: 1em;
 }
 .my_settings.three .container_settings > form input,
+.feed .my_settings > .container_settings.setd form > input,
 .my_settings.three .container_settings > form select {
     border: var(--dark-border) 1px solid;
     border-radius: 5px;
@@ -1646,6 +1674,11 @@ main .my-cover > div.user-statics > b {
     border-radius: 5px;
     padding: .5em;
     cursor: pointer;
+    color: var(--dark-text);
+}
+.feed .my_settings > .container_settings.setd form > input,
+.feed .my_settings > .container_settings.setd div.filter > form select > input {
+    color: var(--dark-text);
 }
 .feed .my_settings > .container_settings.setd > div.data {
     display: flex;

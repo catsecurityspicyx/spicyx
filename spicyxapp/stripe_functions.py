@@ -181,6 +181,31 @@ def createProduct(name_month, price_month, description, profileUser, name_year, 
         return None
 
 
+def updateProduct(new_price, productID, creator_nick, recurring):
+    new_price = int(new_price * 100)
+    prod_name = '@' + str(creator_nick) + '_plan_' + str(recurring)
+
+    try:
+        createPrice = stripe.Price.create(
+            currency='brl',
+            unit_amount=new_price,
+            product=productID,
+        )
+    except Exception as e:
+        print('Error in create new price: ' + str(e))
+        return None
+
+    if createPrice.id:
+        try:
+            updateProduct = stripe.Product.modify(
+                productID,
+                default_price=createPrice.id,
+            )
+        except Exception as err:
+            print('Error in update product price: ' + str(err))
+            return None
+
+
 def createRecurringSignature(productID, creator_userID, userID):
     try:
         response = stripe.Product.retrieve(productID)

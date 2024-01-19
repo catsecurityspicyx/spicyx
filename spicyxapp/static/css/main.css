@@ -22,6 +22,11 @@ body {
     width: 100vw;
     height: 100vh;
 }
+.container-index.\/cadastro\/ {
+    height: fit-content;
+    padding-bottom: 1em;
+}
+
 #cookie-banner {
     position: fixed;
     top: 0;
@@ -136,6 +141,7 @@ img.logo {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 1em;
+    margin-bottom: 1em;
 }
 .form-index .divisor_sex_target select {
     padding: 1em;
@@ -183,6 +189,11 @@ img.logo {
     margin-top: .5em;
     margin-bottom: 1em;
     font-family: sans-serif, arial;
+}
+.divider_fullname {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1em;
 }
 footer {
     display: grid;

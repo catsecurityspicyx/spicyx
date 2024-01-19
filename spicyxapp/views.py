@@ -19,6 +19,8 @@ import requests
 import random
 import json
 import uuid
+from datetime import timedelta
+from django.utils import timezone
 from django.conf import settings
 from django.db.models import Q
 from .models import User, Profile
@@ -36,6 +38,7 @@ from .stripe_functions import webhookReceived
 from .stripe_functions import cancelSubscription
 from .stripe_functions import docs_generateNewsPresignedUrls
 from .stripe_functions import saveWebhookBD
+from .stripe_functions import updateProduct
 import time
 import io
 from PIL import Image
@@ -77,15 +80,28 @@ def start(request):
             username = escape(request.POST['username'])
             password = escape(request.POST['password'])
 
-            recaptcha_response = request.POST.get('g-recaptcha-response')
-            captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY,
-                           'response': recaptcha_response}
-            req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
-            result = req.json()
-            if result['success']:
-                pass
-            else:
-                return HttpResponseRedirect("/")
+            # if settings.USE_RECAPTCHA_V3:
+            #     recaptcha_response = request.POST.get('g-recaptcha-response')
+            #     captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V2,
+            #                    'response': recaptcha_response}
+            #     req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+            #     result = req.json()
+            #     if result['success']:
+            #         pass
+            #     else:
+            #         return HttpResponseRedirect("/")
+            if settings.USE_RECAPTCHA_V2:
+                recaptcha_response = request.POST.get('g-recaptcha-response')
+                captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V2,
+                               'response': recaptcha_response,
+                               'remoteip': request.headers.get('CF-Connecting-IP') or request.headers.get(
+                                   'X-Forwarded-For') or request.META.get('REMOTE_ADDR')}
+                req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+                result = req.json()
+                if result['success']:
+                    pass
+                else:
+                    return HttpResponseRedirect("/")
 
             authLogin = authenticate(request, username=username, password=password)
             if authLogin is not None:
@@ -99,7 +115,7 @@ def start(request):
                 err_msg = '?status=error&info=E-mail ou senha incorreto.'
                 return HttpResponseRedirect("/" + err_msg)
 
-        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V2
         try:
             admin_profile = models.User.objects.get(username='spicyx').profile
             last_six_posts = models.FeedUser.objects.filter(profile_creator=admin_profile,
@@ -125,18 +141,19 @@ def privacity(request):
 @ratelimit(key='ip', rate='50/5m', block=True)
 @csrf_protect
 def myPaaswordReset(request):
-    GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY
+    GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V2
 
     if request.POST:
-        recaptcha_response = request.POST.get('g-recaptcha-response')
-        captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY,
-                       'response': recaptcha_response}
-        req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
-        result = req.json()
-        if result['success']:
-            pass
-        else:
-            return HttpResponseRedirect("/password_reset/")
+        if settings.USE_RECAPTCHA_V2:
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V2,
+                           'response': recaptcha_response}
+            req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+            result = req.json()
+            if result['success']:
+                pass
+            else:
+                return HttpResponseRedirect("/password_reset/")
 
         return render(request, 'registration/password_reset_form.html', {'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
 
@@ -146,7 +163,7 @@ def myPaaswordReset(request):
 @ratelimit(key='ip', rate='50/5m', block=True)
 @csrf_protect
 def registration(request):
-    GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY
+    GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V2
 
     try:
         admin_profile = models.User.objects.get(username='spicyx').profile
@@ -161,15 +178,16 @@ def registration(request):
         pass
 
     if request.POST:
-        recaptcha_response = request.POST.get('g-recaptcha-response')
-        captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY,
-                       'response': recaptcha_response}
-        req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
-        result = req.json()
-        if result['success']:
-            pass
-        else:
-            return HttpResponseRedirect("/cadastro/")
+        if settings.USE_RECAPTCHA_V2:
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V2,
+                           'response': recaptcha_response}
+            req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+            result = req.json()
+            if result['success']:
+                pass
+            else:
+                return HttpResponseRedirect("/cadastro/")
 
         birth = escape(request.POST['birth'])
         sex = escape(request.POST['sex'])
@@ -201,11 +219,11 @@ def registration(request):
                                                is_staff=False,
                                                is_active=True,
                                                is_superuser=False,
-                                               date_joined=datetime.now())
+                                               date_joined=timezone.now())
 
             if newUser.id:
                 u_id = newUser.id
-                t_now = datetime.now()
+                t_now = timezone.now()
                 t_timestamp = time.mktime(t_now.timetuple())
                 folder_name = str(nick) + '_' + str(u_id) + '_' + str(t_timestamp)
                 payload = {'name': folder_name}
@@ -239,9 +257,8 @@ def registration(request):
                 a.folder_videos_id = dict_resp['id']
                 a.save()
 
-                success = 'Cadastro realizado com sucesso!'
-                return render(request, 'registration/login.html', {'success': success, 'last_posts': last_six_posts,
-                                                                   'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
+                success = '?status=success&info=Cadastro realizado com sucesso!'
+                return HttpResponseRedirect("/" + success)
         except:
             err = 'E-mail já cadastrado.'
             return render(request, 'registration/cadastro.html', {'err': err, 'last_posts': last_six_posts,
@@ -738,7 +755,7 @@ def uploadVideoForPanda(request):
                 b2 = base64.b64encode(b.encode())
                 r1 = random.randint(2, 98)
                 r2 = random.randint(1, 100)
-                hj1 = datetime.now()
+                hj1 = timezone.now()
                 hj2 = hj1.strftime("%Y/%m/%d, %H:%M:%S")
                 posted_date = (str(base64.b64encode(hj2.encode())).replace('=', '').replace("'", "").replace('"', ''))
                 c = 'spicyx_' + str(r1) + str(request.user.profile.nickname) + posted_date + str(r2)
@@ -1120,19 +1137,27 @@ def mysettings(request):
         mySession = User.objects.get(username=request.user)
         countNotifications = models.Notification.objects.filter(profile_to=mySession.id, viewed=False).count()
         notifications = models.Notification.objects.all().order_by('-created_at')
+        products = models.Product.objects.filter(creator=profileData)
 
         statusCreatorRequest = {}
+        authUpdatePriceProducts = False
         try:
             statusCreatorRequest = models.CreatorsRequest.objects.get(profile_creator=request.user.profile)
+
+            checkLastUpdateProduct = models.Product.objects.get(creator=profileData, recurrence='month').updated_at
+            lastUpdate = datetime.fromisoformat(str(checkLastUpdateProduct))
+            today = datetime.fromisoformat(str(timezone.now()))
+            if (today - lastUpdate) > timedelta(days=30):
+                authUpdatePriceProducts = True
         except:
             pass
-
 
         birth_origin = models.Profile.objects.get(user=request.user).birth
         birth = birth_origin.strftime('%Y-%m-%d')
         return render(request, 'members/mysettings.html', {'profile': profileData, 'mySession': mySession, 'darktheme': darktheme,
                                                            'countNotifications': countNotifications, 'notifications': notifications, 'birth': birth,
-                                                           'statusCreatorRequest': statusCreatorRequest})
+                                                           'statusCreatorRequest': statusCreatorRequest, 'products': products,
+                                                           'authUpdatePriceProducts': authUpdatePriceProducts})
     else:
         HttpResponseRedirect('/')
 
@@ -1712,7 +1737,7 @@ def adminPayouts(request):
         # if request.method == 'POST':
         #     payouts = createPayout()
         #     return HttpResponseRedirect(
-        #         '/i6z7Q2iNki8/painel/payouts/?status=success&info=Saques efetuados.')
+        #         '/7j3k2b9QVYQf4XNg89qAthG/painel/payouts/?status=success&info=Saques efetuados.')
 
         return render(request, 'painel/payouts.html')
 
@@ -1721,7 +1746,7 @@ def adminPayouts(request):
         return HttpResponseRedirect("/")
 
 
-@ratelimit(key='ip', rate='100/5m', block=True)
+@ratelimit(key='ip', rate='25/5m', block=True)
 @csrf_protect
 def adminDocumentation(request):
     if request.user.is_staff and request.user.is_authenticated:
@@ -1731,20 +1756,20 @@ def adminDocumentation(request):
                 if escape(request.POST['new_urls']) == 'generate':
                     docs_generateNewsPresignedUrls()
                     return HttpResponseRedirect(
-                        '/i6z7Q2iNki8/painel/docs/?filter=pending&status=success&info=URLs geradas.')
+                        '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=success&info=URLs geradas.')
 
             status = escape(request.POST['status'])
             creatorID = escape(request.POST['creatorID'])
             if status == '' or creatorID == '':
                 return HttpResponseRedirect(
-                    '/i6z7Q2iNki8/painel/docs/?filter=pending&status=error&info=Informações faltantes.')
+                    '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=error&info=Informações faltantes.')
 
             creatorProfile = models.User.objects.get(id=creatorID).profile
 
             checkStatus = models.CreatorsRequest.objects.get(profile_creator=creatorProfile)
             if status == checkStatus.status:
                 return HttpResponseRedirect(
-                    '/i6z7Q2iNki8/painel/docs/?filter=pending&status=error&info=Documentação já está nesta situação.')
+                    '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=error&info=Documentação já está nesta situação.')
 
             if status == 'approved':
                 verifyUser = CheckVerifyUser(request.user.profile)
@@ -1761,16 +1786,43 @@ def adminDocumentation(request):
                     if newProduct['status'] == 'success':
                         approveDoc = ApproveDocumentation(request.user.profile)
                         return HttpResponseRedirect(
-                            '/i6z7Q2iNki8/painel/docs/?filter=pending&status=success&info=Documentação aprovada.')
+                            '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=success&info=Documentação aprovada.')
 
             if status == 'refused':
                 req_creator_data = models.CreatorsRequest.objects.get(profile_creator=creatorProfile)
                 req_creator_data.status = 'refused'
                 req_creator_data.save()
                 return HttpResponseRedirect(
-                    '/i6z7Q2iNki8/painel/docs/?filter=pending&status=success&info=Documentação recusada.')
+                    '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=success&info=Documentação recusada.')
 
         documentations = models.CreatorsRequest.objects.all()
         return render(request, 'painel/documentation.html', {'documentations': documentations})
     else:
         return HttpResponseRedirect("/")
+    
+
+@ratelimit(key='ip', rate='25/5m', block=True)
+@csrf_protect
+def adminProducts(request):
+    if request.user.is_staff and request.user.is_authenticated:
+        if request.method == 'POST':
+            creatorProfile = escape(request.POST['creator_profile'])
+            prodID = escape(request.POST['prod_id'])
+            newValue = escape(request.POST['new_value'])
+            newValue = float(newValue.replace(",", "."))
+
+            try:
+                getProductBD = models.Product.objects.get(product_id=prodID)
+                update_Product = updateProduct(newValue, getProductBD.product_id, getProductBD.creator.nickname, getProductBD.recurrence)
+                return HttpResponseRedirect(
+                    '/7j3k2b9QVYQf4XNg89qAthG/painel/products/?status=success&info=Preço atualizado.')
+            except:
+                return HttpResponseRedirect(
+                    '/7j3k2b9QVYQf4XNg89qAthG/painel/products/?status=error&info=Algo deu errado ao atualizar preço.')
+
+        products = models.Product.objects.all()
+        return render(request, 'painel/products.html', {'products': products})
+    else:
+        return HttpResponseRedirect("/")
+
+    

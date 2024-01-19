@@ -426,6 +426,31 @@
                     </div>
 
                 {% endif %}
+
+                {% if authUpdatePriceProducts == True %}
+                    <div class="container_settings">
+                        <div class="info-creator">
+                            <span><b>Atenção: Você pode atualizar o preço dos seus planos somente uma vez no mês.</b></span>
+                            <span><br/>Atualizar o preço dos seus planos afetará somente os novos assinantes, vindos posterior à mudança.
+                            Assinantes antigos não serão afetados.</span>
+                        </div>
+                    <div class="plans_container_settings">
+                        <form>
+                            {% for product in products %}
+                                <div>
+                                    <span><b>@{{ profile.nickname }}_plan_{{ product.recurrence }}</b></span>
+                                    <span>Valor atual R$ {{ product.value|floatformat:2 }}</span>
+
+                                    <label>Novo valor R$:</label>
+                                    <input type="text" name="newprice_{{ product.recurrence }}"
+                                           placeholder="{{ product.value }}">
+                                </div>
+                            {% endfor %}
+                        <button>Atualizar preço</button>
+                        </form>
+                    </div>
+                    </div>
+                {% endif %}
             </div>
 
             <div class="my_settings one">

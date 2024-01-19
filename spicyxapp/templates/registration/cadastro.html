@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src='https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}'></script>
 {% endblock %}
 
 {% block content %}
@@ -21,11 +20,12 @@
             </div>
         </div>
         <span>Crie sua conta</span>
-        <form action="{% url 'cadastro' %}" method="POST">
+        <form id="cadForm" name="cadForm" action="{% url 'cadastro' %}" method="POST">
             {% csrf_token %}
+            <div class="divider_fullname">
             <input type="text" name="first_name" placeholder="Nome" required>
-
             <input type="text" name="last_name" placeholder="Sobrenome" required>
+            </div>
 
             <input type="email" name="username" placeholder="myspicyemail@exemplo.com" required>
 
@@ -47,16 +47,10 @@
                     <option value="all">Ambos</option>
                 </select>
             </div>
-            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+            <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
             <button id="create_account" type="submit" name="submit">CADASTRAR</button>
         </form>
-        <script>
-                grecaptcha.ready(function () {
-                    grecaptcha.execute('{{recaptcha_site_key}}', {action: "/cadastro/"}).then(function (token) {
-                        document.getElementById('g-recaptcha-response').value = token;
-                    });
-                });
-            </script>
+
         <script>
             var fields = document.querySelectorAll('input')
             var selectsfields = document.querySelectorAll('select')
@@ -88,8 +82,22 @@
             for (var j = 0; j < selectsfields.length; j++) {
                 selectsfields[j].addEventListener('change', checkFields)
             }
-
             checkFields()
+
+            submitbutton.addEventListener('click', function (e) {
+                var button = e.target;
+                button.disabled = true;
+                var responseCaptcha = document.getElementById('g-recaptcha-response');
+                if (!responseCaptcha) {
+                    responseCaptcha = document.getElementById('g-recaptcha-response');
+                }
+                if (responseCaptcha && responseCaptcha.value !== '') {
+                    document.getElementById('cadForm').requestSubmit()
+                } else {
+                    e.preventDefault();
+                    button.disabled = false;
+                }
+            })
         </script>
         <div class="notice_terms">
             Ao se inscrever, você concorda com nossos

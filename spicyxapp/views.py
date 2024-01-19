@@ -1784,8 +1784,19 @@ def adminPayouts(request):
         #     return HttpResponseRedirect(
         #         '/7j3k2b9QVYQf4XNg89qAthG/painel/payouts/?status=success&info=Saques efetuados.')
 
-        return render(request, 'painel/payouts.html')
+        if request.method == 'POST':
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V3,
+                           'response': recaptcha_response}
+            req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+            result = req.json()
+            if result['success'] and float(result['score']) >= 0.5:
+                pass
+            else:
+                return HttpResponseRedirect("/m/logout/")
 
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
+        return render(request, 'painel/payouts.html', {'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
 
     else:
         return HttpResponseRedirect("/")
@@ -1796,6 +1807,15 @@ def adminPayouts(request):
 def adminDocumentation(request):
     if request.user.is_staff and request.user.is_authenticated:
         if request.method == 'POST':
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V3,
+                           'response': recaptcha_response}
+            req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+            result = req.json()
+            if result['success'] and float(result['score']) >= 0.5:
+                pass
+            else:
+                return HttpResponseRedirect("/m/logout/")
 
             if 'new_urls' in request.POST:
                 if escape(request.POST['new_urls']) == 'generate':
@@ -1803,45 +1823,49 @@ def adminDocumentation(request):
                     return HttpResponseRedirect(
                         '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=success&info=URLs geradas.')
 
-            status = escape(request.POST['status'])
-            creatorID = escape(request.POST['creatorID'])
-            if status == '' or creatorID == '':
-                return HttpResponseRedirect(
-                    '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=error&info=Informações faltantes.')
+            if 'actiondocreview' in request.POST:
+                status = escape(request.POST['status'])
+                creatorID = escape(request.POST['creatorID'])
+                if status == '' or creatorID == '':
+                    return HttpResponseRedirect(
+                        '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=error&info=Informações faltantes.')
 
-            creatorProfile = models.User.objects.get(id=creatorID).profile
+                creatorProfile = models.User.objects.get(id=creatorID).profile
 
-            checkStatus = models.CreatorsRequest.objects.get(profile_creator=creatorProfile)
-            if status == checkStatus.status:
-                return HttpResponseRedirect(
-                    '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=error&info=Documentação já está nesta situação.')
+                checkStatus = models.CreatorsRequest.objects.get(profile_creator=creatorProfile)
+                if status == checkStatus.status:
+                    return HttpResponseRedirect(
+                        '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=error&info=Documentação já está nesta situação.')
 
-            if status == 'approved':
-                verifyUser = CheckVerifyUser(request.user.profile)
+                if status == 'approved':
+                    verifyUser = CheckVerifyUser(request.user.profile)
 
-                if verifyUser['status'] == 'success':
-                    p_nick = str(request.user.profile.nickname)
-                    req_prod_data = models.CreatorsRequest.objects.get(profile_creator=creatorProfile)
-                    product_name = '@' + p_nick + '_plan_month'
-                    product_name_year = '@' + p_nick + '_plan_year'
-                    newProduct = createProduct(product_name, float(req_prod_data.value_month),
-                                               'Assinatura de conteúdo premium de @' + p_nick, request.user.profile,
-                                               product_name_year, float(req_prod_data.value_year))
+                    if verifyUser['status'] == 'success':
+                        p_nick = str(request.user.profile.nickname)
+                        req_prod_data = models.CreatorsRequest.objects.get(profile_creator=creatorProfile)
+                        product_name = '@' + p_nick + '_plan_month'
+                        product_name_year = '@' + p_nick + '_plan_year'
+                        newProduct = createProduct(product_name, float(req_prod_data.value_month),
+                                                   'Assinatura de conteúdo premium de @' + p_nick, request.user.profile,
+                                                   product_name_year, float(req_prod_data.value_year))
 
-                    if newProduct['status'] == 'success':
-                        approveDoc = ApproveDocumentation(request.user.profile)
-                        return HttpResponseRedirect(
-                            '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=success&info=Documentação aprovada.')
+                        if newProduct['status'] == 'success':
+                            approveDoc = ApproveDocumentation(request.user.profile)
+                            return HttpResponseRedirect(
+                                '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=success&info=Documentação aprovada.')
 
-            if status == 'refused':
-                req_creator_data = models.CreatorsRequest.objects.get(profile_creator=creatorProfile)
-                req_creator_data.status = 'refused'
-                req_creator_data.save()
-                return HttpResponseRedirect(
-                    '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=success&info=Documentação recusada.')
+                if status == 'refused':
+                    req_creator_data = models.CreatorsRequest.objects.get(profile_creator=creatorProfile)
+                    req_creator_data.status = 'refused'
+                    req_creator_data.save()
+                    return HttpResponseRedirect(
+                        '/7j3k2b9QVYQf4XNg89qAthG/painel/docs/?filter=pending&status=success&info=Documentação recusada.')
 
         documentations = models.CreatorsRequest.objects.all()
-        return render(request, 'painel/documentation.html', {'documentations': documentations})
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
+
+        return render(request, 'painel/documentation.html', {'documentations': documentations,
+                                                             'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
     else:
         return HttpResponseRedirect("/")
     
@@ -1851,7 +1875,16 @@ def adminDocumentation(request):
 def adminProducts(request):
     if request.user.is_staff and request.user.is_authenticated:
         if request.method == 'POST':
-            creatorProfile = escape(request.POST['creator_profile'])
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V3,
+                           'response': recaptcha_response}
+            req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+            result = req.json()
+            if result['success'] and float(result['score']) >= 0.5:
+                pass
+            else:
+                return HttpResponseRedirect("/m/logout/")
+
             prodID = escape(request.POST['prod_id'])
             newValue = escape(request.POST['new_value'])
             newValue = float(newValue.replace(",", "."))
@@ -1866,7 +1899,10 @@ def adminProducts(request):
                     '/7j3k2b9QVYQf4XNg89qAthG/painel/products/?status=error&info=Algo deu errado ao atualizar preço.')
 
         products = models.Product.objects.all()
-        return render(request, 'painel/products.html', {'products': products})
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
+
+        return render(request, 'painel/products.html', {'products': products,
+                                                        'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
     else:
         return HttpResponseRedirect("/")
 

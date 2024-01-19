@@ -10,6 +10,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/m-me.css' %}" media="screen"/>
 {% endblock %}
 
+{% block scripts %}
+    <script src='https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}'></script>
+{% endblock %}
+
 {% block content %}
     <main>
         <div class="feed">
@@ -25,7 +29,6 @@
                         <div class="data">
                             <form id="update_product" action="{% url 'products' %}" method="POST">
                                 {% csrf_token %}
-                                <input type="hidden" name="creator_profile" value="{{ product.creator }}" required>
                                 <input type="hidden" name="prod_id" value="{{ product.product_id }}" required>
                                 <input type="text" name="new_value" required>
                                 <button id="saveupdateprod">Salvar</button>
@@ -35,6 +38,33 @@
                 </div>
             </div>
         </div>
+
+        <form id="form-recaptcha" name="form-recaptcha" action="{% url 'products' %}" method="POST" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+            <script>
+                document.addEventListener('DOMContentLoaded', (event) => {
+                    grecaptcha.ready(function () {
+                        grecaptcha.execute('{{recaptcha_site_key}}', {action: "painel_products"}).then(function (token) {
+                            document.getElementById('g-recaptcha-response').value = token;
+                            var gresponse = document.getElementById('g-recaptcha-response');
+
+                            if (gresponse.value !== '') {
+                                $(document).ready(function alohinha() {
+                                    var captchaform = $('#form-recaptcha');
+                                    $.ajax({
+                                        url: "{% url 'products' %}",
+                                        type: "POST",
+                                        data: captchaform.serialize(),
+
+                                    })
+                                });
+                            }
+                        });
+                    });
+                })
+            </script>
+        </form>
     </main>
 {% endblock %}
 

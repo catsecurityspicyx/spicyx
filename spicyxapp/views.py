@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import logout
 from datetime import datetime
 from django.contrib.auth import authenticate, login
+from django.core.cache import cache
 from .functions import EditProfile
 from .functions import createPresignedUrl
 from .functions import generateNewsPresignedUrls
@@ -118,14 +119,21 @@ def start(request):
         GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V2
         try:
             admin_profile = models.User.objects.get(username='spicyx').profile
-            last_six_posts = models.FeedUser.objects.filter(profile_creator=admin_profile,
-                                                            post_deleted=False,
-                                                            post_hidden=False,
-                                                            media_premium=False,
-                                                            media_free=True).order_by('-created_at')[:6]
+
+            if cache.get('index_lastposts'):
+                last_six_posts = cache.get('index_lastposts')
+            else:
+                last_six_posts = models.FeedUser.objects.filter(profile_creator=admin_profile,
+                                                                post_deleted=False,
+                                                                post_hidden=False,
+                                                                media_premium=False,
+                                                                media_free=True).order_by('-created_at')[:6]
+                cache.set('index_lastposts', last_six_posts, timeout=3600)
+
         except Exception as e:
             return render(request, 'registration/login.html', {'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
-        return render(request, 'registration/login.html', {'last_posts': last_six_posts, 'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
+        return render(request, 'registration/login.html',
+                      {'last_posts': last_six_posts, 'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
 
 
 @ratelimit(key='ip', rate='100/5m', block=True)
@@ -883,12 +891,17 @@ def home(request):
 
         upload_authorization = checkUploadVideoLimite(mySession.profile, 2)
 
-        feedPosts_q = models.FeedUser.objects.filter(
-            Q(profile_creator__user__id=mySession.id) | \
-            (Q(profile_creator__user__id__in=follower) & Q(media_premium=False)) | \
-            Q(profile_creator__user__id__in=subscribe)
-            & Q(post_hidden=False) & Q(post_deleted=False)).order_by('-media_relevance',
-                                                                     '-created_at')[:25]
+        if cache.get('home_feed'):
+            feedPosts_q = cache.get('home_feed')
+        else:
+            feedPosts_q = models.FeedUser.objects.filter(
+                Q(profile_creator__user__id=mySession.id) | \
+                (Q(profile_creator__user__id__in=follower) & Q(media_premium=False)) | \
+                Q(profile_creator__user__id__in=subscribe)
+                & Q(post_hidden=False) & Q(post_deleted=False)).order_by('-media_relevance',
+                                                                         '-created_at')[:25]
+            cache.set('home_feed', feedPosts_q, timeout=3600)
+
         GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
 
         return render(request, 'members/home.html', {'userData': userData,
@@ -919,9 +932,12 @@ def explorer(request):
             query2 = (Q(profile_creator__sex=mySession.profile.interest) & Q(post_hidden=False) & Q(post_deleted=False) & Q(
                 media_premium=False) & Q(media_free=True))
 
-
-        feedPosts = models.FeedUser.objects.filter(query2).order_by('-media_relevance',
-                                                                    '-created_at')[:25]
+        if cache.get('explorer_feed'):
+            feedPosts = cache.get('explorer_feed')
+        else:
+            feedPosts = models.FeedUser.objects.filter(query2).order_by('-media_relevance',
+                                                                        '-created_at')[:25]
+            cache.set('explorer_feed', feedPosts, timeout=3600)
 
         comments = models.CommentPost.objects.all().order_by('-date_interaction')
 

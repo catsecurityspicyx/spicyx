@@ -1039,7 +1039,7 @@ def editprofile(request):
                         # compress img to 60% quality
                         img_compress = Image.open(cropped_image)
                         output = io.BytesIO()
-                        img_compress.save(output, format=str(extension), quality=60)
+                        img_compress.save(output, format=str(extension), quality=50)
                         output.seek(0)
                         new_avatar_file = ContentFile(output.getvalue(), name=namefile)
 

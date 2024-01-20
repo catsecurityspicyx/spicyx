@@ -631,6 +631,17 @@ def logout_view(request):
 def uploadImage(request):
     if request.user.is_authenticated:
         if request.POST:
+            if settings.USE_RECAPTCHA_V3:
+                recaptcha_response = request.POST.get('g-recaptcha-response')
+                captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V3,
+                               'response': recaptcha_response}
+                req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+                result = req.json()
+                if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
+                    pass
+                else:
+                    return HttpResponseRedirect("/m/logout/")
+
             bucket_name = settings.BUCKET_NAME
             returnTo = escape(request.POST['page'])
             err_msg = ''
@@ -718,6 +729,17 @@ def uploadImage(request):
 def uploadVideoForPanda(request):
     if request.user.is_authenticated:
         if request.POST:
+            if settings.USE_RECAPTCHA_V3:
+                recaptcha_response = request.POST.get('g-recaptcha-response')
+                captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V3,
+                               'response': recaptcha_response}
+                req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+                result = req.json()
+                if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
+                    pass
+                else:
+                    return HttpResponseRedirect("/m/logout/")
+
             returnTo = escape(request.POST['page'])
             err_msg = ''
 
@@ -867,13 +889,16 @@ def home(request):
             Q(profile_creator__user__id__in=subscribe)
             & Q(post_hidden=False) & Q(post_deleted=False)).order_by('-media_relevance',
                                                                      '-created_at')[:25]
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
 
         return render(request, 'members/home.html', {'userData': userData,
                                                      'profile': profileData, 'feed': feedPosts_q,
                                                      'comments': comments, 'liked_post_ids': liked_post_ids,
                                                      'mySession': mySession, 'liked_comment_ids': liked_comment_ids,
                                                      'subscribe': subscribe, 'countNotifications': countNotifications,
-                                                     'notifications': notifications, 'follower': follower, 'darktheme': darktheme})
+                                                     'notifications': notifications, 'follower': follower,
+                                                     'darktheme': darktheme,
+                                                     'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
     else:
         return HttpResponseRedirect("/")
 
@@ -916,6 +941,7 @@ def explorer(request):
 
         countNotifications = models.Notification.objects.filter(profile_to=mySession.id, viewed=False).count()
         notifications = models.Notification.objects.all().order_by('-created_at')
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
 
         return render(request, 'members/explorer.html', {'userData': userData,
                                                          'profile': profileData, 'feed': feedPosts,
@@ -923,7 +949,9 @@ def explorer(request):
                                                          'mySession': mySession, 'liked_comment_ids': liked_comment_ids,
                                                          'subscribe': subscribe,
                                                          'countNotifications': countNotifications,
-                                                         'notifications': notifications, 'follower': follower, 'darktheme': darktheme})
+                                                         'notifications': notifications, 'follower': follower,
+                                                         'darktheme': darktheme,
+                                                         'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
     else:
         return HttpResponseRedirect("/")
 
@@ -983,6 +1011,7 @@ def myprofile(request):
         countNotifications = models.Notification.objects.filter(profile_to=mySession.id, viewed=False).count()
         notifications = models.Notification.objects.all().order_by('-created_at')
 
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
         return render(request, 'members/myprofile.html', {'userData': userData, 'profile': profileData,
                                                           'feed': feedPosts, 'comments': comments,
                                                           'liked_post_ids': liked_post_ids,
@@ -994,7 +1023,8 @@ def myprofile(request):
                                                           'countVideos': countVideoPosts,
                                                           'countSubscribers': countSubscribers,
                                                           'countNotifications': countNotifications,
-                                                          'notifications': notifications, 'darktheme': darktheme})
+                                                          'notifications': notifications, 'darktheme': darktheme,
+                                                          'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
     else:
         return HttpResponseRedirect("/")
 
@@ -1088,6 +1118,17 @@ def editprofile(request):
 def mysettings(request):
     if request.user.is_authenticated:
         if request.POST:
+            if settings.USE_RECAPTCHA_V3:
+                recaptcha_response = request.POST.get('g-recaptcha-response')
+                captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V3,
+                               'response': recaptcha_response}
+                req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+                result = req.json()
+                if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
+                    pass
+                else:
+                    return HttpResponseRedirect("/m/logout/")
+
             action = escape(request.POST['action'])
             if action == 'darkmode':
                 if 'darkmode' in request.POST:
@@ -1199,10 +1240,12 @@ def mysettings(request):
 
         birth_origin = models.Profile.objects.get(user=request.user).birth
         birth = birth_origin.strftime('%Y-%m-%d')
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
         return render(request, 'members/mysettings.html', {'profile': profileData, 'mySession': mySession, 'darktheme': darktheme,
                                                            'countNotifications': countNotifications, 'notifications': notifications, 'birth': birth,
                                                            'statusCreatorRequest': statusCreatorRequest, 'products': products,
-                                                           'authUpdatePriceProducts': authUpdatePriceProducts})
+                                                           'authUpdatePriceProducts': authUpdatePriceProducts,
+                                                           'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
     else:
         HttpResponseRedirect('/')
 
@@ -1790,7 +1833,7 @@ def adminPayouts(request):
                            'response': recaptcha_response}
             req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
             result = req.json()
-            if result['success'] and float(result['score']) >= 0.5:
+            if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                 pass
             else:
                 return HttpResponseRedirect("/m/logout/")
@@ -1812,7 +1855,7 @@ def adminDocumentation(request):
                            'response': recaptcha_response}
             req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
             result = req.json()
-            if result['success'] and float(result['score']) >= 0.5:
+            if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                 pass
             else:
                 return HttpResponseRedirect("/m/logout/")
@@ -1880,7 +1923,7 @@ def adminProducts(request):
                            'response': recaptcha_response}
             req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
             result = req.json()
-            if result['success'] and float(result['score']) >= 0.5:
+            if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                 pass
             else:
                 return HttpResponseRedirect("/m/logout/")

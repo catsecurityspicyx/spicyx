@@ -10,6 +10,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/m-home.css' %}" media="screen"/>
 {% endblock %}
 
+{% block scripts %}
+    <script src='https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}'></script>
+{% endblock %}
+
 {% block content %}
     <main>
         <div id="home-post-form" class="post-form invisible-content">
@@ -55,6 +59,7 @@
 
                     <textarea name="subtitles" placeholder="Legenda..." maxlength="400"></textarea>
 
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                     <button id="send_image_home" type="submit" name="send-file">POSTAR</button>
                 </form>
 
@@ -91,6 +96,7 @@
                     </div>
                     <textarea id="subtitles" name="subtitles" placeholder="Legenda..." maxlength="400"></textarea>
 
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                     <button id="send_video_home" type="submit" name="send-file">POSTAR</button>
                 </form>
             </div>
@@ -363,6 +369,17 @@
 {% endblock %}
 
 {% block scripts_end %}
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/home/"}).then(function (token) {
+            var inputs = document.querySelectorAll('input[name="g-recaptcha-response"]')
+            inputs.forEach(function (input) {
+                input.value = token
+            })
+        });
+    });
+</script>
+
 <script>
         $(document).ready(function () {
             let count_calls = 25

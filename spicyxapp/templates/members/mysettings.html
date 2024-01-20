@@ -11,7 +11,9 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src='https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}'></script>
 {% endblock %}
+
 {% block content %}
     <main>
         <div class="feed">
@@ -27,6 +29,7 @@
                     </div>
                     <i class="moon icon"></i>
                     <input type="hidden" name="action" value="darkmode">
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                     <button>Salvar</button>
                 </form>
                 <script>
@@ -217,6 +220,7 @@
                                     </select>
                                 </div>
                             </div>
+                            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                             <button id="send_requestcreator" type="submit">Enviar solicitação</button>
                         </form>
                     </div>
@@ -399,6 +403,7 @@
                                     </select>
                                 </div>
                             </div>
+                            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                             <button id="send_requestcreator" type="submit">Enviar solicitação</button>
                         </form>
 
@@ -451,6 +456,7 @@
                                     <input type="text" name="newprice_{{ product.recurrence }}" placeholder="{{ product.value }}">
                                 </div>
                             {% endfor %}
+                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                         <button>Atualizar preço</button>
                         </form>
                     </div>
@@ -474,6 +480,7 @@
                             <option value="female">Mulher</option>
                         </select>
                         <input type="hidden" name="action" value="gender">
+                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                         <button>Salvar</button>
                     </form>
 
@@ -488,6 +495,7 @@
                             <option value="all">Ambos</option>
                         </select>
                         <input type="hidden" name="action" value="interest">
+                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                         <button>Salvar</button>
                     </form>
 
@@ -496,6 +504,7 @@
                         <label>Nascimento:</label>
                         <input type="date" name="birth" value="{{ birth }}">
                         <input type="hidden" name="action" value="birth">
+                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                         <button>Salvar</button>
                     </form>
 
@@ -548,6 +557,7 @@
 {#                    <option value="all">Animais - Pets</option>#}
 {#                    <option value="all">Filmes e séries</option>#}
 {#                    </select>#}
+{#                            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">#}
 {#                        <button>Salvar</button>#}
 {#                    </form>#}
 {#                </div>#}
@@ -559,6 +569,17 @@
 {% endblock %}
 
 {% block scripts_end %}
+    <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/settings/"}).then(function (token) {
+                var inputs = document.querySelectorAll('input[name="g-recaptcha-response"]')
+                inputs.forEach(function (input) {
+                    input.value = token
+                })
+            });
+        });
+    </script>
+
     <script>
         document.getElementById("send_requestcreator").addEventListener('click',
             function (event) {

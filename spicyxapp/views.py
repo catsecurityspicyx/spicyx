@@ -14,6 +14,7 @@ from .functions import checkUploadImageLimite
 from .functions import CheckVerifyUser
 from .functions import ApproveDocumentation
 from .functions import Post_create_profile_link
+from .functions import Check_force_password
 import base64
 import requests
 import random
@@ -198,6 +199,12 @@ def registration(request):
         l_name = last_name.replace(" ", "")
         nick = f_name + l_name
         nick = nick.lower()
+
+        pass_err = ('?status=error&info=Senha muito fraca, senha deve conter caracteres especiais, números, '
+                    'letras maiúsculas e ter no mínimo 6 caracteres.')
+        password_is_ok = Check_force_password(email, password, nick)
+        if not password_is_ok:
+            return HttpResponseRedirect("/cadastro/" + pass_err)
 
         url = "https://api-v2.pandavideo.com.br/folders"
         headers = {

@@ -10,6 +10,50 @@ from django.utils.html import escape
 import re
 
 
+def Check_force_password(email, password, fullname):
+    fullname = fullname.lower().replace(" ", "")
+    password = str(password)
+    special_chars = ['#', '!', '$', '%', '*', '&', '-', '_', '(', ')']
+    pass_contains_special_chars = False
+    for i in special_chars:
+        if i in password:
+            pass_contains_special_chars = True
+            break
+
+    mynumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    pass_contains_numbers = False
+    for n in mynumbers:
+        if n in password:
+            pass_contains_numbers = True
+            break
+
+    alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+                'V', 'W', 'X', 'Y', 'Z', 'Á', 'Â', 'Ã', 'À', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ç']
+    pass_upercase_letters = False
+    for l in alphabet:
+        if l in password:
+            pass_upercase_letters = True
+            break
+
+    pass_min_length = False
+    if int(len(password)) >= 6:
+        pass_min_length = True
+
+    pass_contains_fullname = False
+    if password not in fullname:
+        pass_contains_fullname = True
+
+    pass_contains_email = False
+    if password not in email:
+        pass_contains_email = True
+
+    if (pass_contains_special_chars and pass_contains_numbers and pass_upercase_letters and
+            pass_min_length and pass_contains_fullname and pass_contains_email):
+        return True
+    else:
+        return False
+
+
 def Post_create_profile_link(subtitles):
     if subtitles != '':
         # check user exist

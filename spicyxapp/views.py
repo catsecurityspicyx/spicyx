@@ -200,11 +200,11 @@ def registration(request):
         nick = f_name + l_name
         nick = nick.lower()
 
-        pass_err = ('?status=error&info=Senha muito fraca, senha deve conter caracteres especiais, números, '
-                    'letras maiúsculas e ter no mínimo 6 caracteres.')
-        password_is_ok = Check_force_password(email, password, nick)
-        if not password_is_ok:
-            return HttpResponseRedirect("/cadastro/" + pass_err)
+        # pass_err = ('?status=error&info=Senha muito fraca, senha deve conter caracteres especiais, números, '
+        #             'letras maiúsculas e ter no mínimo 6 caracteres.')
+        # password_is_ok = Check_force_password(email, password, nick)
+        # if not password_is_ok:
+        #     return HttpResponseRedirect("/cadastro/" + pass_err)
 
         url = "https://api-v2.pandavideo.com.br/folders"
         headers = {
@@ -900,7 +900,8 @@ def home(request):
         GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
 
         for newpost in feedPosts_q:
-            newpost.subtitles = Post_create_profile_link(newpost.subtitles)
+            if newpost.subtitles != '':
+                newpost.subtitles = Post_create_profile_link(newpost.subtitles)
 
         return render(request, 'members/home.html', {'userData': userData,
                                                      'profile': profileData, 'feed': feedPosts_q,
@@ -938,7 +939,8 @@ def explorer(request):
             cache.set('explorer_feed', feedPosts, timeout=3600)
 
         for newpost in feedPosts:
-            newpost.subtitles = Post_create_profile_link(newpost.subtitles)
+            if newpost.subtitles != '':
+                newpost.subtitles = Post_create_profile_link(newpost.subtitles)
 
         comments = models.CommentPost.objects.all().order_by('-date_interaction')
 

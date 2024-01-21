@@ -13,7 +13,7 @@ import re
 def Check_force_password(email, password, fullname):
     fullname = fullname.lower().replace(" ", "")
     password = str(password)
-    special_chars = ['#', '!', '$', '%', '*', '&', '-', '_', '(', ')']
+    special_chars = ['#', '!', '$', '%', '*', '&', '-', '_', '(', ')', '=', '[', ']', ',']
     pass_contains_special_chars = False
     for i in special_chars:
         if i in password:

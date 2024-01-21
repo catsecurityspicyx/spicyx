@@ -53,7 +53,7 @@
     <body>
         <nav>
             <a href="/m/home/"><span><i class="home icon"></i></span></a>
-            <span onclick="changeStatePostForm('show', 'home-post-form')"><i class="photo video icon"></i></span>
+            <span onclick="changeStatePostForm('show', 'home-post-form'); window.scrollTo(0, 0);"><i class="photo video icon"></i></span>
             <a href="/m/explorer/"><span><i class="globe americas icon"></i></span></a>
             <a href="/m/me/"><span><i class="user circle icon"></i></span></a>
             {% if countNotifications == 0 %}

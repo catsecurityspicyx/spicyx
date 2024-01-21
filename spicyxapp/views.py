@@ -13,8 +13,7 @@ from .functions import checkUploadVideoLimite
 from .functions import checkUploadImageLimite
 from .functions import CheckVerifyUser
 from .functions import ApproveDocumentation
-# from .functions import Post_create_profile_link
-# from .functions import Check_link_to_template
+from .functions import Post_create_profile_link
 import base64
 import requests
 import random
@@ -44,7 +43,6 @@ import time
 import io
 from PIL import Image
 stripe.api_key = settings.STRIPE_SECRET_API_KEY
-
 
 
 @ratelimit(key='ip', rate='200/5m', block=True)
@@ -81,16 +79,6 @@ def start(request):
             username = escape(request.POST['username'])
             password = escape(request.POST['password'])
 
-            # if settings.USE_RECAPTCHA_V3:
-            #     recaptcha_response = request.POST.get('g-recaptcha-response')
-            #     captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V2,
-            #                    'response': recaptcha_response}
-            #     req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
-            #     result = req.json()
-            #     if result['success']:
-            #         pass
-            #     else:
-            #         return HttpResponseRedirect("/")
             if settings.USE_RECAPTCHA_V2:
                 recaptcha_response = request.POST.get('g-recaptcha-response')
                 captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V2,
@@ -904,6 +892,9 @@ def home(request):
 
         GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
 
+        for newpost in feedPosts_q:
+            newpost.subtitles = Post_create_profile_link(newpost.subtitles)
+
         return render(request, 'members/home.html', {'userData': userData,
                                                      'profile': profileData, 'feed': feedPosts_q,
                                                      'comments': comments, 'liked_post_ids': liked_post_ids,
@@ -938,6 +929,9 @@ def explorer(request):
             feedPosts = models.FeedUser.objects.filter(query2).order_by('-media_relevance',
                                                                         '-created_at')[:25]
             cache.set('explorer_feed', feedPosts, timeout=3600)
+
+        for newpost in feedPosts:
+            newpost.subtitles = Post_create_profile_link(newpost.subtitles)
 
         comments = models.CommentPost.objects.all().order_by('-date_interaction')
 

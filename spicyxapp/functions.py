@@ -8,43 +8,36 @@ import boto3
 from botocore.client import Config
 from django.utils.html import escape
 import re
-from django.utils.html import format_html
 
 
-# def Post_create_profile_link(subtitles):
-#     if subtitles != '':
-#         # check user exist
-#         users_found = re.findall(r'@[A-Za-z0-9_-]+', subtitles)
-#         users_exist = []
-#         try:
-#             for user in users_found:
-#                 nickname = escape(user).replace("@", "")
-#                 user_exist = models.Profile.objects.filter(nickname=nickname).exists()
-#                 if user_exist:
-#                     users_exist.append(user)
-#         except Exception as e:
-#             print('Error in search user post. ' + str(e))
-#
-#         # replace exists user found for profile link
-#         new_subtitle = subtitles
-#         try:
-#             for i in list(set(users_exist[:])):
-#                 nickname = escape(i).replace("@", "")
-#                 pattern = r'\B' + str(i) + r'\b'
-#                 profile_link = '<a href="/m/@' + nickname + '" target="_blank">' + i + '</a>'
-#                 new_subtitle = re.sub(pattern, profile_link, new_subtitle)
-#         except Exception as err:
-#             print('Error in replace @user for a profile. ' + str(err))
-#
-#         return new_subtitle
-#
-#
-# def Check_link_to_template(subtitles):
-#     str_match = re.match(r'^<a href=\"/m/@[\w-]+\" target="_blank">@[\w-]+</a>$', subtitles)
-#     if str_match:
-#         return format_html(str_match)
-#     else:
-#         escape(subtitles)
+def Post_create_profile_link(subtitles):
+    if subtitles != '':
+        # check user exist
+        users_found = re.findall(r'@[A-Za-z0-9_-]+', subtitles)
+        users_exist = []
+        try:
+            for user in users_found:
+                nickname = escape(user).replace("@", "")
+                user_exist = models.Profile.objects.filter(nickname=nickname).exists()
+                if user_exist:
+                    users_exist.append(user)
+        except Exception as e:
+            print('Error in search user post. ' + str(e))
+            pass
+
+        # replace exists user found for profile link
+        new_subtitle = subtitles
+        try:
+            for i in list(set(users_exist[:])):
+                nickname = escape(i).replace("@", "")
+                pattern = r'\B' + str(i) + r'\b'
+                profile_link = '<a href="/m/@' + nickname + '" target="_blank">' + i + '</a>'
+                new_subtitle = re.sub(pattern, profile_link, new_subtitle)
+        except Exception as err:
+            print('Error in replace @user for a profile. ' + str(err))
+            pass
+
+        return new_subtitle
 
 
 def CheckVerifyUser(profile):

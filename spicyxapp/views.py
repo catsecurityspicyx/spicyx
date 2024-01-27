@@ -14,7 +14,7 @@ from .functions import checkUploadImageLimite
 from .functions import CheckVerifyUser
 from .functions import ApproveDocumentation
 from .functions import Post_create_profile_link
-from .functions import Check_force_password
+#from .functions import Check_force_password
 import base64
 import requests
 import random
@@ -664,6 +664,7 @@ def uploadImage(request):
                 pass
 
             post_image_file = request.FILES['post-image']
+            new_name = 'spicyx_' + str(request.user.profile.nickname) + str(time.time()).replace(".", "") + '.'
             try:
                 if post_image_file.size > settings.IMAGE_SIZE_LIMIT_POST:
                     error = 'Limite excedido: Tamanho limite para imagem é 100Mb.'
@@ -687,6 +688,14 @@ def uploadImage(request):
                     extension = namefile.split('.')[1]
 
                 if extension in extensions_allowed:
+                    # compression post image to 60% quality
+                    new_name = new_name + extension
+                    img_compress = Image.open(post_image_file)
+                    output = io.BytesIO()
+                    check_format = 'JPEG' if extension.lower() == 'jpg' else extension.upper()
+                    img_compress.save(output, format=check_format, quality=60)
+                    output.seek(0)
+                    post_image_file = ContentFile(output.getvalue(), name=new_name)
 
                     save_BD = models.FeedUser.objects.create(profile_creator=request.user.profile,
                                                              subtitles=post_subtitles,
@@ -712,7 +721,8 @@ def uploadImage(request):
                 elif returnTo == 'explorer':
                     return HttpResponseRedirect('/m/explorer/?status=success')
 
-            except:
+            except Exception as e:
+                print(e)
                 err_msg = '?status=error&info=Algo de errado ocorreu com o upload.'
                 pass
 
@@ -1085,7 +1095,7 @@ def editprofile(request):
                         extension = namefile.split('.')[1]
 
                     if extension in extensions_allowed:
-                        # compress img to 60% quality
+                        # compress img to 50% quality
                         img_compress = Image.open(cropped_image)
                         output = io.BytesIO()
                         img_compress.save(output, format=str(extension), quality=50)

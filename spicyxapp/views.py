@@ -715,10 +715,16 @@ def uploadImage(request):
                     return HttpResponseRedirect("/m/home/?status=error&info=" + error)
 
                 if returnTo == 'home':
+                    cache.delete('home_feed')
+                    cache.delete('explorer_feed')
                     return HttpResponseRedirect('/m/home/?status=success')
                 elif returnTo == 'me':
+                    cache.delete('home_feed')
+                    cache.delete('explorer_feed')
                     return HttpResponseRedirect('/m/me/?status=success')
                 elif returnTo == 'explorer':
+                    cache.delete('home_feed')
+                    cache.delete('explorer_feed')
                     return HttpResponseRedirect('/m/explorer/?status=success')
 
             except Exception as e:
@@ -846,10 +852,16 @@ def uploadVideoForPanda(request):
                             break
 
                 if returnTo == 'home':
+                    cache.delete('home_feed')
+                    cache.delete('explorer_feed')
                     return HttpResponseRedirect('/m/home/?status=success')
                 elif returnTo == 'me':
+                    cache.delete('home_feed')
+                    cache.delete('explorer_feed')
                     return HttpResponseRedirect('/m/me/?status=success')
                 elif returnTo == 'explorer':
+                    cache.delete('home_feed')
+                    cache.delete('explorer_feed')
                     return HttpResponseRedirect('/m/explorer/?status=success')
             except Exception as err:
                 err_msg = '?status=error&info=Algo de errado ocorreu com o upload.'
@@ -897,7 +909,18 @@ def home(request):
         upload_authorization = checkUploadVideoLimite(mySession.profile, 2)
 
         if cache.get('home_feed'):
-            feedPosts_q = cache.get('home_feed')
+            feedPosts_q_original = models.FeedUser.objects.filter(
+                Q(profile_creator__user__id=mySession.id) | \
+                (Q(profile_creator__user__id__in=follower) & Q(media_premium=False)) | \
+                Q(profile_creator__user__id__in=subscribe)
+                & Q(post_hidden=False) & Q(post_deleted=False)).order_by('-media_relevance',
+                                                                         '-created_at')[:25]
+            query_list = list(feedPosts_q_original)
+            if query_list == list(cache.get('home_feed')):
+                feedPosts_q = cache.get('home_feed')
+            else:
+                feedPosts_q = feedPosts_q_original
+                cache.set('home_feed', feedPosts_q_original, timeout=3600)
         else:
             feedPosts_q = models.FeedUser.objects.filter(
                 Q(profile_creator__user__id=mySession.id) | \
@@ -942,7 +965,14 @@ def explorer(request):
                 media_premium=False) & Q(media_free=True))
 
         if cache.get('explorer_feed'):
-            feedPosts = cache.get('explorer_feed')
+            feedPosts_original = models.FeedUser.objects.filter(query2).order_by('-media_relevance',
+                                                                                 '-created_at')[:25]
+            query_list = list(feedPosts_original)
+            if query_list == list(cache.get('explorer_feed')):
+                feedPosts = cache.get('explorer_feed')
+            else:
+                feedPosts = feedPosts_original
+                cache.set('explorer_feed', feedPosts_original, timeout=3600)
         else:
             feedPosts = models.FeedUser.objects.filter(query2).order_by('-media_relevance',
                                                                         '-created_at')[:25]

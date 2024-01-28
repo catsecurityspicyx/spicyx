@@ -43,6 +43,7 @@ from .stripe_functions import updateProduct
 import time
 import io
 from PIL import Image
+from PIL import ImageOps
 stripe.api_key = settings.STRIPE_SECRET_API_KEY
 
 
@@ -690,7 +691,10 @@ def uploadImage(request):
                 if extension in extensions_allowed:
                     # compression post image to 60% quality
                     new_name = new_name + extension
+
                     img_compress = Image.open(post_image_file)
+                    img_compress = ImageOps.exif_transpose(img_compress)
+
                     output = io.BytesIO()
                     check_format = 'JPEG' if extension.lower() == 'jpg' else extension.upper()
                     img_compress.save(output, format=check_format, quality=60)

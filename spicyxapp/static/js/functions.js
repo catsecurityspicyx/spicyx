@@ -52,14 +52,14 @@ function fullscreenEditProfile(action, alvo, dataAlvo) {
     }
 }
 
-function confirmation(status) {
+function confirmation(status, postID) {
     var status = status || null
     if (status === 'open') {
-        document.getElementById('confirm_action_container').style = 'display: flex'
-        document.getElementById('confirm_action_container_for_close').style = 'display: flex'
+        document.getElementById('confirm_action_container' + postID).style = 'display: flex'
+        document.getElementById('confirm_action_container_for_close' + postID).style = 'display: flex'
     } else { //close
-        document.getElementById('confirm_action_container').style = 'display: none'
-        document.getElementById('confirm_action_container_for_close').style = 'display: none'
+        document.getElementById('confirm_action_container' + postID).style = 'display: none'
+        document.getElementById('confirm_action_container_for_close' + postID).style = 'display: none'
     }
 }
 

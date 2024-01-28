@@ -125,9 +125,9 @@
                             </a>
                         </div>
 
-                        <div id="confirm_action_container" class="confirm_action_container">
-                            <div id="confirm_action_container_for_close" class="confirm_action_container_for_close"
-                                 onclick="confirmation('close')"></div>
+                        <div id="confirm_action_container{{ post.id }}" class="confirm_action_container">
+                            <div id="confirm_action_container_for_close{{ post.id }}" class="confirm_action_container_for_close"
+                                 onclick="confirmation('close', '{{ post.id }}')"></div>
                             <div id="confirm_action" class="confirm_action">
                                 <span>
                                     Ao clicar em CONFIRMAR o post será deletado permanentemente e esta ação não pode ser revertida.
@@ -147,7 +147,7 @@
                             <div id="post{{ post.id }}" class="dropdown-container invisible-content">
                                 <div class="menu">
                                 <form>
-                                    <div class="item" onclick="confirmation('open')">
+                                    <div class="item" onclick="confirmation('open', '{{ post.id }}')">
                                         <span><i class="trash icon"></i></span>DELETAR
                                     </div>
                                 </form>

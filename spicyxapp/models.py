@@ -219,7 +219,6 @@ class DisputeChargeback(models.Model):
         return s
 
 
-
 class Payout(models.Model):
     creator = models.ForeignKey(Profile, on_delete=models.CASCADE)
     account_connect_id = models.CharField(max_length=100, blank=True)
@@ -235,6 +234,7 @@ class Payout(models.Model):
         s = (str(self.payout_id) + ' - R$ ' + str(self.total_amount_payout)
              + ' - ' + str(self.status) + ' | ' + str(self.created_at))
         return s
+
 
 class Webhook(models.Model):
     received_at = models.DateTimeField(default=timezone.now)

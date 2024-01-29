@@ -78,6 +78,16 @@ function changeStateNotifications(action, alvo) {
 }
 
 
+window.onclick = function (event2) {
+    if (!event2.target.matches('.open-notifications') && !event2.target.matches('#notifications_number') && !event2.target.matches('.bell.icon') && !event2.target.matches('#notifications-container') && !event2.target.matches('.scroll-notifications') && !event2.target.matches('.notification')) {
+        const notifify = document.getElementById('notifications-container')
+        if (!notifify.classList.contains('invisible-content')) {
+            notifify.classList.toggle('visible-content')
+            notifify.classList.toggle('invisible-content')
+        }
+    }
+}
+
 function selectViewContent(contentID) {
     if (contentID == 'free-feed') {
         document.getElementById(contentID).classList.remove("invisible-content");

@@ -889,6 +889,7 @@ main > .follow_sign_container .sign-user > form > button.cancel:hover,
 }
 .search-results {
     max-height: 30em;
+    overflow-y: auto;
 }
 
 

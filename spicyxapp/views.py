@@ -54,6 +54,7 @@ def searchUsers(request):
         if request.GET:
             try:
                 query = escape(request.GET.get('q'))
+                query = query.replace("@", "")
                 if query:
                     searchResult = list(Profile.objects.filter(
                         Q(nickname__icontains=query)

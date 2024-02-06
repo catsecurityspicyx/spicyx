@@ -2013,4 +2013,64 @@ def adminProducts(request):
     else:
         return HttpResponseRedirect("/")
 
-    
+
+@ratelimit(key='ip', rate='25/5m', block=True)
+@csrf_protect
+def adminNotifications(request):
+    if request.user.is_staff and request.user.is_authenticated:
+        if request.method == 'POST':
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            captchaData = {'secret': settings.RECAPTCHA_PRIVATE_KEY_V3,
+                           'response': recaptcha_response}
+            req = requests.post('https://www.google.com/recaptcha/api/siteverify', data=captchaData)
+            result = req.json()
+            if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
+                pass
+            else:
+                return HttpResponseRedirect("/m/logout/")
+
+            if 'action_notification' in request.POST:
+                select_target = escape(request.POST['select_target_notify'])
+                notification_message = escape(request.POST['text_notify'])
+                link_to = '/m/@equipespicyx'
+                profile_spicyx = models.Profile.objects.get(nickname='equipespicyx')
+                if select_target == 'all':
+                    all_users_profiles = models.Profile.objects.all()
+                    notify_fails = 0
+                    for profile in all_users_profiles:
+                        try:
+                            models.Notification.objects.create(
+                                profile_from=profile_spicyx,
+                                profile_to=profile.user.id,
+                                context_msg=notification_message,
+                                context_link=link_to
+                            )
+                            return HttpResponseRedirect(
+                                '/7j3k2b9QVYQf4XNg89qAthG/painel/notifications/?status=success&info=Notificações '
+                                'enviadas. Falhas: ' + str(notify_fails))
+                        except Exception as e:
+                            notify_fails += 1
+                            pass
+                else:
+                    only_user_target = escape(request.POST['specify_user'])
+                    print(only_user_target)
+                    profile_to = models.Profile.objects.get(nickname=only_user_target)
+                    try:
+                        models.Notification.objects.create(
+                            profile_from=profile_spicyx,
+                            profile_to=profile_to.user.id,
+                            context_msg=notification_message,
+                            context_link=link_to
+                        )
+                        return HttpResponseRedirect(
+                            '/7j3k2b9QVYQf4XNg89qAthG/painel/notifications/?status=success&info=Notificação enviada.')
+                    except Exception as err:
+                        return HttpResponseRedirect(
+                            '/7j3k2b9QVYQf4XNg89qAthG/painel/notifications/?status=error&info=Não foi possível enviar '
+                            'notificação para o usuário informado.')
+
+        GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
+        return render(request, 'painel/send_notification.html', {'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
+    else:
+        return HttpResponseRedirect("/")
+

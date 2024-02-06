@@ -1693,8 +1693,19 @@ main .my-cover > div.user-statics > b {
     background-color: #cfcfd0;
 }
 
+.feed .my_settings > .container_settings.setd > form > span.notify-target,
+.feed .my_settings > .container_settings.setd > form > select.select_target,
+.feed .my_settings > .container_settings.setd > form > input.select_target,
+.feed .my_settings > .container_settings.setd > form > span.send_message_notify {
+    margin-bottom: 1em;
+}
 
-
+.feed .my_settings > .container_settings.setd > form > textarea.send_message_notify {
+    height: 7em;
+    border-radius: 5px;
+    color: var(--dark-text);
+    padding: .5em;
+}
 
 
 

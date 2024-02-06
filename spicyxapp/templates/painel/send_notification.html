@@ -1,0 +1,76 @@
+{% extends 'painel/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>SpicyX | Painel | Notificações</title>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/m-me.css' %}" media="screen"/>
+{% endblock %}
+
+{% block scripts %}
+    <script src='https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}'></script>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="feed">
+            <div class="my_settings three">
+                <div class="title">
+                    <b>Enviar notificação para usuários</b>
+                </div>
+                <div class="container_settings setd">
+                    <form name="send_notification_form" action="{% url 'notifications' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action_notification" value="notification">
+                        <span class="notify-target">Enviar notificação para:</span>
+                        <select name="select_target_notify" class="select_target" required>
+                            <option value=""></option>
+                            <option value="all">Todos os usuários</option>
+                            <option value="only">Usuário especifico</option>
+                        </select>
+                        <input type="text" name="specify_user" class="select_target" placeholder="usuário especifico">
+
+                        <span class="send_message_notify">Mensagem:</span>
+                        <textarea name="text_notify" class="send_message_notify" placeholder="..." required></textarea>
+
+                        <button>Postar notificação</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <form id="form-recaptcha" name="form-recaptcha" action="{% url 'notifications' %}" method="POST" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+            <script>
+                document.addEventListener('DOMContentLoaded', (event) => {
+                    grecaptcha.ready(function () {
+                        grecaptcha.execute('{{recaptcha_site_key}}', {action: "painel_notifications"}).then(function (token) {
+                            document.getElementById('g-recaptcha-response').value = token;
+                            var gresponse = document.getElementById('g-recaptcha-response');
+
+                            if (gresponse.value !== '') {
+                                $(document).ready(function alohinha() {
+                                    var captchaform = $('#form-recaptcha');
+                                    $.ajax({
+                                        url: "{% url 'notifications' %}",
+                                        type: "POST",
+                                        data: captchaform.serialize(),
+
+                                    })
+                                });
+                            }
+                        });
+                    });
+                })
+            </script>
+        </form>
+    </main>
+{% endblock %}
+
+{% block scripts_end %}
+
+{% endblock %}

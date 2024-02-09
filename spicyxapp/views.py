@@ -461,12 +461,20 @@ def changePostHidden(request):
                 pass
 
             if returnTo == 'home':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/home/' + err_msg)
             elif returnTo == 'me':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/me/' + err_msg)
             elif returnTo == 'explorer':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/explorer/' + err_msg)
             elif returnTo == 'post':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/me/' + err_msg)
         return HttpResponseRedirect('/m/home/')
     else:
@@ -570,16 +578,28 @@ def deletePost(request):
                 pass
 
             if returnTo == 'home':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/home/' + err_msg)
             elif returnTo == 'me':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/me/' + err_msg)
             elif returnTo == 'explorer':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/explorer/' + err_msg)
             elif returnTo == 'post':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/me/' + err_msg)
             if returnTo == '/m/home/':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/home/' + err_msg)
             elif returnTo == '/m/explorer/':
+                cache.delete('home_feed')
+                cache.delete('explorer_feed')
                 return HttpResponseRedirect('/m/explorer/' + err_msg)
 
         return HttpResponseRedirect('/m/home/')

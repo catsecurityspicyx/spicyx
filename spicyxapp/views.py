@@ -645,7 +645,8 @@ def uploadImage(request):
                 if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                     pass
                 else:
-                    return HttpResponseRedirect("/m/logout/")
+                    pass
+                    # return HttpResponseRedirect("/m/logout/")
 
             bucket_name = settings.BUCKET_NAME
             returnTo = escape(request.POST['page'])
@@ -762,7 +763,8 @@ def uploadVideoForPanda(request):
                 if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                     pass
                 else:
-                    return HttpResponseRedirect("/m/logout/")
+                    pass
+                    # return HttpResponseRedirect("/m/logout/")
 
             returnTo = escape(request.POST['page'])
             err_msg = ''
@@ -1191,7 +1193,8 @@ def mysettings(request):
                 if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                     pass
                 else:
-                    return HttpResponseRedirect("/m/logout/")
+                    pass
+                    # return HttpResponseRedirect("/m/logout/")
 
             action = escape(request.POST['action'])
             if action == 'darkmode':
@@ -1900,7 +1903,8 @@ def adminPayouts(request):
             if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                 pass
             else:
-                return HttpResponseRedirect("/m/logout/")
+                pass
+                # return HttpResponseRedirect("/m/logout/")
 
         GOOGLE_RECAPTCHA_SITE_KEY = settings.RECAPTCHA_PUBLIC_KEY_V3
         return render(request, 'painel/payouts.html', {'recaptcha_site_key': GOOGLE_RECAPTCHA_SITE_KEY})
@@ -1922,7 +1926,8 @@ def adminDocumentation(request):
             if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                 pass
             else:
-                return HttpResponseRedirect("/m/logout/")
+                pass
+                # return HttpResponseRedirect("/m/logout/")
 
             if 'new_urls' in request.POST:
                 if escape(request.POST['new_urls']) == 'generate':
@@ -1990,7 +1995,8 @@ def adminProducts(request):
             if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                 pass
             else:
-                return HttpResponseRedirect("/m/logout/")
+                pass
+                # return HttpResponseRedirect("/m/logout/")
 
             prodID = escape(request.POST['prod_id'])
             newValue = escape(request.POST['new_value'])
@@ -2027,7 +2033,8 @@ def adminNotifications(request):
             if result['success'] and float(result['score']) >= settings.RECAPTCHA_ALLOWED_SCORE:
                 pass
             else:
-                return HttpResponseRedirect("/m/logout/")
+                pass
+                # return HttpResponseRedirect("/m/logout/")
 
             if 'action_notification' in request.POST:
                 select_target = escape(request.POST['select_target_notify'])

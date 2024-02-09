@@ -58,8 +58,14 @@
                     </div>
 
                     <textarea name="subtitles" placeholder="Legenda..." maxlength="400"></textarea>
-
-                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                    <script>
+                        grecaptcha.ready(function () {
+                            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/explorer/"}).then(function (token) {
+                                document.getElementById('g-recaptcha-response1').value = token;
+                            });
+                        });
+                    </script>
+                    <input type="hidden" id="g-recaptcha-response1" name="g-recaptcha-response">
                     <button id="send_image_home" type="submit" name="send-file">POSTAR</button>
                 </form>
             </div>
@@ -94,8 +100,14 @@
                         </select>
                     </div>
                     <textarea id="subtitles" name="subtitles" placeholder="Legenda..." maxlength="400"></textarea>
-
-                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                    <script>
+                        grecaptcha.ready(function () {
+                            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/explorer/"}).then(function (token) {
+                                document.getElementById('g-recaptcha-response2').value = token;
+                            });
+                        });
+                    </script>
+                    <input type="hidden" id="g-recaptcha-response2" name="g-recaptcha-response">
                     <button id="send_video_home" type="submit" name="send-file">POSTAR</button>
                 </form>
             </div>
@@ -408,17 +420,6 @@
     </main>
 {% endblock %}
 {% block scripts_end %}
-<script>
-    grecaptcha.ready(function () {
-        grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/explorer/"}).then(function (token) {
-            var inputs = document.querySelectorAll('input[name="g-recaptcha-response"]')
-            inputs.forEach(function (input) {
-                input.value = token
-            })
-        });
-    });
-</script>
-
 <script>
     $(document).ready(function () {
         let count_calls = 25

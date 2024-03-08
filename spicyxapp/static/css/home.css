@@ -380,6 +380,12 @@ main .post-form > #selector-media-post {
     border-radius: 5px;
     color: var(--dark-text);
 }
+.post-form form#post-image-form > div.ui.dropdown,
+.post-form form#post-video-form > div.ui.dropdown {
+    display: flex;
+    width: 100%;
+    margin: 1em 0 .5em 0;
+}
 main .feed {
     margin-top: 2em;
     display: flex;
@@ -1502,6 +1508,15 @@ main .my-cover > div.user-statics > b {
     align-items: center;
     justify-items: center;
     padding: 1em 0 0 0;
+}
+.feed .my_settings.two > .container_settings > form#subjects-form {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 1em;
+}
+.feed .my_settings.two > .container_settings form#subjects-form > .ui.dropdown {
+    width: 100%;
 }
 .my_settings.two > .container_settings form button {
     width: 100%;

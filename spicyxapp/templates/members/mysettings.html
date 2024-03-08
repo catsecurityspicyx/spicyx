@@ -220,7 +220,14 @@
                                     </select>
                                 </div>
                             </div>
-                            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                            <script>
+                        grecaptcha.ready(function () {
+                            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/settings/"}).then(function (token) {
+                                document.getElementById('g-recaptcha-response7').value = token;
+                            });
+                        });
+                    </script>
+                            <input type="hidden" id="g-recaptcha-response7" name="g-recaptcha-response">
                             <button id="send_requestcreator" type="submit">Enviar solicitação</button>
                         </form>
                     </div>
@@ -403,7 +410,14 @@
                                     </select>
                                 </div>
                             </div>
-                            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                            <script>
+                        grecaptcha.ready(function () {
+                            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/settings/"}).then(function (token) {
+                                document.getElementById('g-recaptcha-response6').value = token;
+                            });
+                        });
+                    </script>
+                            <input type="hidden" id="g-recaptcha-response6" name="g-recaptcha-response">
                             <button id="send_requestcreator" type="submit">Enviar solicitação</button>
                         </form>
 
@@ -456,7 +470,14 @@
                                     <input type="text" name="newprice_{{ product.recurrence }}" placeholder="{{ product.value }}">
                                 </div>
                             {% endfor %}
-                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                        <script>
+                        grecaptcha.ready(function () {
+                            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/settings/"}).then(function (token) {
+                                document.getElementById('g-recaptcha-response5').value = token;
+                            });
+                        });
+                    </script>
+                        <input type="hidden" id="g-recaptcha-response5" name="g-recaptcha-response">
                         <button>Atualizar preço</button>
                         </form>
                     </div>
@@ -480,7 +501,14 @@
                             <option value="female">Mulher</option>
                         </select>
                         <input type="hidden" name="action" value="gender">
-                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                    <script>
+                        grecaptcha.ready(function () {
+                            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/settings/"}).then(function (token) {
+                                document.getElementById('g-recaptcha-response4').value = token;
+                            });
+                        });
+                    </script>
+                        <input type="hidden" id="g-recaptcha-response4" name="g-recaptcha-response">
                         <button>Salvar</button>
                     </form>
 
@@ -495,7 +523,14 @@
                             <option value="all">Ambos</option>
                         </select>
                         <input type="hidden" name="action" value="interest">
-                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                    <script>
+                        grecaptcha.ready(function () {
+                            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/settings/"}).then(function (token) {
+                                document.getElementById('g-recaptcha-response3').value = token;
+                            });
+                        });
+                    </script>
+                        <input type="hidden" id="g-recaptcha-response3" name="g-recaptcha-response">
                         <button>Salvar</button>
                     </form>
 
@@ -504,64 +539,62 @@
                         <label>Nascimento:</label>
                         <input type="date" name="birth" value="{{ birth }}">
                         <input type="hidden" name="action" value="birth">
-                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                        <script>
+                        grecaptcha.ready(function () {
+                            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/settings/"}).then(function (token) {
+                                document.getElementById('g-recaptcha-response2').value = token;
+                            });
+                        });
+                    </script>
+                        <input type="hidden" id="g-recaptcha-response2" name="g-recaptcha-response">
                         <button>Salvar</button>
                     </form>
 
                 </div>
             </div>
 
-{#            <div class="my_settings two">#}
-{#                <div class="title">#}
-{#                    <i class="sort amount down icon"></i>#}
-{#                    <b>Meus interesses</b>#}
-{#                </div>#}
-{#                <div class="container_settings">#}
-{#                    <form>#}
-{#                    <select id="content_interest1" name="content_interest1">#}
-{#                    <option value="">Tema:</option>#}
-{#                    <option value="all">18+</option>#}
-{#                    <option value="male">Arte e Cultura</option>#}
-{#                    <option value="female">Viagem e Turismo</option>#}
-{#                    <option value="all">Educação</option>#}
-{#                    <option value="all">Culinária</option>#}
-{#                    <option value="all">Moda</option>#}
-{#                    <option value="all">Musica e Entretenimento</option>#}
-{#                    <option value="all">Natureza</option>#}
-{#                    <option value="all">Animais - Pets</option>#}
-{#                    <option value="all">Filmes e séries</option>#}
-{#                    </select>#}
-{#                    <select id="content_interest2" name="content_interest2">#}
-{#                    <option value="">Tema:</option>#}
-{#                    <option value="all">18+</option>#}
-{#                    <option value="male">Arte e Cultura</option>#}
-{#                    <option value="female">Viagem e Turismo</option>#}
-{#                    <option value="all">Educação</option>#}
-{#                    <option value="all">Culinária</option>#}
-{#                    <option value="all">Moda</option>#}
-{#                    <option value="all">Musica e Entretenimento</option>#}
-{#                    <option value="all">Natureza</option>#}
-{#                    <option value="all">Animais - Pets</option>#}
-{#                    <option value="all">Filmes e séries</option>#}
-{#                    </select>#}
-{#                    <select id="content_interest3" name="content_interest3">#}
-{#                    <option value="">Tema:</option>#}
-{#                    <option value="all">18+</option>#}
-{#                    <option value="male">Arte e Cultura</option>#}
-{#                    <option value="female">Viagem e Turismo</option>#}
-{#                    <option value="all">Educação</option>#}
-{#                    <option value="all">Culinária</option>#}
-{#                    <option value="all">Moda</option>#}
-{#                    <option value="all">Musica e Entretenimento</option>#}
-{#                    <option value="all">Natureza</option>#}
-{#                    <option value="all">Animais - Pets</option>#}
-{#                    <option value="all">Filmes e séries</option>#}
-{#                    </select>#}
-{#                            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">#}
-{#                        <button>Salvar</button>#}
-{#                    </form>#}
-{#                </div>#}
-{#            </div>#}
+            <div class="my_settings two">
+                <div class="title">
+                    <i class="sort amount down icon"></i>
+                    <b>Meus interesses</b>
+                </div>
+                <div class="container_settings">
+                    <form id="subjects-form" action="/m/settings/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="subjects_form">
+                        <div class="ui multiple selection dropdown">
+                        <input type="hidden" name="subjects" value="{{ profile.subjects }}">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Assuntos de interesse</div>
+                            <div class="menu">
+                                <div class="item">18+</div>
+                                <div class="item">Arte e Cultura</div>
+                                <div class="item">Viagem e Turismo</div>
+                                <div class="item">Educação</div>
+                                <div class="item">Culinária</div>
+                                <div class="item">Moda</div>
+                                <div class="item">Musica e Entretenimento</div>
+                                <div class="item">Animais - Pets</div>
+                                <div class="item">Filmes e séries</div>
+                            </div>
+                        </div>
+                        <script>
+                            $('.ui.dropdown')
+                                .dropdown()
+                            ;
+                        </script>
+                        <script>
+                        grecaptcha.ready(function () {
+                            grecaptcha.execute('{{recaptcha_site_key}}', {action: "/m/settings/"}).then(function (token) {
+                                document.getElementById('g-recaptcha-response1').value = token;
+                            });
+                        });
+                    </script>
+                            <input type="hidden" id="g-recaptcha-response1" name="g-recaptcha-response">
+                        <button>Salvar</button>
+                    </form>
+                </div>
+            </div>
 
 
         </div>

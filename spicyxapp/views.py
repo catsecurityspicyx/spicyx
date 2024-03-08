@@ -694,6 +694,7 @@ def uploadImage(request):
                     return HttpResponseRedirect("/m/home/?status=error&info=" + error)
 
                 post_subtitles = str(escape(request.POST['subtitles']))
+                post_tags = str(escape(request.POST['subjects']))
                 post_status = escape(request.POST['media-status'])
                 free = False
                 premium = False
@@ -725,6 +726,7 @@ def uploadImage(request):
 
                     save_BD = models.FeedUser.objects.create(profile_creator=request.user.profile,
                                                              subtitles=post_subtitles,
+                                                             tags=post_tags,
                                                              file=post_image_file,
                                                              media_free=free,
                                                              media_premium=premium,
@@ -984,12 +986,23 @@ def explorer(request):
         userData = User.objects.all()
         profileData = models.Profile.objects.all()
 
+        profile_tags = mySession.profile.subjects.split(",")
         if mySession.profile.interest == 'all':
             query2 = (Q(post_hidden=False) & Q(post_deleted=False) & Q(
                 media_premium=False) & Q(media_free=True))
         else:
             query2 = (Q(profile_creator__sex=mySession.profile.interest) & Q(post_hidden=False) & Q(post_deleted=False) & Q(
                 media_premium=False) & Q(media_free=True))
+
+        if profile_tags != [""]:
+            q_tags = Q()
+            for u_tag in profile_tags:
+                if u_tag:
+                    q_tags = q_tags | Q(tags__contains=u_tag)
+            query2 = query2 & q_tags
+        else:
+            query2 = query2 | Q(tags="")
+        query2 = query2 | Q(tags="") & Q(profile_creator__sex=mySession.profile.interest)
 
         if cache.get('explorer_feed'):
             feedPosts_original = models.FeedUser.objects.filter(query2).order_by('-media_relevance',
@@ -1302,7 +1315,16 @@ def mysettings(request):
                     print(e)
                     err_msg = '?status=error&info=Algo deu errado, tente novamente mais tarde.'
                     return HttpResponseRedirect('/m/settings/' + err_msg)
-
+            if action == 'subjects_form':
+                subjects_send = escape(request.POST['subjects'])
+                try:
+                    update_subjects = models.Profile.objects.get(user=request.user)
+                    update_subjects.subjects = str(subjects_send)
+                    update_subjects.save()
+                    return HttpResponseRedirect('/m/settings/?status=success&info=Assuntos de interesse atualizados.')
+                except:
+                    err_msg = '?status=error&info=Algo deu errado, tente novamente mais tarde.'
+                    return HttpResponseRedirect('/m/settings/' + err_msg)
 
         darktheme = models.Profile.objects.get(user=request.user).dark_theme
         userData = User.objects.get(username=request.user)
